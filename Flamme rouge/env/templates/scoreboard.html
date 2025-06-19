@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Scoreboard{% endblock %}
+
+{% block content %}
+<h1>Scoreboard</h1>
+
+<!-- Main Tabs -->
+{% include 'scoreboard/tabs.html' %}
+
+<!-- Scoreboard Tab Content -->
+<div id="scoreboard" class="tabcontent">
+
+    <!-- Sub-tabs only visible inside the Scoreboard tab -->
+    <div class="tab">
+        <button class="subTablinks" onclick="openSubTab(event, 'classement')">Classement</button>
+        <button class="subTablinks" onclick="openSubTab(event, 'sprint')">Sprint</button>
+        <button class="subTablinks" onclick="openSubTab(event, 'mountain')">King of the Mountain</button>
+    </div>
+
+    <!-- Sub-tab content (IDs and classes are inside each included file) -->
+    {% include 'scoreboard/classement.html' %}
+    {% include 'scoreboard/sprint.html' %}
+    {% include 'scoreboard/mountain.html' %}
+</div>
+
+<!-- Stages Tab Content -->
+<div id="stages" class="tabcontent" style="display:none;">
+    {% include 'scoreboard/stage_selector.html' %}
+    {% include 'scoreboard/stage_tab.html' %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const scoreboardTab = document.getElementById("scoreboard");
+    if (scoreboardTab && scoreboardTab.style.display !== "none") {
+        const firstSubTab = scoreboardTab.querySelector(".subTablinks");
+        if (firstSubTab) {
+            firstSubTab.click();
+        }
+    }
+});
+</script>
+{% endblock %}

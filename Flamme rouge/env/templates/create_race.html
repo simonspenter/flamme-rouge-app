@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %} Create race {% endblock %}
+
+{% block content %}
+<form action="/scoreboard" method="GET" id="inputForm">
+    <fieldset>
+        <legend>Choose a race:</legend>
+        {% set races = {'tdf2023': 'Tour de France 2023', 'giro2024': 'Giro d\'Italia 2024'} %}
+        {% for race_id, race_name in races.items() %}
+        <button type="button" onclick="setInputValue('race', '{{ race_id }}')" id="race{{ race_id }}">{{ race_name }}</button>
+        {% endfor %}
+        <input type="hidden" id="raceInput" name="race">
+    </fieldset>
+
+
+    <fieldset>
+        <legend>Choose number of teams:</legend>
+        {% for team in range(2, 5) %}
+        <button type="button" onclick="setInputValue('teams', '{{ team }}')" id="teams{{ team }}">{{ team }}</button>
+        {% endfor %}
+        <input type="hidden" id="teamsInput" name="teams">
+    </fieldset>
+
+    <fieldset>
+        <legend>Choose riders per team:</legend>
+        {% for rider in range(2, 4) %}
+        <button type="button" onclick="setInputValue('assistant', '{{ rider }}')" id="assistant{{ rider }}">{{ rider }}</button>
+        {% endfor %}
+        <input type="hidden" id="assistantInput" name="assistant">
+    </fieldset>
+
+    <br>
+    <button type="button" onclick="submitForm()">Submit</button>
+
+    <script>
+        function setInputValue(inputName, value) {
+            document.getElementById(inputName + 'Input').value = value;
+            document.querySelectorAll('[id^="' + inputName + '"]').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.getElementById(inputName + value).classList.add('selected');
+        }
+
+        function submitForm() {
+            const race = document.getElementById('raceInput').value;
+            const teams = document.getElementById('teamsInput').value;
+            const assistant = document.getElementById('assistantInput').value;
+
+            if (!race || !teams || !assistant) {
+                alert("Please make a selection for all categories.");
+                return;
+            }
+            document.getElementById('inputForm').submit();
+        }
+    </script>
+</form>
+
+
+
+
+{% endblock %}
+
+

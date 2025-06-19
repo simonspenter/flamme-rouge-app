@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Scoreboard{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<!-- Reference the functions in 'js/tabs.js' -->
+<script src="{{ url_for('static', filename='js/tabs.js') }}"></script>
+
+<body>
+
+    <!-- Navigation Tabs -->
+    <div class="tab">
+        <a href="{{ url_for('index') }}">
+            <button class="{% if request.path == '/' %}active{% endif %}">Home</button>
+        </a>
+        <a href="{{ url_for('create_race') }}">
+            <button class="{% if request.path == '/create-race' %}active{% endif %}">Create Race</button>
+        </a>
+        <a href="{{ url_for('scoreboard') }}">
+            <button class="{% if request.path == '/scoreboard' %}active{% endif %}">Scoreboard</button>
+        </a>
+    </div>
+
+    <!-- Page Content -->
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>

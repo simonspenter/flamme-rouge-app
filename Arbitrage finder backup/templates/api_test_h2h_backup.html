@@ -1,0 +1,35 @@
+{% extends "base_backup.html" %}
+
+{% block title %}All Odds Markets{% endblock %}
+
+{% block content %}
+    <h1>H2H API Test</h1>
+
+    {% if error %}
+        <p style="color: red;">Error fetching odds: {{ error }}</p>
+        <pre>{{ details }}</pre>
+    {% elif odds %}
+        <ul>
+        {% for event in odds %}
+            <li>
+                <strong>{{ event.home_team }} vs {{ event.away_team }}</strong><br>
+                Starts at: {{ event.commence_time }}<br>
+                {% for bookmaker in event.bookmakers %}
+                    <p>{{ bookmaker.title }}</p>
+                    {% if bookmaker.markets and bookmaker.markets[0].outcomes %}
+                        <ul>
+                        {% for outcome in bookmaker.markets[0].outcomes %}
+                            <li>{{ outcome.name }}: {{ outcome.price }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No market data available.</p>
+                    {% endif %}
+                {% endfor %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No odds available.</p>
+    {% endif %}
+{% endblock %}

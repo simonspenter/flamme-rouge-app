@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+
+{% block title %}Scoreboard{% endblock %}
+
+{% block content %}
+<body>
+    <h1>Scoreboard</h1>
+    <!-- Tabs on the /scoreboard page -->
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'scoreboard')" id="defaultOpen">Scoreboard</button>
+        <button class="tablinks" onclick="openTab(event, 'stages')">Stages</button>
+    </div>
+
+    <!-- Scoreboard Tab -->
+    <div id="scoreboard" class="tabcontent">
+
+        <!-- Second set of tabs on the Scoreboard tab -->
+        <div class="tab">
+            <button class="subTablinks" onclick="openSubTab(event, 'classement')">Classement</button>
+            <button class="subTablinks" onclick="openSubTab(event, 'sprint')">Sprint</button>
+            <button class="subTablinks" onclick="openSubTab(event, 'king')">King of the Mountain</button>
+        </div>
+
+        <!-- Content for the Classement tab -->
+        <div id="classement" class="subTabcontent">
+            <h2>Classement</h2>
+            <table>
+                <!-- Table headers -->
+                <thead>
+                    <!-- Header row for stages and team names -->
+                    <tr>
+                        <th rowspan="2">Stage</th>
+                        {% for team in range(teams) %}
+                            <th colspan="{{ assistant }}">Team {{ team + 1 }}</th>
+                        {% endfor %}
+                    </tr>
+                    <!-- Header row for rider names -->
+                    <tr>
+                        {% for team in range(teams) %}
+                            {% for rider in range(assistant) %}
+                                <th>Rider {{ rider + 1 }}</th>
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <!-- Table body -->
+                <tbody>
+                    <!-- Loop through each stage -->
+                    {% for stage in range(stages) %}
+                        <tr>
+                            <!-- Display the stage number -->
+                            <td>Stage {{ stage + 1 }}</td>
+                            <!-- Create empty cells for each rider -->
+                            {% for team in range(teams) %}
+                                {% for rider in range(assistant) %}
+                                    <td id="classement-stage-{{ stage + 1 }}-team-{{ team + 1 }}-rider-{{ rider + 1 }}"></td>
+                                {% endfor %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    <!-- Row for total -->
+                    <tr>
+                        <td>Total</td>
+                        <!-- Create empty cells for each rider total -->
+                        {% for team in range(teams) %}
+                            {% for rider in range(assistant) %}
+                                <td id="classement-total-team-{{ team + 1 }}-rider-{{ rider + 1 }}"></td>
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Content for the Sprint tab -->
+        <div id="sprint" class="subTabcontent">
+            <h2>Sprint</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2">Stage</th>
+                        {% for team in range(teams) %}
+                            <th colspan="{{ assistant }}">Team {{ team + 1 }}</th>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for team in range(teams) %}
+                            {% for rider in range(assistant) %}
+                                <th>Rider {{ rider + 1 }}</th>
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stage in range(stages) %}
+                        <tr>
+                            <td>Stage {{ stage + 1 }}</td>
+                            {% for team in range(teams) %}
+                                {% for rider in range(assistant) %}
+                                    <td></td> <!-- Empty cell for each rider -->
+                                {% endfor %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>Total</td>
+                        {% for team in range(teams) %}
+                            {% for rider in range(assistant) %}
+                                <td></td> <!-- Empty cell for each rider total -->
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Content for the King of the Mountain tab -->
+        <div id="king" class="subTabcontent">
+            <h2>King of the Mountain</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2">Stage</th>
+                        {% for team in range(teams) %}
+                            <th colspan="{{ assistant }}">Team {{ team + 1 }}</th>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for team in range(teams) %}
+                            {% for rider in range(assistant) %}
+                                <th>Rider {{ rider + 1 }}</th>
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stage in range(stages) %}
+                        <tr>
+                            <td>Stage {{ stage + 1 }}</td>
+                            {% for team in range(teams) %}
+                                {% for rider in range(assistant) %}
+                                    <td></td> <!-- Empty cell for each rider -->
+                                {% endfor %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>Total</td>
+                        {% for team in range(teams) %}
+                            {% for rider in range(assistant) %}
+                                <td></td> <!-- Empty cell for each rider total -->
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Stages Tab -->
+    
+    <div>
+        <div class="tab">
+            {% for stage in range(stages) %}
+            <button class="stageTablinks" onclick="openStageTab(event, 'stage{{ stage + 1 }}')">Stage {{ stage + 1 }}</button>
+            {% endfor %}
+        </div>
+
+        <!-- Content for each stage tab -->
+        {% for stage, stage_data in stage_data.items() %}
+        <div id="stage{{ stage }}" class="stageTabcontent">
+            <h2>Stage {{ stage }}</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th> <!-- Empty cell for stage name -->
+                        {% for team in range(teams) %}
+                        <th colspan="{{ assistant }}">Team {{ team + 1 }}</th>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th></th> <!-- Empty cell for spacing -->
+                        {% for team in range(teams) %}
+                        {% for rider in range(assistant) %}
+                        <th>Rider {{ rider + 1 }}</th>
+                        {% endfor %}
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Create row for Classement data -->
+                    <tr>
+                        <td>Classement</td>
+                        {% for team in range(teams) %}
+                            {% for rider in range(assistant) %}
+                                <td>
+                                    <select id="stage-classement-{{ stage_number }}-team-{{ team }}-rider-{{ rider }}" onchange="handleDropdownChange({ stage_number }, { team }, { rider }, this)">
+                                        {% for value in range(21) %}
+                                            <option value="{{ value }}">{{ value }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Generate rows for sprints -->
+                    {% for sprint, sprint_info in stage_data.sprints.items() %}
+                    <tr>
+                        <td>{{ sprint }}</td> <!-- Sprint name -->
+                        {% for team in range(teams) %}
+                        {% for rider in range(assistant) %}
+                        <td>
+                            <select>
+                                <option value="">Select</option> <!-- Blank option -->
+                                {% for i in range(6) %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>                        
+                        </td>
+                        {% endfor %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+
+                    <!-- Generate rows for mountains -->
+                    {% for mountain, category in stage_data.mountains.items() %}
+                    <tr>
+                        <td>{{ mountain }}</td> <!-- Mountain name -->
+                        {% for team in range(teams) %}
+                        {% for rider in range(assistant) %}
+                        <td>
+                            <select>
+                                <option value="">Select</option> <!-- Blank option -->
+                                {% for i in range(6) %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        {% endfor %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- FUNCTIONS -->
+    
+    <!-- Code for tab functionality -->
+    <script>
+        // Function to switch between tabs
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Function to switch between subtabs
+        function openSubTab(evt, subTabName) {
+            var i, subTabcontent, subTablinks;
+            subTabcontent = document.getElementsByClassName("subTabcontent");
+            for (i = 0; i < subTabcontent.length; i++) {
+                subTabcontent[i].style.display = "none";
+            }
+            subTablinks = document.getElementsByClassName("subTablinks");
+            for (i = 0; i < subTablinks.length; i++) {
+                subTablinks[i].className = subTablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+        
+        // Function to switch between StageTabs
+        function openStageTab(evt, stageTabName) {
+            var i, stageTabcontent, stageTablinks;
+            stageTabcontent = document.getElementsByClassName("stageTabcontent");
+            for (i = 0; i < stageTabcontent.length; i++) {
+                stageTabcontent[i].style.display = "none";
+            }
+            stageTablinks = document.getElementsByClassName("stageTablinks");
+            for (i = 0; i < stageTablinks.length; i++) {
+                stageTablinks[i].className = stageTablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(stageTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+
+    <!-- JavaScript function to redirect user to /testtemplate -->
+    <script>
+        function redirectToTestTemplate() {
+        window.location.href = "/testtemplate";
+        }
+    </script>
+
+    <script>
+    // Function to save the selected number
+    function saveNumber() {
+        // Get the selected number from the dropdown list
+        var selectedNumber = document.getElementById("number-selector").value;
+        
+        // Redirect to the testtemplate page with the selected number as a parameter
+        window.location.href = "/testtemplate?number=" + selectedNumber;
+    }
+    </script>
+</body>
+
+{% endblock %}
