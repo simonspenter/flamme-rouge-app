@@ -1,0 +1,7 @@
+<!-- Purpose of this function is to dynamically generate buttons that let users switch between different stages -->
+
+<div class="tab">
+    {% for stage in range(stages) %}
+        <button class="stageTablinks" onclick="openStageTab(event, 'stage{{ stage + 1 }}')">Stage {{ stage + 1 }}</button>
+    {% endfor %}
+</div>

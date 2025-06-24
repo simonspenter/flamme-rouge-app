@@ -1,0 +1,40 @@
+<div id="classement" class="subTabcontent">
+    <h2>Classement</h2>
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2">Stage</th>
+                {% for team in range(teams) %}
+                    <th colspan="{{ assistant }}">Team {{ team + 1 }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                {% for team in range(teams) %}
+                    {% for rider in range(assistant) %}
+                        <th>Rider {{ rider + 1 }}</th>
+                    {% endfor %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for stage in range(stages) %}
+                <tr>
+                    <td>Stage {{ stage + 1 }}</td>
+                    {% for team in range(teams) %}
+                        {% for rider in range(assistant) %}
+                            <td id="classement-stage-{{ stage + 1 }}-team-{{ team + 1 }}-rider-{{ rider + 1 }}"></td>
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>Total</td>
+                {% for team in range(teams) %}
+                    {% for rider in range(assistant) %}
+                        <td id="classement-total-team-{{ team + 1 }}-rider-{{ rider + 1 }}"></td>
+                    {% endfor %}
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>

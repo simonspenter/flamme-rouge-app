@@ -1,0 +1,358 @@
+<!-- Content for each stage tab -->
+{% for stage_num, single_stage in stage_data.items() %}
+    <div id="stage{{ stage_num }}" class="stageTabcontent">
+        
+        <div class="stage-card">
+            <div class="stage-header">
+                <div class="stage-date">{{ single_stage.date }}</div> <!-- Dynamic date -->
+                <div class="stage-title">STAGE {{ stage_num }}</div>
+                <div class="stage-location">
+                    {{ single_stage.start }} <span class="arrow">›</span> {{ single_stage.end }}
+                </div>
+            </div>
+
+            <div class="stage-details-row">
+                <div class="stage-details">
+                    <div class="stage-detail">
+                        <img src="{{ url_for('static', filename='icons/length.svg') }}" alt="Length" />
+                        <span>{{ single_stage.length_km }} km</span>
+                    </div>
+                    <div class="stage-detail">
+                        <img src="{{ url_for('static', filename='icons/stage_types/' ~ stage_type_icons.get(single_stage.type, 'default.svg')) }}" alt="{{ single_stage.type }} icon" />
+                        <span>{{ single_stage.type }}</span>
+                    </div>
+                    <div class="stage-detail">
+                        <img src="{{ url_for('static', filename='icons/elevation.svg') }}" alt="Elevation" />
+                        <span>{{ single_stage.elevation_m }} m</span>
+                    </div>
+                </div>
+            </div> 
+
+            {% if single_stage.route_image %}
+            <div class="route-visual">
+                <img src="{{ url_for('static', filename=single_stage.route_image) }}" alt="Route profile" class="route-image" />
+            </div>
+            {% endif %}
+
+            <!-- Route description -->
+            <div class="stage-route">
+                <div class="stage-route-description">
+                    Route: {{ single_stage.route }}
+                </div>
+            </div>
+
+            <!-- Optional: Recap video -->
+            {% if single_stage.video_url %}
+            <div class="video-wrapper">
+                <iframe width="100%" height="315"
+                    src="{{ single_stage.video_url | replace('watch?v=', 'embed/') }}"
+                    title="Stage Recap Video" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            {% endif %}
+
+            <!-- Optional: External link to official site -->
+            {% if single_stage.official_url %}
+            <div class="external-link-wrapper">
+                <a href="{{ single_stage.official_url }}" target="_blank" class="external-link">
+                    More details on the official site →
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Optional: Winner summary -->
+            {% if single_stage.winner %}
+            <div class="winner-box">
+                🏁 <strong>Winner:</strong> {{ single_stage.winner }} – {{ single_stage.winning_time }}
+            </div>
+            {% endif %}
+        </div>
+
+
+
+        <table>
+            <thead>
+                <tr>
+                    <th></th> <!-- Empty cell for stage name -->
+                    {% for team in range(teams) %}
+                        <th colspan="{{ assistant }}">Team {{ team + 1 }}</th>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th></th> <!-- Empty cell for spacing -->
+                    {% for team in range(teams) %}
+                        {% for rider in range(assistant) %}
+                            <th>Rider {{ rider + 1 }}</th>
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+
+                <!-- Classement Row -->
+                <tr>
+                    <td>Classement</td>
+                    {% for team in range(teams) %}
+                        {% for rider in range(assistant) %}
+                            <td>
+                                <select id="stage-classement-{{ stage_num }}-team-{{ team }}-rider-{{ rider }}"
+                                        onchange="handleClassementChange({{ stage_num }}, {{ team }}, {{ rider }}, this)">
+                                    {% for value in range(21) %}
+                                        <option value="{{ value }}">{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+
+                <!-- Sprint Rows for Stage {{ stage }} -->
+                {% for sprint_name in single_stage.sprints.keys() %}
+                    {% set sprint_index = loop.index0 %}
+                    <tr>
+                        <td>{{ sprint_name }}</td>
+                        {% for team in range(teams) %}
+                            {% for rider in range(assistant) %}
+                            <td>
+                                <select id="stage-sprint-{{ stage_num }}-sprint-{{ sprint_index }}-team-{{ team }}-rider-{{ rider }}"
+                                    data-category="{{ single_stage.sprints[sprint_name] }}"
+                                    onchange="handleSprintChange({{ stage_num }}, {{ sprint_index }}, {{ team }}, {{ rider }}, this)">
+                                    <option value="">Select</option>
+                                    {% for i in range(6) %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+
+                <!-- Mountain Rows -->
+                {% for mountain_name in single_stage.mountains.keys() %}
+                    {% set mountain_index = loop.index0 %}
+                    <tr>
+                        <td>{{ mountain_name }}</td>
+                        {% for team in range(teams) %}
+                            {% for rider in range(assistant) %}
+                            <td>
+                                <select id="stage-mountain-{{ stage_num }}-mountain-{{ mountain_index }}-team-{{ team }}-rider-{{ rider }}"
+                                    data-category="{{ single_stage.mountains[mountain_name] }}"
+                                    onchange="handleMountainChange({{ stage_num }}, {{ mountain_index }}, {{ team }}, {{ rider }}, this)">
+                                    <option value="">Select</option>
+                                    {% for i in range(6) %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const sprintCategories = {{ sprint_categories | tojson }};
+        const mountainCategories = {{ mountain_categories | tojson }};
+    </script>
+
+    
+    <script>
+    // Mapping for Mountain and Sprint points
+    const mountainPoints = {
+        "cat3": {1: 3, 2: 2, 3: 1, 0: 0},
+        "cat2": {1: 5, 2: 3, 3: 1, 0: 0},
+        "cat1": {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0},
+        "HC":   {1: 20, 2: 14, 3: 10, 4: 7, 5: 3, 6: 1, 0: 0}
+    };
+
+    const sprintPoints = {
+        "S":  {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0},
+        "SF": {1: 20, 2: 14, 3: 10, 4: 6, 5: 2, 0: 0},
+        "MF": {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0}
+    };
+    </script>
+
+
+    <script>
+        // Inject stage/team/rider counts from Flask
+        const NUM_STAGES = {{ stages }};
+        const NUM_TEAMS = {{ teams }};
+        const NUM_ASSISTANTS = {{ assistant }};
+        
+        // Functions for updating Classement data
+        function handleClassementChange(stage, team, rider, selectElement) {
+            const value = parseInt(selectElement.value) || 0;
+
+            // Update the corresponding classement cell in the scoreboard
+            const cellId = `classement-stage-${stage}-team-${team + 1}-rider-${rider + 1}`;
+            const cell = document.getElementById(cellId);
+            if (cell) {
+                cell.innerText = value;
+            }
+
+            // Recalculate totals
+            updateClassementTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
+        }
+
+        function updateClassementTotals(stages, teams, assistant) {
+            // Step 1: Store totals in a 2D array and find the minimum total
+            let totals = [];
+            let minTotal = Infinity;
+
+            for (let team = 1; team <= teams; team++) {
+                for (let rider = 1; rider <= assistant; rider++) {
+                    let total = 0;
+
+                    for (let stage = 1; stage <= stages; stage++) {
+                        const cellId = `classement-stage-${stage}-team-${team}-rider-${rider}`;
+                        const cell = document.getElementById(cellId);
+                        const value = parseInt(cell?.innerText || "0");
+                        total += isNaN(value) ? 0 : value;
+                    }
+
+                    totals.push({ team, rider, total });
+                    if (total < minTotal) {
+                        minTotal = total;
+                    }
+                }
+            }
+
+            // Step 2: Update the DOM with adjusted totals (relative to the minimum)
+            for (const entry of totals) {
+                const adjusted = entry.total - minTotal;
+                const totalCellId = `classement-total-team-${entry.team}-rider-${entry.rider}`;
+                const totalCell = document.getElementById(totalCellId);
+                if (totalCell) {
+                    totalCell.innerText = adjusted;
+                }
+            }
+        } 
+
+
+        function handleSprintChange(stage, sprintIndex, team, rider, selectElement) {
+            // Recalculate the total for this rider across all sprints for this stage
+            let total = 0;
+
+            // Loop over all possible sprint indexes for this stage
+            let sprintCount = document.querySelectorAll(
+                `[id^=stage-sprint-${stage}-sprint-][id$=-team-${team}-rider-${rider}]`
+            ).length;
+
+            for (let i = 0; i < sprintCount; i++) {
+                const selectId = `stage-sprint-${stage}-sprint-${i}-team-${team}-rider-${rider}`;
+                const select = document.getElementById(selectId);
+                if (select) {
+                    const place = parseInt(select.value);
+                        const category = select.dataset.category;
+
+                        if (!isNaN(place) && category && sprintCategories[category]) {
+                            const points = sprintCategories[category][place] || 0;
+                            total += points;
+                        }
+                }
+            }
+
+            // Update the corresponding scoreboard cell
+            const scoreboardId = `sprint-stage-${stage}-team-${team + 1}-rider-${rider + 1}`;
+            const cell = document.getElementById(scoreboardId);
+            if (cell) {
+                cell.innerText = total;
+            }
+
+            // Recalculate totals
+            updateSprintTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
+        }
+        
+
+        function updateSprintTotals(stages, teams, assistant) {
+            for (let team = 1; team <= teams; team++) {
+                for (let rider = 1; rider <= assistant; rider++) {
+                    let total = 0;
+
+                    for (let stage = 1; stage <= stages; stage++) {
+                        const cellId = `sprint-stage-${stage}-team-${team}-rider-${rider}`;
+                        const cell = document.getElementById(cellId);
+                        const value = parseInt(cell?.innerText || "0");
+                        total += isNaN(value) ? 0 : value;
+                    }
+
+                    const totalCellId = `sprint-total-team-${team}-rider-${rider}`;
+                    const totalCell = document.getElementById(totalCellId);
+                    if (totalCell) {
+                        totalCell.innerText = total;
+                    }
+                }
+            }
+        }
+
+
+
+        // Functions for handling Mountain data
+        function handleMountainChange(stage, mountainIndex, team, rider, selectElement) {
+            // Recalculate the total for this rider across all mountains for this stage
+            let total = 0;
+
+            // Count how many mountain selects exist for this rider in this stage
+            let mountainCount = document.querySelectorAll(
+                `[id^=stage-mountain-${stage}-mountain-][id$=-team-${team}-rider-${rider}]`
+            ).length;
+
+            for (let i = 0; i < mountainCount; i++) {
+                const selectId = `stage-mountain-${stage}-mountain-${i}-team-${team}-rider-${rider}`;
+                const select = document.getElementById(selectId);
+                if (select) {
+                    const place = parseInt(select.value);
+                    const category = select.dataset.category;
+
+                    if (!isNaN(place) && category && mountainCategories[category]?.points) {
+                        const points = mountainCategories[category].points[place] || 0;
+                        total += points;
+                    }
+                }
+            }
+
+            // Update the corresponding scoreboard cell
+            const scoreboardId = `mountain-stage-${stage}-team-${team + 1}-rider-${rider + 1}`;
+            const cell = document.getElementById(scoreboardId);
+            if (cell) {
+                cell.innerText = total;
+            }
+
+            // Recalculate mountain totals
+            updateMountainTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
+        }
+
+
+
+        function updateMountainTotals(stages, teams, assistant) {
+            for (let team = 1; team <= teams; team++) {
+                for (let rider = 1; rider <= assistant; rider++) {
+                    let total = 0;
+
+                    for (let stage = 1; stage <= stages; stage++) {
+                        const cellId = `mountain-stage-${stage}-team-${team}-rider-${rider}`;
+                        const cell = document.getElementById(cellId);
+                        const value = parseInt(cell?.innerText || "0");
+                        total += isNaN(value) ? 0 : value;
+                    }
+
+                    const totalCellId = `mountain-total-team-${team}-rider-${rider}`;
+                    const totalCell = document.getElementById(totalCellId);
+                    if (totalCell) {
+                        totalCell.innerText = total;
+                    }
+                }
+            }
+        }
+
+
+    </script>
+
+{% endfor %}
+

@@ -1,0 +1,317 @@
+/* ----------------------------------------------
+   BASE STYLES
+-------------------------------------------------*/
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff9e5; /* Light warm yellow background */
+    color: #222;
+    margin: 20px;
+}
+
+/* ----------------------------------------------
+   TABS
+-------------------------------------------------*/
+
+/* Tabs container */
+.tab {
+    overflow: hidden;
+    border-bottom: 3px solid #E10600; /* Flamme Rouge red underline */
+    background-color: #000;
+    border-radius: 6px 6px 0 0;
+}
+
+/* Tab buttons */
+.tab button {
+    background-color: #111;
+    color: #FFDD00;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+    border-radius: 6px 6px 0 0;
+    margin-right: 4px;
+}
+
+/* Tab hover effect */
+.tab button:hover {
+    background-color: #E10600;
+    color: #fff;
+}
+
+/* Active tab */
+.tab button.active {
+    background-color: #FFDD00;
+    color: #000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Tab content area */
+.tabcontent {
+    display: none;
+    padding: 20px;
+    border: 2px solid #E10600;
+    border-top: none;
+    background-color: #fff;
+    border-radius: 0 6px 6px 6px;
+    box-shadow: 0 4px 10px rgba(225, 6, 0, 0.2);
+}
+
+/* Show active content */
+.tabcontent.active {
+    display: block;
+}
+
+/* ----------------------------------------------
+   TABLES
+-------------------------------------------------*/
+
+/* Base table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* Table headers and cells */
+th, td {
+    border: 1px solid #E10600;
+    padding: 10px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Table header background */
+th {
+    background-color: #FFDD00;
+    color: #000;
+    font-size: 14px;
+}
+
+/* Alternating row colors */
+tr:nth-child(even) {
+    background-color: #fff7cc;
+}
+
+tr:nth-child(odd) {
+    background-color: #fffbed;
+}
+
+/* ----------------------------------------------
+   BUTTONS
+-------------------------------------------------*/
+
+button.selected {
+    background-color: #E10600;
+    color: white;
+    border-radius: 4px;
+}
+/* ----------------------------------------------
+   STAGE CARD
+-------------------------------------------------*/
+
+.stage-card {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-family: 'Arial', sans-serif;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    width: 100vw;        /* Full viewport width */
+    max-width: 100%;     
+    box-sizing: border-box;
+}
+
+/* Background image */
+.stage-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('/static/img/stage_card_pic1.avif') center / cover no-repeat;
+    opacity: 0.5;
+    z-index: 0;
+}
+
+/* White fog overlay */
+.stage-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(4px);
+    z-index: 1;
+}
+
+/* Ensure content appears above overlays */
+.stage-card > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* ----------------------------------------------
+   STAGE HEADER
+-------------------------------------------------*/
+
+.stage-header {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.stage-date {
+    display: inline-block;
+    background-color: #ffdc00;
+    color: #111;
+    font-weight: bold;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 5px;
+}
+
+.stage-title {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+.stage-location {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+}
+
+.arrow {
+    color: #ffdc00;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* ----------------------------------------------
+   STAGE DETAILS + IMAGE ROW
+-------------------------------------------------*/
+
+.stage-details-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.stage-details {
+    display: flex;
+    gap: 2rem;
+    font-size: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.stage-detail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stage-detail img {
+    width: 24px;
+    height: 24px;
+    filter: invert(100%);
+}
+
+.route-visual {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 5;
+}
+
+.route-image {
+    width: 600px;        /* Increased image size */
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+
+/* ----------------------------------------------
+   ROUTE DESCRIPTION
+-------------------------------------------------*/
+
+.stage-route-description {
+    color: #FFD700;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 12px;
+    letter-spacing: 1.2px;
+}
+
+/* ----------------------------------------------
+   SPRINT SCOREBOARD (Green jersey)
+-------------------------------------------------*/
+
+#sprint table {
+    background-color: #2ecc40;
+    border-collapse: collapse;
+    color: white;
+    font-weight: 600;
+}
+
+#sprint th, #sprint td {
+    border: 1px solid #27ae60;
+    padding: 8px;
+    text-align: center;
+}
+
+#sprint th {
+    background-color: #27ae60;
+}
+
+#sprint td {
+    background-color: #32cd32;
+}
+
+#sprint tbody tr:last-child td {
+    font-weight: 700;
+    background-color: #1e7c2a;
+}
+
+/* ----------------------------------------------
+   MOUNTAIN SCOREBOARD (Polka dots)
+-------------------------------------------------*/
+
+#mountain table {
+    background-color: white;
+    border-collapse: collapse;
+    color: #d50000;
+    font-weight: 600;
+}
+
+#mountain th, #mountain td {
+    border: 1px solid #d50000;
+    padding: 8px;
+    text-align: center;
+    background-image: radial-gradient(circle, #d50000 13%, transparent 13%);
+    background-size: 40px 40px;
+    background-repeat: repeat;
+}
+
+#mountain th {
+    background-color: #fff0f0;
+}
+
+#mountain td {
+    background-color: white;
+}
+
+#mountain tbody tr:last-child td {
+    font-weight: 700;
+    background-color: #ffd6d6;
+}
