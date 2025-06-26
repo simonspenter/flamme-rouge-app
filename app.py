@@ -11,6 +11,8 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 
 def get_db_connection():
     """Create and return a database connection"""
+    if not DATABASE_URL:
+        raise ValueError("DATABASE_URL environment variable is not set")
     return pyodbc.connect(DATABASE_URL)
 
 # Mapping for stage type icons
@@ -25,7 +27,6 @@ stage_type_icons = {
 @app.route("/")
 def index():
     return render_template('index.html')
-
 
 @app.route("/create-race")
 def create_race():
@@ -59,6 +60,9 @@ def scoreboard():
 @app.route("/test-db")
 def test_db():
     try:
+        if not DATABASE_URL:
+            return "DATABASE_URL environment variable is not set"
+        
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT 1 as test")
@@ -68,6 +72,14 @@ def test_db():
     except Exception as e:
         return f"Database connection failed: {str(e)}"
 
+# Health check endpoint for Azure
+@app.route("/health")
+def health_check():
+    """Health check endpoint for Azure monitoring"""
+    return {"status": "healthy", "message": "Flask app is running"}, 200
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # For local development
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_ENV') == 'development'
+    app.run(host='0.0.0.0', port=port, debug=debug)

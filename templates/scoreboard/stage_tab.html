@@ -36,8 +36,17 @@
 
             <!-- Route description -->
             <div class="stage-route">
-                <div class="stage-route-description">
-                    Route: {{ single_stage.route }}
+                <div class="stage-detail">
+                    <img src="{{ url_for('static', filename='icons/route.svg') }}" alt="Route icon" />
+                    <span>{{ single_stage.route }}</span>
+                </div>
+            </div>
+
+                        <!-- Route description -->
+            <div class="stage-link">
+                <div class="stage-detail">
+                    <img src="{{ url_for('static', filename='icons/link.svg') }}" alt="Link icon" />
+                    <span>{{ single_stage.link }}</span>
                 </div>
             </div>
 
@@ -62,12 +71,6 @@
             </div>
             {% endif %}
 
-            <!-- Optional: Winner summary -->
-            {% if single_stage.winner %}
-            <div class="winner-box">
-                🏁 <strong>Winner:</strong> {{ single_stage.winner }} – {{ single_stage.winning_time }}
-            </div>
-            {% endif %}
         </div>
 
 

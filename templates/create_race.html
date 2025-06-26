@@ -3,35 +3,35 @@
 {% block title %} Create race {% endblock %}
 
 {% block content %}
-<form action="/scoreboard" method="GET" id="inputForm">
-    <fieldset>
+<form action="/scoreboard" method="GET" id="inputForm" class="race-form">
+    <fieldset class="form-section">
         <legend>Choose a race:</legend>
         {% set races = {'tdf2023': 'Tour de France 2023', 'giro2024': 'Giro d\'Italia 2024'} %}
         {% for race_id, race_name in races.items() %}
-        <button type="button" onclick="setInputValue('race', '{{ race_id }}')" id="race{{ race_id }}">{{ race_name }}</button>
+        <button type="button" onclick="setInputValue('race', '{{ race_id }}')" id="race{{ race_id }}" class="select-button">{{ race_name }}</button>
         {% endfor %}
         <input type="hidden" id="raceInput" name="race">
     </fieldset>
 
-
-    <fieldset>
+    <fieldset class="form-section">
         <legend>Choose number of teams:</legend>
         {% for team in range(2, 5) %}
-        <button type="button" onclick="setInputValue('teams', '{{ team }}')" id="teams{{ team }}">{{ team }}</button>
+        <button type="button" onclick="setInputValue('teams', '{{ team }}')" id="teams{{ team }}" class="select-button">{{ team }}</button>
         {% endfor %}
         <input type="hidden" id="teamsInput" name="teams">
     </fieldset>
 
-    <fieldset>
-        <legend>Choose riders per team:</legend>
-        {% for rider in range(2, 4) %}
-        <button type="button" onclick="setInputValue('assistant', '{{ rider }}')" id="assistant{{ rider }}">{{ rider }}</button>
-        {% endfor %}
+    <fieldset class="form-section">
+        <legend>Ride with or without assistant:</legend>
+        <button type="button" onclick="setInputValue('assistant', '2')" id="assistant2" class="select-button">Without assistant (2 riders)</button>
+        <button type="button" onclick="setInputValue('assistant', '3')" id="assistant3" class="select-button">With assistant (3 riders)</button>
         <input type="hidden" id="assistantInput" name="assistant">
     </fieldset>
 
+
+
     <br>
-    <button type="button" onclick="submitForm()">Submit</button>
+    <button type="button" onclick="submitForm()" class="submit-button">Submit</button>
 
     <script>
         function setInputValue(inputName, value) {

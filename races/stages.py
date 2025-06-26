@@ -18,6 +18,7 @@ tdf2023_stage1 = {
         "Saint-Sébastien": "SF"
     },
     "route_image": "img/tdf2023_stage1_profile.png",
+    "link": "https://letour.euskadi.eus/stage-2/webtour00-content/en/"
 }
 
 tdf2023_stage2 = {
