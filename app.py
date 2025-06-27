@@ -11,11 +11,12 @@ import uuid
 from datetime import datetime
 
 # Load Database URL on flask
-from dotenv import load_dotenv
-load_dotenv()
+#from dotenv import load_dotenv
+#load_dotenv()
 
 
-app = Flask(__name__)
+app = Flask(__name__) 
+
 
 # Get database connection string from environment
 DATABASE_URL = DATABASE_URL = (
