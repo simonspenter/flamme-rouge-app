@@ -3,7 +3,7 @@
 {% block title %} Create race {% endblock %}
 
 {% block content %}
-<form action="/scoreboard" method="GET" id="inputForm" class="race-form">
+<form action="{{ url_for('create_race_submit') }}" method="POST" id="inputForm" class="race-form">
     <fieldset class="form-section">
         <legend>Choose a race:</legend>
         {% set races = {'tdf2023': 'Tour de France 2023', 'giro2024': 'Giro d\'Italia 2024'} %}
