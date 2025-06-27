@@ -7,7 +7,7 @@ from races.race_info import sprint_categories, mountain_categories
 app = Flask(__name__)
 
 # Get database connection string from environment
-DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASE_URL = os.environ.get('ConnectionStrings:DATABASE_URL') or os.environ.get('DATABASE_URL')
 
 def get_db_connection():
     """Create and return a database connection"""
