@@ -15,6 +15,10 @@ def get_db_connection():
         raise ValueError("DATABASE_URL environment variable is not set")
     return pyodbc.connect(DATABASE_URL)
 
+@app.route("/debug-env")
+def debug_env():
+    return "<br>".join([f"{k}: {v}" for k, v in os.environ.items()])
+
 # Mapping for stage type icons
 stage_type_icons = {
     "Cobble stone": "cobblestone.svg",
