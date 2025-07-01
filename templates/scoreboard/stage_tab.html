@@ -134,7 +134,7 @@
                 {% endfor %}
 
                 <!-- Mountain Rows -->
-                {% for mountain_name in single_stage.mountains.keys() %}
+                {% for mountain_name, category in single_stage.mountains %}
                     {% set mountain_index = loop.index0 %}
                     <tr>
                         <td>{{ mountain_name }}</td>
