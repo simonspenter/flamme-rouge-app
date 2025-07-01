@@ -11,22 +11,36 @@ import uuid
 from datetime import datetime
 
 # Load Database URL on flask
-#from dotenv import load_dotenv
-#load_dotenv()
+from dotenv import load_dotenv
+
+if os.environ.get("FLASK_ENV") == "development":
+    from dotenv import load_dotenv
+    load_dotenv()
 
 
 app = Flask(__name__) 
 
+print("DEBUG ENV VARS:")
+for k, v in os.environ.items():
+    if "DATABASE" in k or "SQL" in k:
+        print(f"{k} = {v}")
 
 # Get database connection string from environment
-DATABASE_URL = DATABASE_URL = (
+DATABASE_URL = (
     os.environ.get('SQLCONNSTR_DATABASE_URL') or
     os.environ.get('ConnectionStrings:DATABASE_URL') or
     os.environ.get('DATABASE_URL')
 )
 
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is not set")
+
+print("USING DATABASE_URL:", DATABASE_URL)
+
 def get_db_connection():
     """Create and return a database connection"""
+    print("Connecting with:", DATABASE_URL)
+
     if not DATABASE_URL:
         raise ValueError("DATABASE_URL environment variable is not set")
     return pyodbc.connect(DATABASE_URL)
