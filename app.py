@@ -9,6 +9,7 @@ from races.race_info import sprint_categories, mountain_categories
 import pyodbc
 import uuid
 from datetime import datetime
+import time 
 
 # Load Database URL on flask
 if os.environ.get("FLASK_ENV") == "development":
@@ -41,13 +42,28 @@ if not DATABASE_URL:
 
 print("USING DATABASE_URL:", DATABASE_URL)
 
-def get_db_connection():
-    """Create and return a database connection"""
-    print("Connecting with:", DATABASE_URL)
-
+def get_db_connection(retries=3, delay=5):
+    """
+    Create and return a database connection with retry logic.
+    Will attempt to connect up to `retries` times with `delay` seconds in between.
+    """
     if not DATABASE_URL:
         raise ValueError("DATABASE_URL environment variable is not set")
-    return pyodbc.connect(DATABASE_URL)
+
+    for attempt in range(1, retries + 1):
+        try:
+            print(f"Connecting with: {DATABASE_URL} (attempt {attempt})")
+            return pyodbc.connect(DATABASE_URL)
+        except pyodbc.Error as e:
+            print(f"Database connection failed (attempt {attempt} of {retries}): {e}")
+            if attempt < retries:
+                print(f"Retrying in {delay} seconds...")
+                time.sleep(delay)
+            else:
+                print("All retry attempts failed.")
+                raise
+
+
 
 # Mapping for stage type icons
 stage_type_icons = {
