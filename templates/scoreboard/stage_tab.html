@@ -112,7 +112,7 @@
                 </tr>
 
                 <!-- Sprint Rows for Stage {{ stage }} -->
-                {% for sprint_name in single_stage.sprints.keys() %}
+                {% for sprint_name in single_stage.sprints %}
                     {% set sprint_index = loop.index0 %}
                     <tr>
                         <td>{{ sprint_name }}</td>
