@@ -30,6 +30,7 @@ for k, v in os.environ.items():
 
 # Get database connection string from environment
 DATABASE_URL = (
+    os.environ.get('SQLCONNSTR_SQLCONNSTR_DATABASE_URL') or
     os.environ.get('SQLCONNSTR_DATABASE_URL') or
     os.environ.get('ConnectionStrings:DATABASE_URL') or
     os.environ.get('DATABASE_URL')
