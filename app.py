@@ -160,7 +160,8 @@ def scoreboard():
     cursor = conn.cursor()
 
     # Fetch race info
-    cursor.execute("SELECT code, teams, assistant FROM races WHERE id = ?", race_id)
+    cursor.execute("SELECT code, teams, assistant FROM races WHERE id = ?", (race_id,))
+
     race_row = cursor.fetchone()
 
     if not race_row:
@@ -171,11 +172,12 @@ def scoreboard():
     # Fetch all stages for the race
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,
-               length_km, elevation_m, route, route_image, link
+            length_km, elevation_m, route, route_image, link
         FROM stages
         WHERE race_id = ?
         ORDER BY number
-    """, race_id)
+    """, (race_id,))
+
 
     stage_data = []
     for stage in cursor.fetchall():
