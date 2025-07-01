@@ -1,11 +1,11 @@
 <!-- Content for each stage tab -->
 {% for single_stage in stage_data %}
-    <div id="stage{{ stage_num }}" class="stageTabcontent">
+    <div id="stage{{ loop.index }}" class="stageTabcontent">
         
         <div class="stage-card">
             <div class="stage-header">
                 <div class="stage-date">{{ single_stage.date }}</div> <!-- Dynamic date -->
-                <div class="stage-title">STAGE {{ stage_num }}</div>
+                <div class="stage-title">STAGE {{ loop.index }}</div>
                 <div class="stage-location">
                     {{ single_stage.start }} <span class="arrow">›</span> {{ single_stage.end }}
                 </div>
@@ -100,8 +100,8 @@
                     {% for team in range(teams) %}
                         {% for rider in range(assistant) %}
                             <td>
-                                <select id="stage-classement-{{ stage_num }}-team-{{ team }}-rider-{{ rider }}"
-                                        onchange="handleClassementChange({{ stage_num }}, {{ team }}, {{ rider }}, this)">
+                                <select id="stage-classement-{{ loop.index }}-team-{{ team }}-rider-{{ rider }}"
+                                        onchange="handleClassementChange({{ loop.index }}, {{ team }}, {{ rider }}, this)">
                                     {% for value in range(21) %}
                                         <option value="{{ value }}">{{ value }}</option>
                                     {% endfor %}
@@ -119,9 +119,9 @@
                         {% for team in range(teams) %}
                             {% for rider in range(assistant) %}
                             <td>
-                                <select id="stage-sprint-{{ stage_num }}-sprint-{{ sprint_index }}-team-{{ team }}-rider-{{ rider }}"
+                                <select id="stage-sprint-{{ loop.index }}-sprint-{{ sprint_index }}-team-{{ team }}-rider-{{ rider }}"
                                     data-category="{{ single_stage.sprints[sprint_name] }}"
-                                    onchange="handleSprintChange({{ stage_num }}, {{ sprint_index }}, {{ team }}, {{ rider }}, this)">
+                                    onchange="handleSprintChange({{ loop.index }}, {{ sprint_index }}, {{ team }}, {{ rider }}, this)">
                                     <option value="">Select</option>
                                     {% for i in range(6) %}
                                         <option value="{{ i }}">{{ i }}</option>
@@ -141,9 +141,9 @@
                         {% for team in range(teams) %}
                             {% for rider in range(assistant) %}
                             <td>
-                                <select id="stage-mountain-{{ stage_num }}-mountain-{{ mountain_index }}-team-{{ team }}-rider-{{ rider }}"
+                                <select id="stage-mountain-{{ loop.index }}-mountain-{{ mountain_index }}-team-{{ team }}-rider-{{ rider }}"
                                     data-category="{{ single_stage.mountains[mountain_name] }}"
-                                    onchange="handleMountainChange({{ stage_num }}, {{ mountain_index }}, {{ team }}, {{ rider }}, this)">
+                                    onchange="handleMountainChange({{ loop.index }}, {{ mountain_index }}, {{ team }}, {{ rider }}, this)">
                                     <option value="">Select</option>
                                     {% for i in range(6) %}
                                         <option value="{{ i }}">{{ i }}</option>
