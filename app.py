@@ -11,6 +11,10 @@ import uuid
 from datetime import datetime
 import time 
 
+# Generating race_ids
+import random
+import string
+
 # Load Database URL on flask
 if os.environ.get("FLASK_ENV") == "development":
     from dotenv import load_dotenv
@@ -82,6 +86,17 @@ def index():
 def create_race():
     return render_template("create_race.html")
 
+def generate_short_race_id(length=6):
+    characters = string.ascii_uppercase + string.digits
+    return ''.join(random.choices(characters, k=length))
+
+def generate_unique_race_id(cursor, length=6):
+    while True:
+        race_id = generate_short_race_id(length)
+        cursor.execute("SELECT 1 FROM races WHERE id = ?", (race_id,))
+        if not cursor.fetchone():
+            return race_id
+
 @app.route("/create-race", methods=["POST"])
 def create_race_submit():
     code = request.form.get("race")          # e.g. 'tdf2023'
@@ -99,7 +114,7 @@ def create_race_in_db(code, teams, assistant):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    race_id = str(uuid.uuid4())
+    race_id = generate_unique_race_id(cursor)
     now = datetime.utcnow()
 
     # Insert the race
@@ -134,14 +149,12 @@ def create_race_in_db(code, teams, assistant):
 
         stage_id = cursor.fetchone()[0]
 
-        # Insert mountain segments
         for i, (name, cat) in enumerate(stage_dict.get("mountains", {}).items(), 1):
             cursor.execute("""
                 INSERT INTO segments (stage_id, name, type, category, order_in_stage)
                 VALUES (?, ?, 'mountain', ?, ?)
             """, (stage_id, name, cat, i))
 
-        # Insert sprint segments
         for i, (name, cat) in enumerate(stage_dict.get("sprints", {}).items(), 1):
             cursor.execute("""
                 INSERT INTO segments (stage_id, name, type, category, order_in_stage)
@@ -151,6 +164,7 @@ def create_race_in_db(code, teams, assistant):
     conn.commit()
     conn.close()
     return race_id
+
 
 @app.route("/scoreboard")
 def scoreboard():
