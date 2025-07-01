@@ -11,7 +11,10 @@ import uuid
 from datetime import datetime
 
 # Load Database URL on flask
-#from dotenv import load_dotenv
+if os.environ.get("FLASK_ENV") == "development":
+    from dotenv import load_dotenv
+    load_dotenv()
+
 
 if os.environ.get("FLASK_ENV") == "development":
     from dotenv import load_dotenv
