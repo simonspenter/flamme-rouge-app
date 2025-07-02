@@ -233,7 +233,7 @@ def scoreboard():
         'scoreboard.html',
         stages=len(stage_data),
         teams=teams,
-        assistant = assistant,
+        assistant = 3 if assistant == 3 else 2,
         stage_data=stage_data,
         mountain_categories=mountain_categories,
         sprint_categories=sprint_categories,
