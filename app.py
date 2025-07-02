@@ -15,8 +15,8 @@ import random
 import string
 
 # Always load .env in local dev
-from dotenv import load_dotenv
-load_dotenv()
+#from dotenv import load_dotenv
+#load_dotenv()
 
 # Debug print to confirm loading
 print("DEBUG ENV VARS:")
