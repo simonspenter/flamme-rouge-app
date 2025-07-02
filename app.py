@@ -7,7 +7,6 @@ from races.race_info import sprint_categories, mountain_categories
 
 # Database related
 import pyodbc
-import uuid
 from datetime import datetime
 import time 
 
@@ -15,15 +14,16 @@ import time
 import random
 import string
 
-# Load Database URL on flask
-if os.environ.get("FLASK_ENV") == "development":
-    from dotenv import load_dotenv
-    load_dotenv()
+# Always load .env in local dev
+from dotenv import load_dotenv
+load_dotenv()
 
+# Debug print to confirm loading
+print("DEBUG ENV VARS:")
+for k, v in os.environ.items():
+    if "DATABASE" in k or "SQL" in k:
+        print(f"{k} = {v}")
 
-if os.environ.get("FLASK_ENV") == "development":
-    from dotenv import load_dotenv
-    load_dotenv()
 
 
 app = Flask(__name__) 
