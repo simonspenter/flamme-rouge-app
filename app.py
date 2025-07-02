@@ -101,7 +101,7 @@ def generate_unique_race_id(cursor, length=6):
 def create_race_submit():
     code = request.form.get("race")          # e.g. 'tdf2023'
     teams = int(request.form.get("teams"))
-    assistant = request.form.get("assistant") == "on"
+    assistant = int(request.form.get("assistant"))
 
     if code not in races_info:
         return "Invalid race template selected.", 400
