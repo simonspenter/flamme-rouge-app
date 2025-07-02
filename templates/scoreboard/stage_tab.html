@@ -100,8 +100,8 @@
                     {% for team in range(teams) %}
                         {% for rider in range(assistant) %}
                             <td>
-                                <select id="stage-classement-{{ stage.number }}-team-{{ team }}-rider-{{ rider }}"
-                                        onchange="handleClassementChange({{ stage.number }}, {{ team }}, {{ rider }}, this)">
+                                <select id="stage-classement-{{ single_stage.number }}-team-{{ team }}-rider-{{ rider }}"
+                                        onchange="handleClassementChange({{ single_stage.number }}, {{ team }}, {{ rider }}, this)">
                                     {% for value in range(21) %}
                                         <option value="{{ value }}">{{ value }}</option>
                                     {% endfor %}
@@ -112,16 +112,16 @@
                 </tr>
 
                 <!-- Sprint Rows for Stage -->
-                {% for sprint_name, category in stage.sprints %}
+                {% for sprint_name, category in single_stage.sprints %}
                     {% set sprint_index = loop.index0 %}
                     <tr>
                         <td>{{ sprint_name }}</td>
                         {% for team in range(teams) %}
                             {% for rider in range(assistant) %}
                             <td>
-                                <select id="stage-sprint-{{ stage.number }}-sprint-{{ sprint_index }}-team-{{ team }}-rider-{{ rider }}"
+                                <select id="stage-sprint-{{ single_stage.number }}-sprint-{{ sprint_index }}-team-{{ team }}-rider-{{ rider }}"
                                         data-category="{{ category }}"
-                                        onchange="handleSprintChange({{ stage.number }}, {{ sprint_index }}, {{ team }}, {{ rider }}, this)">
+                                        onchange="handleSprintChange({{ single_stage.number }}, {{ sprint_index }}, {{ team }}, {{ rider }}, this)">
                                     <option value="">Select</option>
                                     {% for i in range(6) %}
                                         <option value="{{ i }}">{{ i }}</option>
@@ -134,16 +134,16 @@
                 {% endfor %}
 
                 <!-- Mountain Rows -->
-                {% for mountain_name, category in stage.mountains %}
+                {% for mountain_name, category in single_stage.mountains %}
                     {% set mountain_index = loop.index0 %}
                     <tr>
                         <td>{{ mountain_name }}</td>
                         {% for team in range(teams) %}
                             {% for rider in range(assistant) %}
                             <td>
-                                <select id="stage-mountain-{{ stage.number }}-mountain-{{ mountain_index }}-team-{{ team }}-rider-{{ rider }}"
+                                <select id="stage-mountain-{{ single_stage.number }}-mountain-{{ mountain_index }}-team-{{ team }}-rider-{{ rider }}"
                                         data-category="{{ category }}"
-                                        onchange="handleMountainChange({{ stage.number }}, {{ mountain_index }}, {{ team }}, {{ rider }}, this)">
+                                        onchange="handleMountainChange({{ single_stage.number }}, {{ mountain_index }}, {{ team }}, {{ rider }}, this)">
                                     <option value="">Select</option>
                                     {% for i in range(6) %}
                                         <option value="{{ i }}">{{ i }}</option>
