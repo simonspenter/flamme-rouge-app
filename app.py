@@ -150,9 +150,9 @@ def scoreboard():
         SELECT id, number, name, start_location, end_location, type,
             length_km, elevation_m, route, route_image, link
         FROM stages
-        WHERE race_id = ?
+        WHERE race_code = ?
         ORDER BY number
-    """, (race_id,))
+    """, (code,))
 
 
     stage_data = []

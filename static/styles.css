@@ -410,3 +410,9 @@ button.selected {
 .btn-create:hover {
     background-color: #c40000;
 }
+
+.team-input {
+    margin: 5px 0;
+    padding: 5px;
+    width: 200px;
+}
