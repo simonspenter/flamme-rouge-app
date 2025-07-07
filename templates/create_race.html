@@ -19,6 +19,13 @@
         <button type="button" onclick="setInputValue('teams', '{{ team }}')" id="teams{{ team }}" class="select-button">{{ team }}</button>
         {% endfor %}
         <input type="hidden" id="teamsInput" name="teams">
+
+        <div id="customize-btn-wrapper" style="display:none;">
+            <button type="button" id="customize-teams-btn" class="select-button">Customize team names</button>
+        </div>
+
+        <div id="team-names-container" class="form-section"></div>
+
     </fieldset>
 
     <fieldset class="form-section">
@@ -28,11 +35,7 @@
         <input type="hidden" id="assistantInput" name="assistant">
     </fieldset>
 
-    <div id="customize-btn-wrapper" style="display:none;">
-        <button type="button" id="customize-teams-btn" class="select-button">Customize team names</button>
-    </div>
 
-    <div id="team-names-container" class="form-section"></div>
 
 
 
