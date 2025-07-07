@@ -111,45 +111,23 @@
                     {% endfor %}
                 </tr>
 
-                <!-- Sprint Rows for Stage -->
-                {% for sprint_name, category in single_stage.sprints %}
-                    {% set sprint_index = loop.index0 %}
+                <!-- Segment Rows for Stage -->
+                {% for segment_name, segment_info in single_stage.segments.items() %}
+                    {% set segment_index = loop.index0 %}
                     <tr>
-                        <td>{{ sprint_name }}</td>
+                        <td>{{ segment_name }}</td>
                         {% for team in range(teams) %}
                             {% for rider in range(assistant) %}
-                            <td>
-                                <select id="stage-sprint-{{ single_stage.number }}-sprint-{{ sprint_index }}-team-{{ team }}-rider-{{ rider }}"
-                                        data-category="{{ category }}"
-                                        onchange="handleSprintChange({{ single_stage.number }}, {{ sprint_index }}, {{ team }}, {{ rider }}, this)">
-                                    <option value="">Select</option>
-                                    {% for i in range(6) %}
-                                        <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            {% endfor %}
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-
-                <!-- Mountain Rows -->
-                {% for mountain_name, category in single_stage.mountains %}
-                    {% set mountain_index = loop.index0 %}
-                    <tr>
-                        <td>{{ mountain_name }}</td>
-                        {% for team in range(teams) %}
-                            {% for rider in range(assistant) %}
-                            <td>
-                                <select id="stage-mountain-{{ single_stage.number }}-mountain-{{ mountain_index }}-team-{{ team }}-rider-{{ rider }}"
-                                        data-category="{{ category }}"
-                                        onchange="handleMountainChange({{ single_stage.number }}, {{ mountain_index }}, {{ team }}, {{ rider }}, this)">
-                                    <option value="">Select</option>
-                                    {% for i in range(6) %}
-                                        <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
+                                <td>
+                                    <select id="stage-segment-{{ single_stage.number }}-segment-{{ segment_index }}-team-{{ team }}-rider-{{ rider }}"
+                                            data-category="{{ segment_info.category }}"
+                                            onchange="handleSegmentChange({{ single_stage.number }}, {{ segment_index }}, {{ team }}, {{ rider }}, this)">
+                                        <option value="">Select</option>
+                                        {% for i in range(6) %}
+                                            <option value="{{ i }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
                             {% endfor %}
                         {% endfor %}
                     </tr>
@@ -238,54 +216,22 @@
         } 
 
 
-        function handleSprintChange(stage, sprintIndex, team, rider, selectElement) {
-            // Recalculate the total for this rider across all sprints for this stage
-            let total = 0;
-
-            // Loop over all possible sprint indexes for this stage
-            let sprintCount = document.querySelectorAll(
-                `[id^=stage-sprint-${stage}-sprint-][id$=-team-${team}-rider-${rider}]`
-            ).length;
-
-            for (let i = 0; i < sprintCount; i++) {
-                const selectId = `stage-sprint-${stage}-sprint-${i}-team-${team}-rider-${rider}`;
-                const select = document.getElementById(selectId);
-                if (select) {
-                    const place = parseInt(select.value);
-                        const category = select.dataset.category;
-
-                        if (!isNaN(place) && category && sprintCategories[category]) {
-                            const points = sprintCategories[category][place] || 0;
-                            total += points;
-                        }
-                }
-            }
-
-            // Update the corresponding scoreboard cell
-            const scoreboardId = `sprint-stage-${stage}-team-${team + 1}-rider-${rider + 1}`;
-            const cell = document.getElementById(scoreboardId);
-            if (cell) {
-                cell.innerText = total;
-            }
-
-            // Recalculate totals
-            updateSprintTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
-        }
-        
-
-        function updateSprintTotals(stages, teams, assistant) {
+        function updateSegmentTotals(stages, teams, assistant) {
+            // Loop over all stages, teams, and riders to calculate totals
             for (let team = 1; team <= teams; team++) {
                 for (let rider = 1; rider <= assistant; rider++) {
                     let total = 0;
 
                     for (let stage = 1; stage <= stages; stage++) {
-                        const cellId = `sprint-stage-${stage}-team-${team}-rider-${rider}`;
+                        // For each stage, calculate the total score for the rider/team
+                        const cellId = `segment-stage-${stage}-team-${team}-rider-${rider}`;
                         const cell = document.getElementById(cellId);
                         const value = parseInt(cell?.innerText || "0");
                         total += isNaN(value) ? 0 : value;
                     }
 
-                    const totalCellId = `sprint-total-team-${team}-rider-${rider}`;
+                    // Update the total cell for this rider/team in the scoreboard
+                    const totalCellId = `segment-total-team-${team}-rider-${rider}`;
                     const totalCell = document.getElementById(totalCellId);
                     if (totalCell) {
                         totalCell.innerText = total;
@@ -295,67 +241,48 @@
         }
 
 
-        
-
-        // Functions for handling Mountain data
-        function handleMountainChange(stage, mountainIndex, team, rider, selectElement) {
-            // Recalculate the total for this rider across all mountains for this stage
+        // This function will handle the changes to the segment and recalculate the total
+        function handleSegmentChange(stage, segmentIndex, team, rider, selectElement) {
             let total = 0;
 
-            // Count how many mountain selects exist for this rider in this stage
-            let mountainCount = document.querySelectorAll(
-                `[id^=stage-mountain-${stage}-mountain-][id$=-team-${team}-rider-${rider}]`
+            // Loop over all possible segment indexes for this stage
+            let segmentCount = document.querySelectorAll(
+                `[id^=stage-segment-${stage}-segment-][id$=-team-${team}-rider-${rider}]`
             ).length;
 
-            for (let i = 0; i < mountainCount; i++) {
-                const selectId = `stage-mountain-${stage}-mountain-${i}-team-${team}-rider-${rider}`;
+            for (let i = 0; i < segmentCount; i++) {
+                const selectId = `stage-segment-${stage}-segment-${i}-team-${team}-rider-${rider}`;
                 const select = document.getElementById(selectId);
                 if (select) {
                     const place = parseInt(select.value);
                     const category = select.dataset.category;
 
-                    if (!isNaN(place) && category && mountainCategories[category]?.points) {
-                        const points = mountainCategories[category].points[place] || 0;
+                    if (!isNaN(place) && category) {
+                        let points = 0;
+
+                        // Determine points based on category (sprint or mountain)
+                        if (category === 'sprint' && sprintPoints[category]) {
+                            points = sprintPoints[category][place] || 0;
+                        } else if (category === 'mountain' && mountainPoints[category]) {
+                            points = mountainPoints[category][place] || 0;
+                        }
+
                         total += points;
                     }
                 }
             }
 
             // Update the corresponding scoreboard cell
-            const scoreboardId = `mountain-stage-${stage}-team-${team + 1}-rider-${rider + 1}`;
+            const scoreboardId = `segment-stage-${stage}-team-${team + 1}-rider-${rider + 1}`;
             const cell = document.getElementById(scoreboardId);
             if (cell) {
                 cell.innerText = total;
             }
 
-            // Recalculate mountain totals
-            updateMountainTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
+            // Recalculate totals
+            updateSegmentTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
         }
-
-
-
-        function updateMountainTotals(stages, teams, assistant) {
-            for (let team = 1; team <= teams; team++) {
-                for (let rider = 1; rider <= assistant; rider++) {
-                    let total = 0;
-
-                    for (let stage = 1; stage <= stages; stage++) {
-                        const cellId = `mountain-stage-${stage}-team-${team}-rider-${rider}`;
-                        const cell = document.getElementById(cellId);
-                        const value = parseInt(cell?.innerText || "0");
-                        total += isNaN(value) ? 0 : value;
-                    }
-
-                    const totalCellId = `mountain-total-team-${team}-rider-${rider}`;
-                    const totalCell = document.getElementById(totalCellId);
-                    if (totalCell) {
-                        totalCell.innerText = total;
-                    }
-                }
-            }
-        }
-
-
+         
     </script>
 
 {% endfor %}
