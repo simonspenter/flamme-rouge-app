@@ -73,7 +73,7 @@ tdf2023_stage4 = {
         {"name": "Sarrancolin (S)", "type": "sprint", "category": "S", "order": 2},
         {"name": "Col d'Aspin (M)", "type": "mountain", "category": "cat1", "order": 3},
         {"name": "Sainte-Marie-de-Campan (S)", "type": "sprint", "category": "S", "order": 4},
-        {"name": "Col du Tourmalet (M)", "type": "mountain", "category": "HC", "order": 5,}
+        {"name": "Col du Tourmalet (M)", "type": "mountain", "category": "HC", "order": 5,},
         {"name": "Cauterets-Cambasque (M)", "type": "mountain", "category": "cat1", "order": 6},
         {"name": "Cauterets-Cambasque (S)", "type": "sprint", "category": "MF", "order": 7}
     ],
