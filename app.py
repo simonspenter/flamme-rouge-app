@@ -123,44 +123,6 @@ def create_race_in_db(code, teams, assistant):
         VALUES (?, ?, ?, ?, ?)
     """, (race_id, code, teams, assistant, now))
 
-    stage_data = races_info[code]
-
-    for stage_num, stage_dict in stage_data.items():
-        cursor.execute("""
-            INSERT INTO stages (
-                race_id, number, name, start_location, end_location, type,
-                length_km, elevation_m, route, route_image, link
-            )
-            OUTPUT INSERTED.id
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            race_id,
-            stage_num,
-            stage_dict.get("name"),
-            stage_dict.get("start"),
-            stage_dict.get("end"),
-            stage_dict.get("type"),
-            stage_dict.get("length_km"),
-            stage_dict.get("elevation_m"),
-            stage_dict.get("route"),
-            stage_dict.get("route_image"),
-            stage_dict.get("link")
-        ))
-
-        stage_id = cursor.fetchone()[0]
-
-        for i, (name, cat) in enumerate(stage_dict.get("mountains", {}).items(), 1):
-            cursor.execute("""
-                INSERT INTO segments (stage_id, name, type, category, order_in_stage)
-                VALUES (?, ?, 'mountain', ?, ?)
-            """, (stage_id, name, cat, i))
-
-        for i, (name, cat) in enumerate(stage_dict.get("sprints", {}).items(), 1):
-            cursor.execute("""
-                INSERT INTO segments (stage_id, name, type, category, order_in_stage)
-                VALUES (?, ?, 'sprint', ?, ?)
-            """, (stage_id, name, cat, i))
-
     conn.commit()
     conn.close()
     return race_id
