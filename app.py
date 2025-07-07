@@ -238,7 +238,7 @@ def update_segment_result():
     cursor.execute("""
         SELECT id FROM segments
         WHERE stage_id = ? AND type = ? AND order_in_stage = ?
-    """, (stage_id, segment_type, segment_index + 1))
+    """, (stage_id, segment_type, segment_index + 1))  # `segment_index + 1` to match the order
     segment_row = cursor.fetchone()
     if not segment_row:
         conn.close()
@@ -261,6 +261,7 @@ def update_segment_result():
     conn.close()
 
     return jsonify({"status": "success"}), 200
+
 
 
 # Test route to verify database connection
