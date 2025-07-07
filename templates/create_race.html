@@ -28,6 +28,12 @@
         <input type="hidden" id="assistantInput" name="assistant">
     </fieldset>
 
+    <div id="customize-btn-wrapper" style="display:none;">
+        <button type="button" id="customize-teams-btn" class="select-button">Customize team names</button>
+    </div>
+
+    <div id="team-names-container" class="form-section"></div>
+
 
 
     <br>
@@ -54,6 +60,51 @@
             document.getElementById('inputForm').submit();
         }
     </script>
+
+    <script>
+        const teamsInput = document.getElementById('teamsInput');
+        const customizeBtnWrapper = document.getElementById('customize-btn-wrapper');
+        const customizeBtn = document.getElementById('customize-teams-btn');
+        const teamNamesContainer = document.getElementById('team-names-container');
+
+        function updateCustomizeButtonVisibility() {
+            const teamCount = parseInt(teamsInput.value);
+            if (!isNaN(teamCount) && teamCount > 1) {
+                customizeBtnWrapper.style.display = 'block';
+            } else {
+                customizeBtnWrapper.style.display = 'none';
+                teamNamesContainer.innerHTML = '';
+            }
+        }
+
+        // Trigger on selection of team number
+        document.querySelectorAll('[id^="teams"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setTimeout(updateCustomizeButtonVisibility, 100); // slight delay to ensure teamsInput updated
+            });
+        });
+
+        customizeBtn.addEventListener('click', () => {
+            const teamCount = parseInt(teamsInput.value);
+            if (isNaN(teamCount)) return;
+
+            teamNamesContainer.innerHTML = "<legend>Team names:</legend>";
+
+            for (let i = 1; i <= teamCount; i++) {
+                const label = document.createElement('label');
+                label.textContent = `Team ${i}: `;
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = `team_name_${i}`;
+                input.placeholder = `Team ${i} name`;
+                input.classList.add('team-input');
+                teamNamesContainer.appendChild(label);
+                teamNamesContainer.appendChild(input);
+                teamNamesContainer.appendChild(document.createElement('br'));
+            }
+        });
+    </script>
+
 </form>
 
 
