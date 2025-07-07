@@ -169,8 +169,7 @@ def scoreboard():
             "route": stage[8],
             "route_image": stage[9],
             "link": stage[10],
-            "sprints": [],
-            "mountains": []
+            "segments": []  # Create a unified segments list
         }
 
         # Fetch segments for this stage
@@ -178,14 +177,19 @@ def scoreboard():
             SELECT name, type, category, order_in_stage
             FROM segments
             WHERE stage_id = ?
-            ORDER BY type, order_in_stage
+            ORDER BY order_in_stage
         """, stage[0])
 
-        for name, seg_type, cat, _ in cursor.fetchall():
-            if seg_type == "mountain":
-                stage_dict["mountains"].append((name, cat))
-            else:
-                stage_dict["sprints"].append((name, cat))
+        for name, seg_type, cat, order in cursor.fetchall():
+            stage_dict["segments"].append({
+                "name": name,
+                "type": seg_type,
+                "category": cat,
+                "order": order
+            })
+
+        # Sort segments by the 'order' field
+        stage_dict["segments"].sort(key=lambda x: x["order"])
 
         stage_data.append(stage_dict)
 
