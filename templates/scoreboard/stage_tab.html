@@ -115,7 +115,7 @@
                 {% for segment in single_stage.segments %}
                     <tr>
                         <!-- Display the segment name and type -->
-                        <td>{{ segment["name"] }} ({{ segment["type"] | upper }})</td>
+                        <td>{{ segment["name"] }}</td>
                         
                         {% for team in range(teams) %}
                             {% for rider in range(assistant) %}
@@ -242,46 +242,43 @@
             }
         }
 
-
-        // This function will handle the changes to the segment and recalculate the total
+        
         function handleSegmentChange(stage, segmentIndex, team, rider, selectElement) {
             let total = 0;
 
-            // Loop over all possible segment indexes for this stage
-            let segmentCount = document.querySelectorAll(
-                `[id^=stage-segment-${stage}-segment-][id$=-team-${team}-rider-${rider}]`
-            ).length;
-
-            for (let i = 0; i < segmentCount; i++) {
-                const selectId = `stage-segment-${stage}-segment-${i}-team-${team}-rider-${rider}`;
-                const select = document.getElementById(selectId);
-                if (select) {
-                    const place = parseInt(select.value);
-                    const category = select.dataset.category;
-
-                    if (!isNaN(place) && category) {
-                        let points = 0;
-
-                        // Determine points based on category (sprint or mountain)
-                        if (category === 'sprint' && sprintPoints[category]) {
-                            points = sprintPoints[category][place] || 0;
-                        } else if (category === 'mountain' && mountainPoints[category]) {
-                            points = mountainPoints[category][place] || 0;
-                        }
-
-                        total += points;
-                    }
+            const position = parseInt(selectElement.value) || 0;
+            const segmentType = selectElement.dataset.category.toLowerCase();  // 'sprint' or 'mountain'
+            
+            // Send the data to the server via AJAX
+            fetch('/update-segment-result', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    stage_number: stage,
+                    segment_index: segmentIndex,
+                    type: segmentType,
+                    category: selectElement.dataset.category,
+                    team: team + 1,  // 1-based index for teams
+                    rider: rider + 1,  // 1-based index for riders
+                    position: position
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Handle success, maybe update a part of the UI
+                    console.log('Segment data updated successfully!');
+                } else {
+                    console.error('Error updating segment data:', data);
                 }
-            }
+            })
+            .catch(error => {
+                console.error('Error sending segment data:', error);
+            });
 
-            // Update the corresponding scoreboard cell
-            const scoreboardId = `segment-stage-${stage}-team-${team + 1}-rider-${rider + 1}`;
-            const cell = document.getElementById(scoreboardId);
-            if (cell) {
-                cell.innerText = total;
-            }
-
-            // Recalculate totals
+            // Optionally, update the segment scores immediately on the client side if needed
             updateSegmentTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
         }
          
