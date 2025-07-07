@@ -238,38 +238,10 @@
         } 
 
 
-        function handleSprintChange(stage, sprintIndex, team, rider, selectElement) {
-            // Recalculate the total for this rider across all sprints for this stage
-            let total = 0;
-
-            // Loop over all possible sprint indexes for this stage
-            let sprintCount = document.querySelectorAll(
-                `[id^=stage-sprint-${stage}-sprint-][id$=-team-${team}-rider-${rider}]`
-            ).length;
-
-            for (let i = 0; i < sprintCount; i++) {
-                const selectId = `stage-sprint-${stage}-sprint-${i}-team-${team}-rider-${rider}`;
-                const select = document.getElementById(selectId);
-                if (select) {
-                    const place = parseInt(select.value);
-                        const category = select.dataset.category;
-
-                        if (!isNaN(place) && category && sprintCategories[category]) {
-                            const points = sprintCategories[category][place] || 0;
-                            total += points;
-                        }
-                }
-            }
-
-            // Update the corresponding scoreboard cell
-            const scoreboardId = `sprint-stage-${stage}-team-${team + 1}-rider-${rider + 1}`;
-            const cell = document.getElementById(scoreboardId);
-            if (cell) {
-                cell.innerText = total;
-            }
-
-            // Recalculate totals
-            updateSprintTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
+        function handleSprintChange(stageNumber, sprintIndex, team, rider, selectElement) {
+            const category = selectElement.dataset.category;
+            const position = selectElement.value;
+            sendSegmentResult(stageNumber, sprintIndex, 'sprint', category, team, rider, position);
         }
         
 
@@ -295,42 +267,11 @@
         }
 
 
-
-        // Functions for handling Mountain data
-        function handleMountainChange(stage, mountainIndex, team, rider, selectElement) {
-            // Recalculate the total for this rider across all mountains for this stage
-            let total = 0;
-
-            // Count how many mountain selects exist for this rider in this stage
-            let mountainCount = document.querySelectorAll(
-                `[id^=stage-mountain-${stage}-mountain-][id$=-team-${team}-rider-${rider}]`
-            ).length;
-
-            for (let i = 0; i < mountainCount; i++) {
-                const selectId = `stage-mountain-${stage}-mountain-${i}-team-${team}-rider-${rider}`;
-                const select = document.getElementById(selectId);
-                if (select) {
-                    const place = parseInt(select.value);
-                    const category = select.dataset.category;
-
-                    if (!isNaN(place) && category && mountainCategories[category]?.points) {
-                        const points = mountainCategories[category].points[place] || 0;
-                        total += points;
-                    }
-                }
-            }
-
-            // Update the corresponding scoreboard cell
-            const scoreboardId = `mountain-stage-${stage}-team-${team + 1}-rider-${rider + 1}`;
-            const cell = document.getElementById(scoreboardId);
-            if (cell) {
-                cell.innerText = total;
-            }
-
-            // Recalculate mountain totals
-            updateMountainTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
+        function handleMountainChange(stageNumber, mountainIndex, team, rider, selectElement) {
+            const category = selectElement.dataset.category;
+            const position = selectElement.value;
+            sendSegmentResult(stageNumber, mountainIndex, 'mountain', category, team, rider, position);
         }
-
 
 
         function updateMountainTotals(stages, teams, assistant) {
@@ -352,6 +293,28 @@
                     }
                 }
             }
+        }
+
+        function sendSegmentResult(stageNumber, segmentIndex, type, category, team, rider, position) {
+            fetch('/update-segment-result', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    stage_number: stageNumber,
+                    segment_index: segmentIndex,
+                    type: type, // 'sprint' or 'mountain'
+                    category: category,
+                    team: team,
+                    rider: rider,
+                    position: position
+                })
+            }).then(response => {
+                if (!response.ok) {
+                    console.error('Failed to store segment result');
+                }
+            });
         }
 
 

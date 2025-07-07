@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import os
 
 # Race mapping
@@ -201,6 +201,63 @@ def scoreboard():
         sprint_categories=sprint_categories,
         stage_type_icons=stage_type_icons
     )
+
+@app.route('/update-segment-result', methods=['POST'])
+def update_segment_result():
+    data = request.get_json()
+
+    stage_number = data['stage_number']
+    segment_index = data['segment_index']
+    segment_type = data['type']  # 'sprint' or 'mountain'
+    category = data['category']
+    team = data['team']
+    rider = data['rider']
+    position = data['position']
+    race_id = request.args.get("race")  # You might pass this another way if needed
+
+    # Look up stage_id based on race_code and stage_number
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id FROM stages
+        WHERE race_code = (SELECT code FROM races WHERE id = ?) AND number = ?
+    """, (race_id, stage_number))
+    stage_row = cursor.fetchone()
+    if not stage_row:
+        conn.close()
+        return jsonify({"error": "Stage not found"}), 404
+
+    stage_id = stage_row[0]
+
+    # Look up segment_id based on order, type, and stage_id
+    cursor.execute("""
+        SELECT id FROM segments
+        WHERE stage_id = ? AND type = ? AND order_in_stage = ?
+    """, (stage_id, segment_type, segment_index + 1))
+    segment_row = cursor.fetchone()
+    if not segment_row:
+        conn.close()
+        return jsonify({"error": "Segment not found"}), 404
+
+    segment_id = segment_row[0]
+
+    # Insert or update result
+    cursor.execute("""
+        MERGE segment_results AS target
+        USING (SELECT ? AS segment_id, ? AS team, ? AS rider) AS source
+        ON target.segment_id = source.segment_id AND target.team = source.team AND target.rider = source.rider
+        WHEN MATCHED THEN
+            UPDATE SET position = ?
+        WHEN NOT MATCHED THEN
+            INSERT (segment_id, team, rider, position) VALUES (?, ?, ?, ?);
+    """, (segment_id, team, rider, position, position, segment_id, team, rider, position))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"status": "success"}), 200
+
 
 # Test route to verify database connection
 @app.route("/test-db")
