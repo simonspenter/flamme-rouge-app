@@ -25,7 +25,6 @@
         </div>
 
         <div id="team-names-container" class="form-section"></div>
-
     </fieldset>
 
     <fieldset class="form-section">
@@ -35,9 +34,11 @@
         <input type="hidden" id="assistantInput" name="assistant">
     </fieldset>
 
-
-
-
+    <!-- Button and input fields for rider names -->
+    <div id="rider-names-wrapper" style="display:none;">
+        <button type="button" id="customize-riders-btn" class="select-button">Assign rider names</button>
+        <div id="rider-names-container" class="form-section"></div>
+    </div>
 
     <br>
     <button type="button" onclick="submitForm()" class="submit-button">Submit</button>
@@ -69,6 +70,9 @@
         const customizeBtnWrapper = document.getElementById('customize-btn-wrapper');
         const customizeBtn = document.getElementById('customize-teams-btn');
         const teamNamesContainer = document.getElementById('team-names-container');
+        const riderNamesWrapper = document.getElementById('rider-names-wrapper');
+        const customizeRidersBtn = document.getElementById('customize-riders-btn');
+        const riderNamesContainer = document.getElementById('rider-names-container');
 
         function updateCustomizeButtonVisibility() {
             const teamCount = parseInt(teamsInput.value);
@@ -106,13 +110,36 @@
                 teamNamesContainer.appendChild(document.createElement('br'));
             }
         });
+
+        // Trigger when assistant number is selected
+        document.querySelectorAll('[id^="assistant"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                riderNamesWrapper.style.display = 'block'; // Show the button to assign rider names
+            });
+        });
+
+        customizeRidersBtn.addEventListener('click', () => {
+            const assistantCount = parseInt(document.getElementById('assistantInput').value);
+            if (isNaN(assistantCount)) return;
+
+            riderNamesContainer.innerHTML = "<legend>Rider names:</legend>";
+
+            for (let i = 1; i <= assistantCount; i++) {
+                for (let j = 1; j <= 2; j++) {
+                    const label = document.createElement('label');
+                    label.textContent = `Rider ${j} (Team ${i}): `;
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.name = `rider_name_team_${i}_rider_${j}`;
+                    input.placeholder = `Rider ${j} name (Team ${i})`;
+                    input.classList.add('rider-input');
+                    riderNamesContainer.appendChild(label);
+                    riderNamesContainer.appendChild(input);
+                    riderNamesContainer.appendChild(document.createElement('br'));
+                }
+            }
+        });
     </script>
 
 </form>
-
-
-
-
 {% endblock %}
-
-
