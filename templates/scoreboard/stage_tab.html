@@ -112,14 +112,16 @@
                 </tr>
 
                 <!-- Segment Rows for Stage -->
-                {% for segment in single_stage.sprints %}
+                {% for segment in single_stage.segments %}
                     <tr>
-                        <td>{{ segment[0] }} (S)</td>
+                        <!-- Display the segment name and type -->
+                        <td>{{ segment["name"] }} ({{ segment["type"] | upper }})</td>
+                        
                         {% for team in range(teams) %}
                             {% for rider in range(assistant) %}
                                 <td>
-                                    <select id="stage-segment-{{ single_stage.number }}-sprint-{{ loop.index0 }}-team-{{ team }}-rider-{{ rider }}"
-                                            data-category="S"
+                                    <select id="stage-segment-{{ single_stage.number }}-{{ segment['type'] }}-{{ loop.index0 }}-team-{{ team }}-rider-{{ rider }}"
+                                            data-category="{{ segment['type'][0] | upper }}"  <!-- Only 'S' for Sprint or 'M' for Mountain -->
                                             onchange="handleSegmentChange({{ single_stage.number }}, {{ loop.index0 }}, {{ team }}, {{ rider }}, this)">
                                         <option value="">Select</option>
                                         {% for i in range(6) %}
@@ -131,29 +133,9 @@
                         {% endfor %}
                     </tr>
                 {% endfor %}
-
-                {% for segment in single_stage.mountains %}
-                    <tr>
-                        <td>{{ segment[0] }} (M)</td>
-                        {% for team in range(teams) %}
-                            {% for rider in range(assistant) %}
-                                <td>
-                                    <select id="stage-segment-{{ single_stage.number }}-mountain-{{ loop.index0 }}-team-{{ team }}-rider-{{ rider }}"
-                                            data-category="M"
-                                            onchange="handleSegmentChange({{ single_stage.number }}, {{ loop.index0 }}, {{ team }}, {{ rider }}, this)">
-                                        <option value="">Select</option>
-                                        {% for i in range(6) %}
-                                            <option value="{{ i }}">{{ i }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                            {% endfor %}
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-
 
             </tbody>
+
         </table>
     </div>
 
