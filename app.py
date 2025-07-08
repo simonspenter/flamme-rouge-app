@@ -97,6 +97,7 @@ def generate_unique_race_id(cursor, length=6):
         if not cursor.fetchone():
             return race_id
 
+
 @app.route("/create-race", methods=["POST"])
 def create_race_submit():
     code = request.form.get("race")          # e.g. 'tdf2023'
@@ -107,6 +108,23 @@ def create_race_submit():
         return "Invalid race template selected.", 400
 
     race_id = create_race_in_db(code, teams, assistant)
+
+    # Now, handle the creation of teams
+    team_ids = []  # Store team_ids for later use when creating riders
+    for team_number in range(1, teams + 1):
+        team_name = request.form.get(f"team_name_{team_number}")
+        
+        # Insert the team into the teams table
+        team_id = create_team_in_db(race_id, team_number, team_name)
+        team_ids.append(team_id)
+
+        # Now handle the creation of riders for each team
+        for rider_number in range(1, assistant + 1):
+            rider_name = request.form.get(f"rider_name_team{team_number}_rider{rider_number}")
+            
+            # Insert the rider into the riders table
+            create_rider_in_db(race_id, team_id, rider_number, rider_name)
+
     return redirect(url_for("scoreboard", race=race_id))
 
 
@@ -126,6 +144,35 @@ def create_race_in_db(code, teams, assistant):
     conn.commit()
     conn.close()
     return race_id
+
+
+def create_team_in_db(race_id, team_number, team_name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        INSERT INTO teams (race_id, team_number, team_name)
+        VALUES (?, ?, ?)
+    """, (race_id, team_number, team_name))
+    
+    conn.commit()
+    team_id = cursor.lastrowid  # Get the last inserted team's id
+    conn.close()
+    
+    return team_id
+
+
+def create_rider_in_db(race_id, team_id, rider_number, rider_name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        INSERT INTO riders (race_id, team_id, rider_name, rider_number)
+        VALUES (?, ?, ?, ?)
+    """, (race_id, team_id, rider_name, rider_number))
+    
+    conn.commit()
+    conn.close()
 
 
 @app.route("/scoreboard")
