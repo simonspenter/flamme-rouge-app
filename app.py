@@ -104,36 +104,33 @@ def create_race_submit():
     teams = int(request.form.get("teams"))
     assistant = int(request.form.get("assistant"))
 
+    # Debug: Check what data has been received
+    print(f"Received race: {code}, teams: {teams}, assistant: {assistant}")
+
     if code not in races_info:
         return "Invalid race template selected.", 400
 
     race_id = create_race_in_db(code, teams, assistant)
 
-    # Now, handle the creation of teams
-    team_ids = []  # Store team_ids for later use when creating riders
-    for team_number in range(1, teams + 1):
-        team_name = request.form.get(f"team_name_{team_number}")
-        
-        # Insert the team into the teams table
-        team_id = create_team_in_db(race_id, team_number, team_name)
-        team_ids.append(team_id)
-
-        # Now handle the creation of riders for each team
-        for rider_number in range(1, assistant + 1):
-            rider_name = request.form.get(f"rider_name_team{team_number}_rider{rider_number}")
-            
-            # Insert the rider into the riders table
-            create_rider_in_db(race_id, team_id, rider_number, rider_name)
+    # Debug: Check the race_id after creation
+    print(f"Created race with ID: {race_id}")
 
     return redirect(url_for("scoreboard", race=race_id))
+
 
 
 def create_race_in_db(code, teams, assistant):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Debug: Print the code and other parameters before insertion
+    print(f"Creating race with code: {code}, teams: {teams}, assistant: {assistant}")
+
     race_id = generate_unique_race_id(cursor)
     now = datetime.utcnow()
+
+    # Debug: Check the race_id that was generated
+    print(f"Generated race_id: {race_id}")
 
     # Insert the race
     cursor.execute("""
@@ -143,46 +140,59 @@ def create_race_in_db(code, teams, assistant):
 
     conn.commit()
     conn.close()
+
+    # Debug: Confirm that the race has been inserted
+    print(f"Race with ID: {race_id} inserted into the database")
+
     return race_id
 
 
 def create_team_in_db(race_id, team_number, team_name):
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
+    # Debug: Print details about the team being created
+    print(f"Creating team {team_number} for race {race_id} with name {team_name}")
+
     cursor.execute("""
         INSERT INTO teams (race_id, team_number, team_name)
         VALUES (?, ?, ?)
     """, (race_id, team_number, team_name))
-    
-    # Use SQL Server's method to get the last inserted identity value
-    cursor.execute("SELECT SCOPE_IDENTITY()")
-    team_id = cursor.fetchone()[0]  # Fetch the result of SCOPE_IDENTITY()
-    
+
     conn.commit()
+
+    # Debug: Print the team ID that was inserted
+    cursor.execute("SELECT team_id FROM teams WHERE race_id = ? AND team_number = ?", (race_id, team_number))
+    team_id = cursor.fetchone()[0]
+    print(f"Created team with ID: {team_id}")
+
     conn.close()
-    
+
+    # Return the team ID
     return team_id
+
 
 
 
 def create_rider_in_db(race_id, team_id, rider_number, rider_name):
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
+    # Debug: Check what data is being passed to the function
+    print(f"Creating rider {rider_name} (number {rider_number}) for team {team_id} in race {race_id}")
+
     cursor.execute("""
         INSERT INTO riders (race_id, team_id, rider_name, rider_number)
         VALUES (?, ?, ?, ?)
     """, (race_id, team_id, rider_name, rider_number))
-    
-    # Get the last inserted rider_id using SQL Server's SCOPE_IDENTITY
-    cursor.execute("SELECT SCOPE_IDENTITY()")
-    rider_id = cursor.fetchone()[0]  # Fetch the result of SCOPE_IDENTITY()
-    
+
     conn.commit()
+
+    # Debug: Confirm the insertion
+    print(f"Rider {rider_name} (team {team_id}, number {rider_number}) inserted into the database")
+
     conn.close()
-    
-    return rider_id
+
 
 
 
