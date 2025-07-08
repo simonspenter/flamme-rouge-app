@@ -14,6 +14,9 @@ import time
 import random
 import string
 
+#Debugging
+import logging
+
 # Always load .env in local dev
 #from dotenv import load_dotenv
 #load_dotenv()
@@ -117,20 +120,22 @@ def create_race_submit():
 
     return redirect(url_for("scoreboard", race=race_id))
 
-
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 def create_race_in_db(code, teams, assistant):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Debug: Print the code and other parameters before insertion
-    print(f"Creating race with code: {code}, teams: {teams}, assistant: {assistant}")
+    # Log race creation information
+    logger.debug(f"Creating race with code: {code}, teams: {teams}, assistant: {assistant}")
 
     race_id = generate_unique_race_id(cursor)
     now = datetime.utcnow()
 
-    # Debug: Check the race_id that was generated
-    print(f"Generated race_id: {race_id}")
+    # Log the generated race ID
+    logger.debug(f"Generated race_id: {race_id}")
 
     # Insert the race
     cursor.execute("""
@@ -141,18 +146,17 @@ def create_race_in_db(code, teams, assistant):
     conn.commit()
     conn.close()
 
-    # Debug: Confirm that the race has been inserted
-    print(f"Race with ID: {race_id} inserted into the database")
+    # Log the successful creation of the race
+    logger.debug(f"Race with ID: {race_id} inserted into the database")
 
     return race_id
-
 
 def create_team_in_db(race_id, team_number, team_name):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Debug: Print details about the team being created
-    print(f"Creating team {team_number} for race {race_id} with name {team_name}")
+    # Log team creation details
+    logger.debug(f"Creating team {team_number} for race {race_id} with name {team_name}")
 
     cursor.execute("""
         INSERT INTO teams (race_id, team_number, team_name)
@@ -161,21 +165,17 @@ def create_team_in_db(race_id, team_number, team_name):
 
     conn.commit()
 
-    # Debug: Print the team ID that was inserted
+    # Log the team ID after insertion
     cursor.execute("SELECT team_id FROM teams WHERE race_id = ? AND team_number = ?", (race_id, team_number))
     team_id = cursor.fetchone()[0]
-    print(f"Created team with ID: {team_id}")
+    logger.debug(f"Created team with ID: {team_id}")
 
     conn.close()
 
-    # Return the team ID
     return team_id
 
-
-
 def create_rider_in_db(race_id, team_id, rider_number, rider_name):
-    # Debugging output
-    print(f"DEBUG: race_id={race_id}, team_id={team_id}, rider_name={rider_name}, rider_number={rider_number}")
+    logger.debug(f"DEBUG: race_id={race_id}, team_id={team_id}, rider_name={rider_name}, rider_number={rider_number}")
     
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -186,13 +186,11 @@ def create_rider_in_db(race_id, team_id, rider_number, rider_name):
             VALUES (?, ?, ?, ?)
         """, (race_id, team_id, rider_name, rider_number))
         conn.commit()
-        print("DEBUG: Rider inserted successfully")  # Confirmation message
+        logger.debug("DEBUG: Rider inserted successfully")
     except Exception as e:
-        print(f"ERROR: {e}")  # Print out any errors that occur
+        logger.error(f"ERROR: {e}")
 
     conn.close()
-
-
 
 
 
