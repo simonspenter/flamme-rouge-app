@@ -128,26 +128,37 @@ def create_race_in_db(code, teams, assistant):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Log race creation information
-    logger.debug(f"Creating race with code: {code}, teams: {teams}, assistant: {assistant}")
+    # Debug: Print the code and other parameters before insertion
+    print(f"Creating race with code: {code}, teams: {teams}, assistant: {assistant}")
 
     race_id = generate_unique_race_id(cursor)
     now = datetime.utcnow()
 
-    # Log the generated race ID
-    logger.debug(f"Generated race_id: {race_id}")
+    # Debug: Check the race_id that was generated
+    print(f"Generated race_id: {race_id}")
 
     # Insert the race
-    cursor.execute("""
-        INSERT INTO races (id, code, teams, assistant, created_at)
-        VALUES (?, ?, ?, ?, ?)
-    """, (race_id, code, teams, assistant, now))
+    cursor.execute("""INSERT INTO races (id, code, teams, assistant, created_at) VALUES (?, ?, ?, ?, ?)""",
+                   (race_id, code, teams, assistant, now))
 
     conn.commit()
+
+    # Insert teams for the created race
+    for team_number in range(1, teams + 1):
+        team_name = f"Team {team_number}"  # Adjust according to how you get team names
+        team_id = create_team_in_db(race_id, team_number, team_name)
+        print(f"Inserted team {team_number} with ID {team_id}")
+
+        # Insert riders for each team (example: 6 riders per team)
+        for rider_number in range(1, 7):  # Adjust as necessary
+            rider_name = f"Rider {team_number}-{rider_number}"  # Adjust according to your data
+            rider_id = create_rider_in_db(race_id, team_id, rider_number, rider_name)
+            print(f"Inserted rider {rider_number} for team {team_number} with ID {rider_id}")
+
     conn.close()
 
-    # Log the successful creation of the race
-    logger.debug(f"Race with ID: {race_id} inserted into the database")
+    # Debug: Confirm race creation and data insertion
+    print(f"Race with ID: {race_id} inserted into the database with {teams} teams and riders.")
 
     return race_id
 
@@ -155,40 +166,38 @@ def create_team_in_db(race_id, team_number, team_name):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Log team creation details
-    logger.debug(f"Creating team {team_number} for race {race_id} with name {team_name}")
+    # Debug: Print details about the team being created
+    print(f"Creating team {team_number} for race {race_id} with name {team_name}")
 
-    cursor.execute("""
-        INSERT INTO teams (race_id, team_number, team_name)
-        VALUES (?, ?, ?)
-    """, (race_id, team_number, team_name))
+    cursor.execute("""INSERT INTO teams (race_id, team_number, team_name) VALUES (?, ?, ?)""",
+                   (race_id, team_number, team_name))
 
     conn.commit()
 
-    # Log the team ID after insertion
+    # Debug: Retrieve the team ID after insertion
     cursor.execute("SELECT team_id FROM teams WHERE race_id = ? AND team_number = ?", (race_id, team_number))
     team_id = cursor.fetchone()[0]
-    logger.debug(f"Created team with ID: {team_id}")
+    print(f"Created team with ID: {team_id}")
 
     conn.close()
 
     return team_id
 
 def create_rider_in_db(race_id, team_id, rider_number, rider_name):
-    logger.debug(f"DEBUG: race_id={race_id}, team_id={team_id}, rider_name={rider_name}, rider_number={rider_number}")
-    
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Debugging output
+    print(f"DEBUG: race_id={race_id}, team_id={team_id}, rider_name={rider_name}, rider_number={rider_number}")
+    
     try:
-        cursor.execute("""
-            INSERT INTO riders (race_id, team_id, rider_name, rider_number)
-            VALUES (?, ?, ?, ?)
-        """, (race_id, team_id, rider_name, rider_number))
+        cursor.execute("""INSERT INTO riders (race_id, team_id, rider_name, rider_number) 
+                          VALUES (?, ?, ?, ?)""", 
+                       (race_id, team_id, rider_name, rider_number))
         conn.commit()
-        logger.debug("DEBUG: Rider inserted successfully")
+        print("DEBUG: Rider inserted successfully")  # Confirmation message
     except Exception as e:
-        logger.error(f"ERROR: {e}")
+        print(f"ERROR: {e}")  # Print out any errors that occur
 
     conn.close()
 
