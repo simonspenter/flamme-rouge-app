@@ -20,7 +20,7 @@
         {% endfor %}
         <input type="hidden" id="teamsInput" name="teams">
 
-        <div id="customize-btn-wrapper" style="display:none;">
+        <div id="customize-btn-wrapper-teams" style="display:none;">
             <button type="button" id="customize-teams-btn" class="select-button">Customize team names</button>
         </div>
 
@@ -67,19 +67,21 @@
 
         // Handling team name customization
         const teamsInput = document.getElementById('teamsInput');
-        const customizeTeamsBtnWrapper = document.getElementById('customize-btn-wrapper');  // Make sure this is the correct ID
+        const customizeTeamsBtnWrapper = document.getElementById('customize-btn-wrapper-teams');  // Make sure this is the correct ID
         const customizeTeamsBtn = document.getElementById('customize-teams-btn');
         const teamNamesContainer = document.getElementById('team-names-container');
 
         function updateCustomizeButtonVisibility() {
+            
+            // Show "Customize Team Names" button if more than one team
             const teamCount = parseInt(teamsInput.value);
             const assistantCount = parseInt(document.getElementById('assistantInput').value);
 
-            // Show "Customize Team Names" button if more than one team
+            const customizeTeamsBtnWrapper = document.getElementById('customize-btn-wrapper-teams');
             if (!isNaN(teamCount) && teamCount > 1) {
-                customizeTeamsBtn.style.display = 'block';
+                customizeTeamsBtnWrapper.style.display = 'block';
             } else {
-                customizeTeamsBtn.style.display = 'none';
+                customizeTeamsBtnWrapper.style.display = 'none';
                 teamNamesContainer.innerHTML = '';
             }
 
