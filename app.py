@@ -173,25 +173,25 @@ def create_team_in_db(race_id, team_number, team_name):
 
 
 
-
 def create_rider_in_db(race_id, team_id, rider_number, rider_name):
+    # Debugging output
+    print(f"DEBUG: race_id={race_id}, team_id={team_id}, rider_name={rider_name}, rider_number={rider_number}")
+    
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Debug: Check what data is being passed to the function
-    print(f"Creating rider {rider_name} (number {rider_number}) for team {team_id} in race {race_id}")
-
-    cursor.execute("""
-        INSERT INTO riders (race_id, team_id, rider_name, rider_number)
-        VALUES (?, ?, ?, ?)
-    """, (race_id, team_id, rider_name, rider_number))
-
-    conn.commit()
-
-    # Debug: Confirm the insertion
-    print(f"Rider {rider_name} (team {team_id}, number {rider_number}) inserted into the database")
+    try:
+        cursor.execute("""
+            INSERT INTO riders (race_id, team_id, rider_name, rider_number)
+            VALUES (?, ?, ?, ?)
+        """, (race_id, team_id, rider_name, rider_number))
+        conn.commit()
+        print("DEBUG: Rider inserted successfully")  # Confirmation message
+    except Exception as e:
+        print(f"ERROR: {e}")  # Print out any errors that occur
 
     conn.close()
+
 
 
 
