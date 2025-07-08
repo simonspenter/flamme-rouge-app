@@ -155,11 +155,15 @@ def create_team_in_db(race_id, team_number, team_name):
         VALUES (?, ?, ?)
     """, (race_id, team_number, team_name))
     
+    # Use SQL Server's method to get the last inserted identity value
+    cursor.execute("SELECT SCOPE_IDENTITY()")
+    team_id = cursor.fetchone()[0]  # Fetch the result of SCOPE_IDENTITY()
+    
     conn.commit()
-    team_id = cursor.lastrowid  # Get the last inserted team's id
     conn.close()
     
     return team_id
+
 
 
 def create_rider_in_db(race_id, team_id, rider_number, rider_name):
@@ -171,8 +175,15 @@ def create_rider_in_db(race_id, team_id, rider_number, rider_name):
         VALUES (?, ?, ?, ?)
     """, (race_id, team_id, rider_name, rider_number))
     
+    # Get the last inserted rider_id using SQL Server's SCOPE_IDENTITY
+    cursor.execute("SELECT SCOPE_IDENTITY()")
+    rider_id = cursor.fetchone()[0]  # Fetch the result of SCOPE_IDENTITY()
+    
     conn.commit()
     conn.close()
+    
+    return rider_id
+
 
 
 @app.route("/scoreboard")
