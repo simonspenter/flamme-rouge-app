@@ -73,7 +73,8 @@
         function updateCustomizeButtonVisibility() {
             const teamCount = parseInt(teamsInput.value);
             const assistantCount = parseInt(document.getElementById('assistantInput').value);
-            
+
+            // Show "Customize Team Names" button if more than one team
             if (!isNaN(teamCount) && teamCount > 1) {
                 customizeTeamsBtn.style.display = 'block';
             } else {
@@ -81,7 +82,7 @@
                 teamNamesContainer.innerHTML = '';
             }
 
-            // Show "Customize Rider Names" button if assistant is selected
+            // Show "Customize Rider Names" button if assistant selected
             const customizeRidersBtnWrapper = document.getElementById('customize-btn-wrapper-riders');
             if (assistantCount > 1) {
                 customizeRidersBtnWrapper.style.display = 'block';
@@ -94,7 +95,14 @@
         // Trigger on selection of team number
         document.querySelectorAll('[id^="teams"]').forEach(btn => {
             btn.addEventListener('click', () => {
-                setTimeout(updateCustomizeButtonVisibility, 100);
+                setTimeout(updateCustomizeButtonVisibility, 100); // slight delay to ensure teamsInput updated
+            });
+        });
+
+        // Trigger on selection of assistant number
+        document.querySelectorAll('[id^="assistant"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setTimeout(updateCustomizeButtonVisibility, 100); // slight delay to ensure assistantInput updated
             });
         });
 
