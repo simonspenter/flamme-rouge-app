@@ -14,7 +14,7 @@
     </fieldset>
 
     <fieldset class="form-section">
-        <legend>Choose number of teams:</legend>
+        <legend>Choose number of teams1:</legend>
         {% for team in range(2, 5) %}
         <button type="button" onclick="setInputValue('teams', '{{ team }}')" id="teams{{ team }}" class="select-button">{{ team }}</button>
         {% endfor %}
