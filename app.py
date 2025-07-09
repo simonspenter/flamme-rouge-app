@@ -101,39 +101,54 @@ def generate_unique_race_id(cursor, length=6):
             return race_id
 
 
-@app.route("/create-race", methods=["POST"])
-def create_race_submit():
-    code = request.form.get("race")          # e.g. 'tdf2023'
-    teams = int(request.form.get("teams"))
-    assistant = int(request.form.get("assistant"))
-    
-    # Debug: Check what data has been received
-    print(f"Received race: {code}, teams: {teams}, assistant: {assistant}")
-    
-    # Retrieve team names from the form
-    team_names = [request.form.get(f"team_name_{i}") for i in range(1, teams + 1)]
-    print(f"Team names: {team_names}")
-    
-    # Retrieve rider names from the form
-    rider_names = {}
-    for i in range(1, teams + 1):  # For each team
-        team_riders = []
-        for j in range(1, assistant + 1):  # For each rider
-            rider_name = request.form.get(f"rider_name_team{i}_rider{j}")
-            if rider_name:
-                team_riders.append(rider_name)
-        rider_names[f"team_{i}"] = team_riders
-    print(f"Rider names: {rider_names}")
+def create_race_in_db(code, teams, assistant, team_names, rider_names):
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
-    if code not in races_info:
-        return "Invalid race template selected.", 400
+    # Debug: Print details before insertion
+    print(f"Creating race with code: {code}, teams: {teams}, assistant: {assistant}, team_names: {team_names}, rider_names: {rider_names}")
 
-    race_id = create_race_in_db(code, teams, assistant, team_names, rider_names)  # Pass rider_names
+    race_id = generate_unique_race_id(cursor)
+    now = datetime.utcnow()
 
-    # Debug: Check the race_id after creation
-    print(f"Created race with ID: {race_id}")
+    # Insert the race into the database
+    cursor.execute("""INSERT INTO races (id, code, teams, assistant, created_at) VALUES (?, ?, ?, ?, ?)""",
+                   (race_id, code, teams, assistant, now))
 
-    return redirect(url_for("scoreboard", race=race_id))
+    conn.commit()
+
+    # Use team_names directly since it's already a list
+    team_names_list = team_names  # This is already a list, no need to split
+
+    if len(team_names_list) != teams:
+        print("ERROR: Number of team names does not match the number of teams!")
+        return None
+
+    # Insert teams for the created race
+    for team_number in range(teams):
+        team_name = team_names_list[team_number].strip()
+        team_id = create_team_in_db(race_id, team_number + 1, team_name)
+
+        # Insert riders for each team
+        for rider_number in range(1, 7):  # Assuming 6 riders per team
+            rider_name_key = f"rider_name_team{team_number + 1}_rider{rider_number}"
+            rider_name = rider_names.get(rider_name_key, f"Rider {team_number + 1}-{rider_number}")  # Default name if none is provided
+
+            if rider_number == 1:
+                rider_position = "Roleur"
+            elif rider_number == 2:
+                rider_position = "Sprinter"
+            elif rider_number == 3 and assistant > 1:
+                rider_position = "Assistant"
+            else:
+                rider_position = "Roleur"
+
+            rider_id = create_rider_in_db(race_id, team_id, rider_number, rider_name, rider_position)
+
+    conn.close()
+
+    return race_id
+
 
 
 
