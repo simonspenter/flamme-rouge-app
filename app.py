@@ -130,12 +130,12 @@ def create_race_submit():
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-def create_race_in_db(code, teams, assistant):
+def create_race_in_db(code, teams, assistant, team_names, rider_names):
     conn = get_db_connection()
     cursor = conn.cursor()
 
     # Debug: Print the code and other parameters before insertion
-    print(f"Creating race with code: {code}, teams: {teams}, assistant: {assistant}")
+    print(f"Creating race with code: {code}, teams: {teams}, assistant: {assistant}, team_names: {team_names}, rider_names: {rider_names}")
 
     race_id = generate_unique_race_id(cursor)
     now = datetime.utcnow()
@@ -151,13 +151,14 @@ def create_race_in_db(code, teams, assistant):
 
     # Insert teams for the created race
     for team_number in range(1, teams + 1):
-        team_name = f"Team {team_number}"  # Adjust according to how you get team names
+        team_name = team_names[team_number - 1]  # Get team name from the list
         team_id = create_team_in_db(race_id, team_number, team_name)
         print(f"Inserted team {team_number} with ID {team_id}")
 
-        # Insert riders for each team (example: 6 riders per team)
-        for rider_number in range(1, 7):  # Adjust as necessary
-            rider_name = f"Rider {team_number}-{rider_number}"  # Adjust according to your data
+        # Insert riders for each team
+        for rider_number in range(1, 7):  # Assuming 6 riders per team
+            rider_name_key = f"rider_name_team{team_number}_rider{rider_number}"
+            rider_name = rider_names.get(rider_name_key, f"Rider {team_number}-{rider_number}")
             rider_id = create_rider_in_db(race_id, team_id, rider_number, rider_name)
             print(f"Inserted rider {rider_number} for team {team_number} with ID {rider_id}")
 
@@ -167,6 +168,7 @@ def create_race_in_db(code, teams, assistant):
     print(f"Race with ID: {race_id} inserted into the database with {teams} teams and riders.")
 
     return race_id
+
 
 
 def create_team_in_db(race_id, team_number, team_name):
