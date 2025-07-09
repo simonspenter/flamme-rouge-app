@@ -45,6 +45,7 @@
     <button type="button" onclick="submitForm()" class="submit-button">Submit</button>
 
     <script>
+
         // Function to set input value based on button selection (e.g., race, teams, or assistants)
         function setInputValue(inputName, value) {
             document.getElementById(inputName + 'Input').value = value;  // Set hidden input value
@@ -59,9 +60,6 @@
 
         // Function to submit the form if all selections are made
         function submitForm() {
-
-            console.log("Submit button clicked!");
-
             const race = document.getElementById('raceInput').value;
             const teams = document.getElementById('teamsInput').value;
             const assistant = document.getElementById('assistantInput').value;
