@@ -101,7 +101,7 @@ def generate_unique_race_id(cursor, length=6):
             return race_id
 
 @app.route('/create-race-submit', methods=['POST'])
-def create_race_in_db(code, teams, assistant, team_names, rider_names):
+def create_race_submit(code, teams, assistant, team_names, rider_names):
     conn = get_db_connection()
     cursor = conn.cursor()
 
