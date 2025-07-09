@@ -159,6 +159,44 @@ def create_race_submit(code, teams, assistant, team_names, rider_names):
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+def create_race_in_db(code, teams, assistant):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Debug: Print the code and other parameters before insertion
+    print(f"Creating race with code: {code}, teams: {teams}, assistant: {assistant}")
+
+    race_id = generate_unique_race_id(cursor)
+    now = datetime.utcnow()
+
+    # Debug: Check the race_id that was generated
+    print(f"Generated race_id: {race_id}")
+
+    # Insert the race
+    cursor.execute("""INSERT INTO races (id, code, teams, assistant, created_at) VALUES (?, ?, ?, ?, ?)""",
+                   (race_id, code, teams, assistant, now))
+
+    conn.commit()
+
+    # Insert teams for the created race
+    for team_number in range(1, teams + 1):
+        team_name = f"Team {team_number}"  # Adjust according to how you get team names
+        team_id = create_team_in_db(race_id, team_number, team_name)
+        print(f"Inserted team {team_number} with ID {team_id}")
+
+        # Insert riders for each team (example: 6 riders per team)
+        for rider_number in range(1, 7):  # Adjust as necessary
+            rider_name = f"Rider {team_number}-{rider_number}"  # Adjust according to your data
+            rider_id = create_rider_in_db(race_id, team_id, rider_number, rider_name)
+            print(f"Inserted rider {rider_number} for team {team_number} with ID {rider_id}")
+
+    conn.close()
+
+    # Debug: Confirm race creation and data insertion
+    print(f"Race with ID: {race_id} inserted into the database with {teams} teams and riders.")
+
+    return race_id
+
 
 def create_team_in_db(race_id, team_number, team_name):
     conn = get_db_connection()
