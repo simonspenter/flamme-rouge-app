@@ -113,23 +113,11 @@ def create_race_submit():
     # Retrieve team names from the form
     team_names = [request.form.get(f"team_name_{i}") for i in range(1, teams + 1)]
     print(f"Team names: {team_names}")
-    
-    # Retrieve rider names from the form
-    rider_names = {}
-    for i in range(1, teams + 1):  # For each team
-        team_riders = []
-        for j in range(1, assistant + 1):  # For each rider
-            rider_name = request.form.get(f"rider_name_team{i}_rider{j}")
-            if rider_name:
-                team_riders.append(rider_name)
-        rider_names[f"team_{i}"] = team_riders
-    print(f"Rider names: {rider_names}")
 
     if code not in races_info:
         return "Invalid race template selected.", 400
 
-    # Pass both team names and rider names to the database creation function
-    race_id = create_race_in_db(code, teams, assistant, team_names, rider_names)
+    race_id = create_race_in_db(code, teams, assistant, team_names)
 
     # Debug: Check the race_id after creation
     print(f"Created race with ID: {race_id}")
