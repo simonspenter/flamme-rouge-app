@@ -128,48 +128,53 @@ def create_race_submit():
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-def create_race_in_db(code, teams, assistant, team_names):
+def create_race_in_db(code, teams, assistant, team_names, rider_names):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Debug: Print the received parameters
-    print(f"Creating race with code: {code}, teams: {teams}, assistant: {assistant}, team_names: {team_names}")
+    # Debug: Print the code, teams, assistant, team names, and rider names before insertion
+    print(f"Creating race with code: {code}, teams: {teams}, assistant: {assistant}, team_names: {team_names}, rider_names: {rider_names}")
 
-    # Generate a unique race ID
     race_id = generate_unique_race_id(cursor)
     now = datetime.utcnow()
 
-    # Debug: Confirm the race_id generated
-    print(f"Generated race_id: {race_id}")
-
-    # Insert the race into the races table
-    cursor.execute("""INSERT INTO races (id, code, teams, assistant, created_at) 
-                      VALUES (?, ?, ?, ?, ?)""",
+    # Insert the race into the database
+    cursor.execute("""INSERT INTO races (id, code, teams, assistant, created_at) VALUES (?, ?, ?, ?, ?)""",
                    (race_id, code, teams, assistant, now))
 
     conn.commit()
 
-    # Ensure the number of team names matches the number of teams selected
-    if len(team_names) != teams:
+    # Ensure the correct number of team names
+    team_names_list = team_names.split(",")
+    if len(team_names_list) != teams:
         print("ERROR: Number of team names does not match the number of teams!")
         return None
 
     # Insert teams for the created race
     for team_number in range(teams):
-        team_name = team_names[team_number].strip()  # Get team name, stripping any extra spaces
+        team_name = team_names_list[team_number].strip()
         team_id = create_team_in_db(race_id, team_number + 1, team_name)
-        print(f"Inserted team {team_number + 1} with name {team_name} and ID {team_id}")
 
-        # Insert riders for each team (example: 6 riders per team)
-        for rider_number in range(1, 7):  # You can adjust this number as needed
-            rider_name = f"Rider {team_number + 1}-{rider_number}"
-            rider_id = create_rider_in_db(race_id, team_id, rider_number, rider_name)
-            print(f"Inserted rider {rider_number} for team {team_number + 1} with ID {rider_id}")
+        # Insert riders for each team
+        for rider_number in range(1, 7):  # Assuming 6 riders per team
+            # Get rider name from rider_names list (indexed accordingly)
+            rider_name_key = f"rider_name_team{team_number+1}_rider{rider_number}"
+            rider_name = rider_names.get(rider_name_key, f"Rider {team_number + 1}-{rider_number}")  # Default name if none is provided
+
+            # Set rider position based on the rider number
+            if rider_number == 1:
+                rider_position = "Roleur"
+            elif rider_number == 2:
+                rider_position = "Sprinter"
+            elif rider_number == 3 and assistant > 1:  # Only if assistant is selected
+                rider_position = "Assistant"
+            else:
+                rider_position = "Roleur"  # Default position for others
+
+            rider_id = create_rider_in_db(race_id, team_id, rider_number, rider_name, rider_position)
+            print(f"Inserted rider {rider_number} for team {team_number + 1} with name {rider_name} and ID {rider_id}")
 
     conn.close()
-
-    # Debug: Confirm race and data insertion
-    print(f"Race with ID: {race_id} inserted into the database with {teams} teams and riders.")
 
     return race_id
 

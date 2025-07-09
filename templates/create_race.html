@@ -147,19 +147,20 @@
 
             riderNamesContainer.innerHTML = "<legend>Rider names:</legend>";  // Clear previous input fields
 
-            // Create input fields for each rider based on team count and assistant count
+
+            // Create input fields for riders based on team count and assistant
             for (let i = 1; i <= teamCount; i++) {
                 for (let j = 1; j <= assistantCount; j++) {
                     const label = document.createElement('label');
                     label.textContent = `Team ${i} - Rider ${j}: `;
                     const input = document.createElement('input');
                     input.type = 'text';
-                    input.name = `rider_name_team${i}_rider${j}`;
+                    input.name = `rider_name_team${i}_rider${j}`;  // Ensure unique name per rider
                     input.placeholder = `Rider ${j} name`;
                     input.classList.add('rider-input');
                     riderNamesContainer.appendChild(label);
                     riderNamesContainer.appendChild(input);
-                    riderNamesContainer.appendChild(document.createElement('br'));  // Add line breaks between inputs
+                    riderNamesContainer.appendChild(document.createElement('br'));
                 }
             }
         });
