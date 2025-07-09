@@ -129,8 +129,8 @@ def create_race_in_db(code, teams, assistant, team_names, rider_names):
         team_name = team_names_list[team_number].strip()
         team_id = create_team_in_db(race_id, team_number + 1, team_name)
 
-        # Insert riders for each team
-        for rider_number in range(1, 7):  # Assuming 6 riders per team
+        # Insert riders for each team, depending on the number of riders (2 or 3)
+        for rider_number in range(1, assistant + 1):  # assistant determines the number of riders
             rider_name_key = f"rider_name_team{team_number + 1}_rider{rider_number}"
             rider_name = rider_names.get(rider_name_key, f"Rider {team_number + 1}-{rider_number}")  # Default name if none is provided
 
@@ -141,9 +141,10 @@ def create_race_in_db(code, teams, assistant, team_names, rider_names):
             elif rider_number == 3 and assistant > 1:
                 rider_position = "Assistant"
             else:
-                rider_position = "Roleur"
+                rider_position = "Roleur"  # Default for any remaining riders
 
             rider_id = create_rider_in_db(race_id, team_id, rider_number, rider_name, rider_position)
+
 
     conn.close()
 
