@@ -14,9 +14,9 @@
     </fieldset>
 
     <fieldset class="form-section">
-        <legend>Choose number of teams1:</legend>
+        <legend>Choose number of teams:</legend>
         {% for team in range(2, 5) %}
-        <button type="button" onclick="setInputValue('teams', '{{ team }}')" id="teams{{ team }}" class="select-button">{{ team }}</button>
+            <button type="button" onclick="setInputValue('teams', '{{ team }}')" id="teams{{ team }}" class="select-button">{{ team }}</button>
         {% endfor %}
         <input type="hidden" id="teamsInput" name="teams">
 
@@ -24,7 +24,8 @@
             <button type="button" id="customize-teams-btn" class="select-button">Customize team names</button>
         </div>
 
-        <div id="team-names-container" class="form-section"></div>
+        <div id="team-names-container" class="form-section" style="display:none;">
+
     </fieldset>
 
     <fieldset class="form-section">
@@ -44,20 +45,25 @@
     <button type="button" onclick="submitForm()" class="submit-button">Submit</button>
 
     <script>
+        // Function to set input value based on button selection (e.g. race, teams, or assistants)
         function setInputValue(inputName, value) {
-            document.getElementById(inputName + 'Input').value = value;
+            document.getElementById(inputName + 'Input').value = value;  // Set hidden input value
+            // Remove the 'selected' class from all buttons
             document.querySelectorAll('[id^="' + inputName + '"]').forEach(btn => {
                 btn.classList.remove('selected');
             });
+            // Add 'selected' class to the clicked button
             document.getElementById(inputName + value).classList.add('selected');
-            updateCustomizeButtonVisibility();
+            updateCustomizeButtonVisibility();  // Check if customization buttons should be shown
         }
 
+        // Function to submit the form if all selections are made
         function submitForm() {
             const race = document.getElementById('raceInput').value;
             const teams = document.getElementById('teamsInput').value;
             const assistant = document.getElementById('assistantInput').value;
 
+            // Ensure all categories (race, teams, assistant) are selected
             if (!race || !teams || !assistant) {
                 alert("Please make a selection for all categories.");
                 return;
@@ -65,55 +71,48 @@
             document.getElementById('inputForm').submit();
         }
 
-        // Handling team name customization
-        const teamsInput = document.getElementById('teamsInput');
-        const customizeTeamsBtnWrapper = document.getElementById('customize-btn-wrapper-teams');  // Make sure this is the correct ID
-        const customizeTeamsBtn = document.getElementById('customize-teams-btn');
-        const teamNamesContainer = document.getElementById('team-names-container');
-
+        // Function to update the visibility of customization buttons
         function updateCustomizeButtonVisibility() {
-            
-            // Show "Customize Team Names" button if more than one team
-            const teamCount = parseInt(teamsInput.value);
-            const assistantCount = parseInt(document.getElementById('assistantInput').value);
+            const teamCount = parseInt(teamsInput.value);  // Get the number of teams
+            const assistantCount = parseInt(document.getElementById('assistantInput').value);  // Get the number of assistants
 
-            const customizeTeamsBtnWrapper = document.getElementById('customize-btn-wrapper-teams');
+            // Show the "Customize Team Names" button if more than one team is selected
             if (!isNaN(teamCount) && teamCount > 1) {
                 customizeTeamsBtnWrapper.style.display = 'block';
             } else {
                 customizeTeamsBtnWrapper.style.display = 'none';
-                teamNamesContainer.innerHTML = '';
+                teamNamesContainer.innerHTML = '';  // Clear team names if customization is not available
             }
 
-            // Show "Customize Rider Names" button if assistant selected
-            const customizeRidersBtnWrapper = document.getElementById('customize-btn-wrapper-riders');
+            // Show the "Customize Rider Names" button if more than one assistant is selected
             if (assistantCount > 1) {
                 customizeRidersBtnWrapper.style.display = 'block';
             } else {
                 customizeRidersBtnWrapper.style.display = 'none';
-                riderNamesContainer.innerHTML = '';
+                riderNamesContainer.innerHTML = '';  // Clear rider names if customization is not available
             }
         }
 
-        // Trigger on selection of team number
+        // Handling the team selection and customizing the team names
+        const teamsInput = document.getElementById('teamsInput');
+        const customizeTeamsBtnWrapper = document.getElementById('customize-btn-wrapper-teams');
+        const customizeTeamsBtn = document.getElementById('customize-teams-btn');
+        const teamNamesContainer = document.getElementById('team-names-container');
+
+        // Trigger the customization options when the number of teams is selected
         document.querySelectorAll('[id^="teams"]').forEach(btn => {
             btn.addEventListener('click', () => {
-                setTimeout(updateCustomizeButtonVisibility, 100); // slight delay to ensure teamsInput updated
+                setTimeout(updateCustomizeButtonVisibility, 100);  // Slight delay to ensure teamsInput is updated
             });
         });
 
-        // Trigger on selection of assistant number
-        document.querySelectorAll('[id^="assistant"]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                setTimeout(updateCustomizeButtonVisibility, 100); // slight delay to ensure assistantInput updated
-            });
-        });
-
+        // When "Customize Team Names" button is clicked, show input fields for team names
         customizeTeamsBtn.addEventListener('click', () => {
             const teamCount = parseInt(teamsInput.value);
             if (isNaN(teamCount)) return;
 
-            teamNamesContainer.innerHTML = "<legend>Team names:</legend>";
+            teamNamesContainer.innerHTML = "<legend>Team names:</legend>";  // Clear previous input fields
+            // Create input fields for each team
             for (let i = 1; i <= teamCount; i++) {
                 const label = document.createElement('label');
                 label.textContent = `Team ${i}: `;
@@ -124,22 +123,31 @@
                 input.classList.add('team-input');
                 teamNamesContainer.appendChild(label);
                 teamNamesContainer.appendChild(input);
-                teamNamesContainer.appendChild(document.createElement('br'));
+                teamNamesContainer.appendChild(document.createElement('br'));  // Add line breaks between inputs
             }
         });
 
-        // Handling rider name customization
+        // Handling the rider name customization
         const riderNamesContainer = document.getElementById('rider-names-container');
+        const customizeRidersBtnWrapper = document.getElementById('customize-btn-wrapper-riders');
         const customizeRidersBtn = document.getElementById('customize-riders-btn');
 
+        // Trigger the rider name customization when the number of assistant riders is selected
+        document.querySelectorAll('[id^="assistant"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setTimeout(updateCustomizeButtonVisibility, 100);  // Slight delay to ensure assistantInput is updated
+            });
+        });
+
+        // When "Customize Rider Names" button is clicked, show input fields for rider names
         customizeRidersBtn.addEventListener('click', () => {
-            const teamCount = parseInt(teamsInput.value);
-            const assistantCount = parseInt(document.getElementById('assistantInput').value);
+            const teamCount = parseInt(teamsInput.value);  // Get the number of teams
+            const assistantCount = parseInt(document.getElementById('assistantInput').value);  // Get the number of assistants
             if (isNaN(teamCount) || isNaN(assistantCount)) return;
 
-            riderNamesContainer.innerHTML = "<legend>Rider names:</legend>";
+            riderNamesContainer.innerHTML = "<legend>Rider names:</legend>";  // Clear previous input fields
 
-            // Create input fields for riders based on team count and assistant
+            // Create input fields for each rider based on team count and assistant count
             for (let i = 1; i <= teamCount; i++) {
                 for (let j = 1; j <= assistantCount; j++) {
                     const label = document.createElement('label');
@@ -151,11 +159,12 @@
                     input.classList.add('rider-input');
                     riderNamesContainer.appendChild(label);
                     riderNamesContainer.appendChild(input);
-                    riderNamesContainer.appendChild(document.createElement('br'));
+                    riderNamesContainer.appendChild(document.createElement('br'));  // Add line breaks between inputs
                 }
             }
         });
     </script>
+
 </form>
 
 {% endblock %}

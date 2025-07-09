@@ -106,14 +106,18 @@ def create_race_submit():
     code = request.form.get("race")          # e.g. 'tdf2023'
     teams = int(request.form.get("teams"))
     assistant = int(request.form.get("assistant"))
-
+    
     # Debug: Check what data has been received
     print(f"Received race: {code}, teams: {teams}, assistant: {assistant}")
+    
+    # Retrieve team names from the form
+    team_names = [request.form.get(f"team_name_{i}") for i in range(1, teams + 1)]
+    print(f"Team names: {team_names}")
 
     if code not in races_info:
         return "Invalid race template selected.", 400
 
-    race_id = create_race_in_db(code, teams, assistant)
+    race_id = create_race_in_db(code, teams, assistant, team_names)
 
     # Debug: Check the race_id after creation
     print(f"Created race with ID: {race_id}")
@@ -128,47 +132,47 @@ def create_race_in_db(code, teams, assistant, team_names):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Debug: Print the code, teams, assistant, and team names before insertion
+    # Debug: Print the received parameters
     print(f"Creating race with code: {code}, teams: {teams}, assistant: {assistant}, team_names: {team_names}")
 
+    # Generate a unique race ID
     race_id = generate_unique_race_id(cursor)
     now = datetime.utcnow()
 
-    # Debug: Check the race_id that was generated
+    # Debug: Confirm the race_id generated
     print(f"Generated race_id: {race_id}")
 
-    # Insert the race
-    cursor.execute("""INSERT INTO races (id, code, teams, assistant, created_at) VALUES (?, ?, ?, ?, ?)""",
+    # Insert the race into the races table
+    cursor.execute("""INSERT INTO races (id, code, teams, assistant, created_at) 
+                      VALUES (?, ?, ?, ?, ?)""",
                    (race_id, code, teams, assistant, now))
 
     conn.commit()
 
-    # Split the team names and ensure that we have the correct number of names
-    team_names_list = team_names.split(",")  # Split based on commas
-
-    # Check if the number of team names matches the number of teams
-    if len(team_names_list) != teams:
+    # Ensure the number of team names matches the number of teams selected
+    if len(team_names) != teams:
         print("ERROR: Number of team names does not match the number of teams!")
         return None
 
     # Insert teams for the created race
     for team_number in range(teams):
-        team_name = team_names_list[team_number].strip()  # Strip any extra spaces
+        team_name = team_names[team_number].strip()  # Get team name, stripping any extra spaces
         team_id = create_team_in_db(race_id, team_number + 1, team_name)
         print(f"Inserted team {team_number + 1} with name {team_name} and ID {team_id}")
 
         # Insert riders for each team (example: 6 riders per team)
-        for rider_number in range(1, 7):  # Adjust as necessary
-            rider_name = f"Rider {team_number + 1}-{rider_number}"  # Adjust as needed
+        for rider_number in range(1, 7):  # You can adjust this number as needed
+            rider_name = f"Rider {team_number + 1}-{rider_number}"
             rider_id = create_rider_in_db(race_id, team_id, rider_number, rider_name)
             print(f"Inserted rider {rider_number} for team {team_number + 1} with ID {rider_id}")
 
     conn.close()
 
-    # Debug: Confirm race creation and data insertion
+    # Debug: Confirm race and data insertion
     print(f"Race with ID: {race_id} inserted into the database with {teams} teams and riders.")
 
     return race_id
+
 
 def create_team_in_db(race_id, team_number, team_name):
     conn = get_db_connection()
@@ -177,12 +181,12 @@ def create_team_in_db(race_id, team_number, team_name):
     # Debug: Print details about the team being created
     print(f"Creating team {team_number} for race {race_id} with name {team_name}")
 
-    cursor.execute("""INSERT INTO teams (race_id, team_number, team_name) VALUES (?, ?, ?)""",
-                   (race_id, team_number, team_name))
+    cursor.execute("""INSERT INTO teams (race_id, team_number, team_name) 
+                      VALUES (?, ?, ?)""", (race_id, team_number, team_name))
 
     conn.commit()
 
-    # Debug: Retrieve the team ID after insertion
+    # Retrieve the team ID after insertion
     cursor.execute("SELECT team_id FROM teams WHERE race_id = ? AND team_number = ?", (race_id, team_number))
     team_id = cursor.fetchone()[0]
     print(f"Created team with ID: {team_id}")
@@ -190,6 +194,7 @@ def create_team_in_db(race_id, team_number, team_name):
     conn.close()
 
     return team_id
+
 
 def create_rider_in_db(race_id, team_id, rider_number, rider_name):
     conn = get_db_connection()
@@ -208,6 +213,7 @@ def create_rider_in_db(race_id, team_id, rider_number, rider_name):
         print(f"ERROR: {e}")  # Print out any errors that occur
 
     conn.close()
+
 
 
 
