@@ -45,7 +45,7 @@
     <button type="button" onclick="submitForm()" class="submit-button">Submit</button>
 
     <script>
-        // Function to set input value based on button selection (e.g. race, teams, or assistants)
+        // Function to set input value based on button selection (e.g., race, teams, or assistants)
         function setInputValue(inputName, value) {
             document.getElementById(inputName + 'Input').value = value;  // Set hidden input value
             // Remove the 'selected' class from all buttons
@@ -68,7 +68,31 @@
                 alert("Please make a selection for all categories.");
                 return;
             }
-            document.getElementById('inputForm').submit();
+
+            // Collect team names (just like we did for the teams)
+            const teamNames = collectTeamNames(); // Assuming collectTeamNames() works for team names
+
+            // Collect rider names from dynamic input fields
+            const riderNames = {};
+            const riderInputs = document.querySelectorAll('input[class="rider-input"]');
+            riderInputs.forEach(input => {
+                riderNames[input.name] = input.value;
+            });
+
+            // Add team names and rider names to hidden form fields before submission
+            document.getElementById('inputForm').appendChild(createHiddenInput('team_names', teamNames));
+            document.getElementById('inputForm').appendChild(createHiddenInput('rider_names', JSON.stringify(riderNames)));
+
+            document.getElementById('inputForm').submit(); // Submit the form
+        }
+
+        // Helper function to create hidden input fields for form submission
+        function createHiddenInput(name, value) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.value = value;
+            return input;
         }
 
         // Function to update the visibility of customization buttons
@@ -147,7 +171,6 @@
 
             riderNamesContainer.innerHTML = "<legend>Rider names:</legend>";  // Clear previous input fields
 
-
             // Create input fields for riders based on team count and assistant
             for (let i = 1; i <= teamCount; i++) {
                 for (let j = 1; j <= assistantCount; j++) {
@@ -160,11 +183,12 @@
                     input.classList.add('rider-input');
                     riderNamesContainer.appendChild(label);
                     riderNamesContainer.appendChild(input);
-                    riderNamesContainer.appendChild(document.createElement('br'));
+                    riderNamesContainer.appendChild(document.createElement('br'));  // Add line breaks between inputs
                 }
             }
         });
     </script>
+
 
 </form>
 
