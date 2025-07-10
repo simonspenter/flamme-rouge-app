@@ -267,6 +267,8 @@ def scoreboard():
             rider_names[team_id] = []
         rider_names[team_id].append(rider_name)
 
+    print(rider_names)
+
     # Fetch all stages for the race
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,
@@ -384,7 +386,6 @@ def update_segment_result():
     conn.close()
 
     return jsonify({"status": "success"}), 200
-
 
 
 # Test route to verify database connection
