@@ -1,5 +1,5 @@
-<div id="sprint" class="subTabcontent">
-    <h2>Sprint</h2>
+<div id="mountain" class="subTabcontent">
+    <h2>King of the Mountain</h2>
     <table>
         <thead>
             <tr>
@@ -22,7 +22,7 @@
                     <td>Stage {{ stage + 1 }}</td>
                     {% for team_id in rider_names %}
                         {% for rider in rider_names[team_id] %}
-                            <td id="sprint-stage-{{ stage + 1 }}-team-{{ team_id }}-rider-{{ loop.index }}"></td>
+                            <td id="mountain-stage-{{ stage + 1 }}-team-{{ loop.index0 }}-rider-{{ loop.index + 1 }}"></td>
                         {% endfor %}
                     {% endfor %}
                 </tr>
@@ -31,7 +31,7 @@
                 <td>Total</td>
                 {% for team_id in rider_names %}
                     {% for rider in rider_names[team_id] %}
-                        <td id="sprint-total-team-{{ team_id }}-rider-{{ loop.index }}"></td>
+                        <td id="mountain-total-team-{{ loop.index0 }}-rider-{{ loop.index + 1 }}"></td>
                     {% endfor %}
                 {% endfor %}
             </tr>
