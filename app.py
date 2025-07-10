@@ -221,8 +221,8 @@ def create_rider_in_db(race_id, team_id, rider_number, rider_name, rider_positio
     
     try:
         cursor.execute("""INSERT INTO riders (race_id, team_id, rider_name, rider_number, rider_position) 
-                          VALUES (?, ?, ?, ?)""", 
-                       (race_id, team_id, rider_name, rider_number))
+                          VALUES (?, ?, ?, ?, ?)""", 
+                       (race_id, team_id, rider_name, rider_number, rider_position))
         conn.commit()
         print("DEBUG: Rider inserted successfully")  # Confirmation message
     except Exception as e:
