@@ -80,14 +80,14 @@
                 <tr>
                     <th></th> <!-- Empty cell for stage name -->
                     {% for team in range(teams) %}
-                        <th colspan="{{ assistant }}">Team {{ team + 1 }}</th>
+                        <th colspan="{{ assistant }}">{{ team['name'] }}</th>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th></th> <!-- Empty cell for spacing -->
                     {% for team in range(teams) %}
                         {% for rider in range(assistant) %}
-                            <th>Rider {{ rider + 1 }}</th>
+                            <th>{{ rider['name'] }}</th>
                         {% endfor %}
                     {% endfor %}
                 </tr>
@@ -242,7 +242,7 @@
             }
         }
 
-        
+
         function handleSegmentChange(stage, segmentIndex, team, rider, selectElement) {
             let total = 0;
 

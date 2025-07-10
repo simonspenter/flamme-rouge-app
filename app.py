@@ -250,6 +250,28 @@ def scoreboard():
 
     code, teams, assistant = race_row
 
+    # Fetch team and rider names
+    teams_data = []
+    cursor.execute("""
+        SELECT t.team_id, t.team_name, r.rider_id, r.rider_name
+        FROM teams t
+        JOIN riders r ON t.team_id = r.team_id
+        WHERE t.race_id = ?
+        ORDER BY t.team_number, r.rider_number
+    """, (race_id,))
+
+    team_riders = {}
+    for team_id, team_name, rider_id, rider_name in cursor.fetchall():
+        if team_id not in team_riders:
+            team_riders[team_id] = {'team_name': team_name, 'riders': []}
+        team_riders[team_id]['riders'].append({'id': rider_id, 'name': rider_name})
+
+    # Convert team_riders to the desired format
+    teams_data = [
+        {'id': team_id, 'name': data['team_name'], 'riders': data['riders']}
+        for team_id, data in team_riders.items()
+    ]
+
     # Fetch all stages for the race
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,
