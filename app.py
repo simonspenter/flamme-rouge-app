@@ -325,7 +325,7 @@ def scoreboard():
     return render_template(
         'scoreboard.html',
         stages=len(stage_data),
-        teams=teams,
+        teams=teams_data,
         assistant = 3 if assistant == 3 else 2,
         stage_data=stage_data,
         mountain_categories=mountain_categories,
