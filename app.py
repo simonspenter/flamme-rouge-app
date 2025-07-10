@@ -251,7 +251,7 @@ def scoreboard():
 
     # Fetch team names
     cursor.execute("""
-        SELECT name FROM teams WHERE race_id = ?
+        SELECT team_name FROM teams WHERE race_id = ?
     """, (race_id,))
 
     team_names = [row[0] for row in cursor.fetchall()]
