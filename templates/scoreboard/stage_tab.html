@@ -173,7 +173,7 @@
             const value = parseInt(selectElement.value) || 0;
 
             // Update the corresponding classement cell in the scoreboard
-            const cellId = classement-stage-${stage}-team-${team + 1}-rider-${rider + 1};
+            const cellId = `classement-stage-${stage}-team-${team}-rider-${rider}`;
             const cell = document.getElementById(cellId);
             if (cell) {
                 cell.innerText = value;
@@ -188,12 +188,14 @@
             let totals = [];
             let minTotal = Infinity;
 
-            for (let team = 1; team <= teams; team++) {
-                for (let rider = 1; rider <= assistant; rider++) {
+            // Loop through all teams and riders to calculate the totals
+            for (let team = 0; team < teams; team++) {
+                for (let rider = 0; rider < assistant; rider++) {
                     let total = 0;
 
+                    // Loop through all stages to calculate the total score
                     for (let stage = 1; stage <= stages; stage++) {
-                        const cellId = classement-stage-${stage}-team-${team}-rider-${rider};
+                        const cellId = `classement-stage-${stage}-team-${team}-rider-${rider}`;
                         const cell = document.getElementById(cellId);
                         const value = parseInt(cell?.innerText || "0");
                         total += isNaN(value) ? 0 : value;
