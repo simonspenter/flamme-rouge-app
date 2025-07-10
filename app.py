@@ -310,7 +310,6 @@ def scoreboard():
         stages=len(stage_data),
         teams=teams,
         team_names=team_names,  # Pass the team names to the template
-        num_teams=len(team_names),  # Pass the number of teams
         assistant=3 if assistant == 3 else 2,
         stage_data=stage_data,
         mountain_categories=mountain_categories,
