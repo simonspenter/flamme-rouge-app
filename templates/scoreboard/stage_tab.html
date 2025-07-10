@@ -248,8 +248,6 @@
 
             const position = parseInt(selectElement.value) || 0;
             const segmentType = selectElement.dataset.category.toLowerCase();  // 'sprint' or 'mountain'
-
-            const raceId = {{ race_id }};  // Inject the race_id from Flask template to JavaScript
             
             // Send the data to the server via AJAX
             fetch('/update-segment-result', {
@@ -264,8 +262,7 @@
                     category: selectElement.dataset.category,
                     team: team + 1,  // 1-based index for teams
                     rider: rider + 1,  // 1-based index for riders
-                    position: position,
-                    race_id: raceId  // Send race_id with the request
+                    position: position
                 }),
             })
             .then(response => response.json())
@@ -284,7 +281,6 @@
             // Optionally, update the segment scores immediately on the client side if needed
             updateSegmentTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
         }
-
          
     </script>
 
