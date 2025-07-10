@@ -100,7 +100,7 @@ def generate_unique_race_id(cursor, length=6):
         if not cursor.fetchone():
             return race_id
 
-@app.route("/create-race-submit", methods=["POST"])
+@app.route("/create-race", methods=["POST"])
 def create_race_submit():
     # Get form data
     code = request.form.get("race")          # e.g. 'tdf2023'
