@@ -331,61 +331,67 @@ def scoreboard():
         stage_type_icons=stage_type_icons
     )
 
-@app.route('/update-segment-result', methods=['POST'])
+@app.route("/update-segment-result", methods=["POST"])
 def update_segment_result():
+    # Get the JSON data from the request
     data = request.get_json()
 
     stage_number = data['stage_number']
     segment_index = data['segment_index']
-    segment_type = data['type']  # 'sprint' or 'mountain'
-    category = data['category']
+    segment_type = data['type']  # Sprint or Mountain
+    category = data['category']  # S, SF, MF, or M
     team = data['team']
     rider = data['rider']
     position = data['position']
-    race_id = request.args.get("race")  # You might pass this another way if needed
+    
+    race_id = data['race_id']  # The race_id passed from the frontend
 
-    # Look up stage_id based on race_code and stage_number
+    # Fetch rider_id and team_id from the database (assuming they're stored)
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Get the rider_id and team_id based on the team and rider
     cursor.execute("""
-        SELECT id FROM stages
-        WHERE race_code = (SELECT code FROM races WHERE id = ?) AND number = ?
-    """, (race_id, stage_number))
-    stage_row = cursor.fetchone()
-    if not stage_row:
+        SELECT id FROM riders WHERE race_id = ? AND team_id = ? AND rider_name = ?
+    """, (race_id, team, rider))
+    rider_row = cursor.fetchone()
+
+    cursor.execute("""
+        SELECT id FROM teams WHERE race_id = ? AND team_name = ?
+    """, (race_id, team))
+    team_row = cursor.fetchone()
+
+    # If either rider or team does not exist, handle the error
+    if not rider_row or not team_row:
+        return jsonify({"status": "error", "message": "Rider or Team not found."}), 404
+
+    rider_id = rider_row[0]
+    team_id = team_row[0]
+
+    # Calculate points based on the segment type and category
+    points = 0
+    if segment_type == 'sprint':
+        points = sprintPoints.get(category, {}).get(position, 0)
+    elif segment_type == 'mountain':
+        points = mountainPoints.get(category, {}).get(position, 0)
+
+    try:
+        # Insert data into the segment_results table
+        cursor.execute("""
+            INSERT INTO segment_results (race_id, segment_id, rider_id, team_id, placement, points)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (race_id, segment_index, rider_id, team_id, position, points))
+
+        conn.commit()
         conn.close()
-        return jsonify({"error": "Stage not found"}), 404
 
-    stage_id = stage_row[0]
+        # Return success response
+        return jsonify({"status": "success", "message": "Segment result updated successfully!"})
 
-    # Look up segment_id based on order, type, and stage_id
-    cursor.execute("""
-        SELECT id FROM segments
-        WHERE stage_id = ? AND type = ? AND order_in_stage = ?
-    """, (stage_id, segment_type, segment_index + 1))  # `segment_index + 1` to match the order
-    segment_row = cursor.fetchone()
-    if not segment_row:
-        conn.close()
-        return jsonify({"error": "Segment not found"}), 404
+    except Exception as e:
+        # Handle error if something goes wrong
+        return jsonify({"status": "error", "message": str(e)}), 500
 
-    segment_id = segment_row[0]
-
-    # Insert or update result
-    cursor.execute("""
-        MERGE segment_results AS target
-        USING (SELECT ? AS segment_id, ? AS team, ? AS rider) AS source
-        ON target.segment_id = source.segment_id AND target.team = source.team AND target.rider = source.rider
-        WHEN MATCHED THEN
-            UPDATE SET position = ?
-        WHEN NOT MATCHED THEN
-            INSERT (segment_id, team, rider, position) VALUES (?, ?, ?, ?);
-    """, (segment_id, team, rider, position, position, segment_id, team, rider, position))
-
-    conn.commit()
-    conn.close()
-
-    return jsonify({"status": "success"}), 200
 
 
 # Test route to verify database connection
