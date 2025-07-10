@@ -4,14 +4,14 @@
         <thead>
             <tr>
                 <th rowspan="2">Stage</th>
-                {% for team in team_names %}
-                    <th colspan="{{ assistant }}">{{ team }}</th>
+                {% for team_id in rider_names %}
+                    <th colspan="{{ assistant }}">{{ team_names[loop.index0] }}</th>
                 {% endfor %}
             </tr>
             <tr>
-                {% for team in team_names %}
-                    {% for rider in range(assistant) %}
-                        <th>Rider {{ rider + 1 }}</th>
+                {% for team_id in rider_names %}
+                    {% for rider in rider_names[team_id] %}
+                        <th>{{ rider }}</th>
                     {% endfor %}
                 {% endfor %}
             </tr>
@@ -20,18 +20,18 @@
             {% for stage in range(stages) %}
                 <tr>
                     <td>Stage {{ stage + 1 }}</td>
-                    {% for team in team_names %}
-                        {% for rider in range(assistant) %}
-                            <td id="sprint-stage-{{ stage + 1 }}-team-{{ loop.index }}-rider-{{ rider + 1 }}"></td>
+                    {% for team_id in rider_names %}
+                        {% for rider in rider_names[team_id] %}
+                            <td id="sprint-stage-{{ stage + 1 }}-team-{{ team_id }}-rider-{{ loop.index }}"></td>
                         {% endfor %}
                     {% endfor %}
                 </tr>
             {% endfor %}
             <tr>
                 <td>Total</td>
-                {% for team in team_names %}
-                    {% for rider in range(assistant) %}
-                        <td id="sprint-total-team-{{ loop.index }}-rider-{{ rider + 1 }}"></td>
+                {% for team_id in rider_names %}
+                    {% for rider in rider_names[team_id] %}
+                        <td id="sprint-total-team-{{ team_id }}-rider-{{ loop.index }}"></td>
                     {% endfor %}
                 {% endfor %}
             </tr>

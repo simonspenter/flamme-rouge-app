@@ -79,14 +79,14 @@
             <thead>
                 <tr>
                     <th rowspan="2">Stage</th>
-                    {% for team in team_names %}
-                        <th colspan="{{ assistant }}">{{ team }}</th>
+                    {% for team_id in rider_names %}
+                        <th colspan="{{ assistant }}">{{ team_names[loop.index0] }}</th>
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for team in team_names %}
-                        {% for rider in range(assistant) %}
-                            <th>Rider {{ rider + 1 }}</th>
+                    {% for team_id in rider_names %}
+                        {% for rider in rider_names[team_id] %}
+                            <th>{{ rider }}</th>
                         {% endfor %}
                     {% endfor %}
                 </tr>
