@@ -322,11 +322,14 @@ def scoreboard():
 
     conn.close()
 
+    # Fetch teams count
+    num_teams = len(team_names)
+
     return render_template(
         'scoreboard.html',
         stages=len(stage_data),
-        teams=teams_data,
-        assistant = 3 if assistant == 3 else 2,
+        num_teams=num_teams,  # Pass the number of teams instead of the list itself
+        assistant=3 if assistant == 3 else 2,
         stage_data=stage_data,
         mountain_categories=mountain_categories,
         sprint_categories=sprint_categories,

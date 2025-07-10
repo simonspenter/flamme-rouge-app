@@ -75,19 +75,19 @@
 
 
 
-        <table>
+        <table> 
             <thead>
                 <tr>
                     <th></th> <!-- Empty cell for stage name -->
-                    {% for team in range(teams) %}
-                        <th colspan="{{ assistant }}">{{ team['name'] }}</th>
+                    {% for team in range(num_teams) %}  <!-- Change here -->
+                        <th colspan="{{ assistant }}">Team {{ team + 1 }}</th>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th></th> <!-- Empty cell for spacing -->
-                    {% for team in range(teams) %}
+                    {% for team in range(num_teams) %}  <!-- Change here -->
                         {% for rider in range(assistant) %}
-                            <th>{{ rider['name'] }}</th>
+                            <th>Rider {{ rider + 1 }}</th>
                         {% endfor %}
                     {% endfor %}
                 </tr>
