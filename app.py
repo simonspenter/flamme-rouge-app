@@ -256,6 +256,17 @@ def scoreboard():
 
     team_names = [row[0] for row in cursor.fetchall()]
 
+    # Fetch rider names
+    cursor.execute("""
+        SELECT team_id, rider_name FROM riders WHERE race_id = ?
+    """, (race_id,))
+
+    rider_names = {}
+    for team_id, rider_name in cursor.fetchall():
+        if team_id not in rider_names:
+            rider_names[team_id] = []
+        rider_names[team_id].append(rider_name)
+
     # Fetch all stages for the race
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,
@@ -310,6 +321,7 @@ def scoreboard():
         stages=len(stage_data),
         teams=teams,
         team_names=team_names,  # Pass the team names to the template
+        rider_names=rider_names,  # Pass the rider names to the template
         assistant=3 if assistant == 3 else 2,
         stage_data=stage_data,
         mountain_categories=mountain_categories,
