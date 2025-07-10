@@ -4,14 +4,14 @@
         <thead>
             <tr>
                 <th rowspan="2">Stage</th>
-                {% for team in teams %}
-                    <th colspan="{{ assistant }}">{{ team.name }}</th>
+                {% for team in team_names %}
+                    <th colspan="{{ assistant }}">Team {{ loop.index }}</th>
                 {% endfor %}
             </tr>
             <tr>
-                {% for team in teams %}
-                    {% for rider in team.riders %}
-                        <th>{{ rider.name }}</th>
+                {% for team in team_names %}
+                    {% for rider in range(assistant) %}
+                        <th>Rider {{ rider + 1 }}</th>
                     {% endfor %}
                 {% endfor %}
             </tr>
@@ -20,18 +20,18 @@
             {% for stage in range(stages) %}
                 <tr>
                     <td>Stage {{ stage + 1 }}</td>
-                    {% for team in teams %}
-                        {% for rider in team.riders %}
-                            <td id="sprint-stage-{{ stage + 1 }}-team-{{ team.id }}-rider-{{ rider.id }}"></td>
+                    {% for team in team_names %}
+                        {% for rider in range(assistant) %}
+                            <td id="sprint-stage-{{ stage + 1 }}-team-{{ loop.index }}-rider-{{ rider + 1 }}"></td>
                         {% endfor %}
                     {% endfor %}
                 </tr>
             {% endfor %}
             <tr>
                 <td>Total</td>
-                {% for team in teams %}
-                    {% for rider in team.riders %}
-                        <td id="sprint-total-team-{{ team.id }}-rider-{{ rider.id }}"></td>
+                {% for team in team_names %}
+                    {% for rider in range(assistant) %}
+                        <td id="sprint-total-team-{{ loop.index }}-rider-{{ rider + 1 }}"></td>
                     {% endfor %}
                 {% endfor %}
             </tr>
