@@ -106,7 +106,11 @@ def create_race_submit():
     code = request.form.get("race")          # e.g. 'tdf2023'
     teams = int(request.form.get("teams"))
     assistant = int(request.form.get("assistant"))
-    team_names = request.form.getlist("team_names")  # Assuming it's a list of team names
+
+    # Get the team names from the dynamically created fields
+    team_names = [request.form.get(f"team_name_{i}") for i in range(1, teams + 1)]
+    
+    # Get rider names
     rider_names = request.form  # You can process it as a dictionary of rider names if needed
 
     # Debug: Check what data has been received
