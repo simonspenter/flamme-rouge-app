@@ -161,7 +161,7 @@ def create_race_in_db(code, teams, assistant, team_names, rider_names):
 
         # Determine the number of riders per team based on the assistant value
         # 2 riders if no assistant, 3 if assistant is selected
-        num_riders = 3 if assistant > 0 else 2
+        num_riders = 3 if assistant == 3 else 2
 
         # Insert riders for each team
         for rider_number in range(1, num_riders + 1):
