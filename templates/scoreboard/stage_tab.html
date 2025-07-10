@@ -79,13 +79,13 @@
             <thead>
                 <tr>
                     <th></th> <!-- Empty cell for stage name -->
-                    {% for team in range(num_teams) %}  <!-- Change here -->
-                        <th colspan="{{ assistant }}">Team {{ team + 1 }}</th>
+                    {% for team_name in team_names %}  <!-- Loop over team_names directly -->
+                        <th colspan="{{ assistant }}">Team {{ loop.index }}</th>  <!-- Use loop.index to show team number -->
                     {% endfor %}
                 </tr>
                 <tr>
                     <th></th> <!-- Empty cell for spacing -->
-                    {% for team in range(num_teams) %}  <!-- Change here -->
+                    {% for team_name in team_names %}  <!-- Loop over team_names directly -->
                         {% for rider in range(assistant) %}
                             <th>Rider {{ rider + 1 }}</th>
                         {% endfor %}

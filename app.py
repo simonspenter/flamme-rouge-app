@@ -242,7 +242,6 @@ def scoreboard():
 
     # Fetch race info
     cursor.execute("SELECT code, teams, assistant FROM races WHERE id = ?", (race_id,))
-
     race_row = cursor.fetchone()
 
     if not race_row:
@@ -250,27 +249,12 @@ def scoreboard():
 
     code, teams, assistant = race_row
 
-    # Fetch team and rider names
-    teams_data = []
+    # Fetch team names
     cursor.execute("""
-        SELECT t.team_id, t.team_name, r.rider_id, r.rider_name
-        FROM teams t
-        JOIN riders r ON t.team_id = r.team_id
-        WHERE t.race_id = ?
-        ORDER BY t.team_number, r.rider_number
-    """, (race_id,))
+        SELECT name FROM teams WHERE race_code = ?
+    """, (code,))
 
-    team_riders = {}
-    for team_id, team_name, rider_id, rider_name in cursor.fetchall():
-        if team_id not in team_riders:
-            team_riders[team_id] = {'team_name': team_name, 'riders': []}
-        team_riders[team_id]['riders'].append({'id': rider_id, 'name': rider_name})
-
-    # Convert team_riders to the desired format
-    teams_data = [
-        {'id': team_id, 'name': data['team_name'], 'riders': data['riders']}
-        for team_id, data in team_riders.items()
-    ]
+    team_names = [row[0] for row in cursor.fetchall()]
 
     # Fetch all stages for the race
     cursor.execute("""
@@ -280,7 +264,6 @@ def scoreboard():
         WHERE race_code = ?
         ORDER BY number
     """, (code,))
-
 
     stage_data = []
     for stage in cursor.fetchall():
@@ -305,7 +288,7 @@ def scoreboard():
             FROM segments
             WHERE stage_id = ?
             ORDER BY order_in_stage
-        """, stage[0])
+        """, (stage[0],))
 
         for name, seg_type, cat, order in cursor.fetchall():
             stage_dict["segments"].append({
@@ -322,13 +305,11 @@ def scoreboard():
 
     conn.close()
 
-    # Fetch teams count
-    num_teams = len(team_names)
-
     return render_template(
         'scoreboard.html',
         stages=len(stage_data),
-        num_teams=num_teams,  # Pass the number of teams instead of the list itself
+        team_names=team_names,  # Pass the team names to the template
+        num_teams=len(team_names),  # Pass the number of teams
         assistant=3 if assistant == 3 else 2,
         stage_data=stage_data,
         mountain_categories=mountain_categories,
