@@ -308,7 +308,7 @@ def scoreboard():
     return render_template(
         'scoreboard.html',
         stages=len(stage_data),
-        teams=teams
+        teams=teams,
         team_names=team_names,  # Pass the team names to the template
         num_teams=len(team_names),  # Pass the number of teams
         assistant=3 if assistant == 3 else 2,
