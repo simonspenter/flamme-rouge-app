@@ -267,8 +267,6 @@ def scoreboard():
             rider_names[team_id] = []
         rider_names[team_id].append(rider_name)
 
-    print(rider_names)
-
     # Fetch all stages for the race
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,

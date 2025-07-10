@@ -173,7 +173,7 @@
             const value = parseInt(selectElement.value) || 0;
 
             // Update the corresponding classement cell in the scoreboard
-            const cellId = `classement-stage-${stage}-team-${team + 1}-rider-${rider + 1}`;
+            const cellId = classement-stage-${stage}-team-${team + 1}-rider-${rider + 1};
             const cell = document.getElementById(cellId);
             if (cell) {
                 cell.innerText = value;
@@ -193,7 +193,7 @@
                     let total = 0;
 
                     for (let stage = 1; stage <= stages; stage++) {
-                        const cellId = `classement-stage-${stage}-team-${team}-rider-${rider}`;
+                        const cellId = classement-stage-${stage}-team-${team}-rider-${rider};
                         const cell = document.getElementById(cellId);
                         const value = parseInt(cell?.innerText || "0");
                         total += isNaN(value) ? 0 : value;
@@ -209,7 +209,7 @@
             // Step 2: Update the DOM with adjusted totals (relative to the minimum)
             for (const entry of totals) {
                 const adjusted = entry.total - minTotal;
-                const totalCellId = `classement-total-team-${entry.team}-rider-${entry.rider}`;
+                const totalCellId = classement-total-team-${entry.team}-rider-${entry.rider};
                 const totalCell = document.getElementById(totalCellId);
                 if (totalCell) {
                     totalCell.innerText = adjusted;
@@ -226,14 +226,14 @@
 
                     for (let stage = 1; stage <= stages; stage++) {
                         // For each stage, calculate the total score for the rider/team
-                        const cellId = `segment-stage-${stage}-team-${team}-rider-${rider}`;
+                        const cellId = segment-stage-${stage}-team-${team}-rider-${rider};
                         const cell = document.getElementById(cellId);
                         const value = parseInt(cell?.innerText || "0");
                         total += isNaN(value) ? 0 : value;
                     }
 
                     // Update the total cell for this rider/team in the scoreboard
-                    const totalCellId = `segment-total-team-${team}-rider-${rider}`;
+                    const totalCellId = segment-total-team-${team}-rider-${rider};
                     const totalCell = document.getElementById(totalCellId);
                     if (totalCell) {
                         totalCell.innerText = total;
