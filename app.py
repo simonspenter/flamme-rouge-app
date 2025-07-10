@@ -212,15 +212,15 @@ def create_team_in_db(race_id, team_number, team_name):
     return team_id
 
 
-def create_rider_in_db(race_id, team_id, rider_number, rider_name):
+def create_rider_in_db(race_id, team_id, rider_number, rider_name, rider_position):
     conn = get_db_connection()
     cursor = conn.cursor()
 
     # Debugging output
-    print(f"DEBUG: race_id={race_id}, team_id={team_id}, rider_name={rider_name}, rider_number={rider_number}")
+    print(f"DEBUG: race_id={race_id}, team_id={team_id}, rider_name={rider_name}, rider_number={rider_number}, rider_position={rider_position}")
     
     try:
-        cursor.execute("""INSERT INTO riders (race_id, team_id, rider_name, rider_number) 
+        cursor.execute("""INSERT INTO riders (race_id, team_id, rider_name, rider_number, rider_position) 
                           VALUES (?, ?, ?, ?)""", 
                        (race_id, team_id, rider_name, rider_number))
         conn.commit()
