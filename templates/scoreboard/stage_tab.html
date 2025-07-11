@@ -171,12 +171,12 @@
         // Functions for updating Classement data
         function handleClassementChange(stage, team, rider, selectElement) {
             const value = parseInt(selectElement.value) || 0;
-
-            // Log the value to check if the function is triggered
+            
+            // Log to check if the function is triggered
             console.log(`Classement Changed: Stage ${stage}, Team ${team}, Rider ${rider}, Value: ${value}`);
-
+            
             // Send the data to the backend via AJAX
-            fetch('/update-classement-results', {
+            fetch('/update-classement-result', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -199,10 +199,8 @@
             .catch(error => {
                 console.error('Error sending classement data:', error);
             });
-
-            // Recalculate totals
-            updateClassementTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
         }
+
 
 
 
