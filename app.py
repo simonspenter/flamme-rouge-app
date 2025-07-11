@@ -329,7 +329,7 @@ def scoreboard():
         stage_type_icons=stage_type_icons
     )
 
-@app.route('/update-classement-result', methods=['POST'])
+@app.route('/update-classement-results', methods=['POST'])
 def update_classement_result():
     data = request.get_json()
 
