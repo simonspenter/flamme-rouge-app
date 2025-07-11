@@ -331,46 +331,11 @@ def scoreboard():
 
 @app.route('/update-classement-result', methods=['POST'])
 def update_classement_result():
-    data = request.get_json()
-    print(f"Received data: {data}")  # Print the incoming data to the console
+    print("Classement result received")
 
-
-    # Extract data from the request
-    stage_number = data.get('stage_number')
-    team_id = data.get('team_id')
-    rider_id = data.get('rider_id')
-    points = data.get('placement')  # Here, 'placement' will hold the points (value from the dropdown)
-    
-    # Fetch the race ID from the request
-    race_id = data.get('race_id')  # Assuming race_id is part of the request
-    
-    # Fetch rider_name and team_name from the database
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    # Fetch rider name
-    cursor.execute("SELECT rider_name FROM riders WHERE id = ?", (rider_id,))
-    rider_name = cursor.fetchone()[0]
-    
-    # Fetch team name
-    cursor.execute("SELECT team_name FROM teams WHERE id = ?", (team_id,))
-    team_name = cursor.fetchone()[0]
-
-    # Print debug statement with placement left blank and points being taken from dropdown
-    print(f"Classement result updated: race_id: {race_id}, stage_id: {stage_number}, "
-          f"rider_name: {rider_name}, team_name: {team_name}, placement: '', points: {points}")
-    
-    # Insert the new row into classement_results
-    cursor.execute("""
-        INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement, points)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (race_id, stage_number, rider_id, team_id, None, points))  # placement is left as None (blank)
-
-    conn.commit()
-    conn.close()
-
-    # Return success response
+    # Return a simple response
     return jsonify({'status': 'success'})
+
 
 
 
