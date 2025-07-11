@@ -96,7 +96,7 @@
 
                 <!-- Classement Row -->
                 <tr>
-                    <td>Classement!</td>
+                    <td>Classement</td>
                     {% for team in range(teams) %}
                         {% for rider in range(assistant) %}
                             <td>
@@ -174,21 +174,13 @@
             console.log("classement change");
         }
 
-
-
-
-
         function updateClassementTotals(stages, teams, assistant) {
-            // Step 1: Store totals in a 2D array and find the minimum total
             let totals = [];
             let minTotal = Infinity;
 
-            // Loop through all teams and riders to calculate the totals
             for (let team = 0; team < teams; team++) {
                 for (let rider = 0; rider < assistant; rider++) {
                     let total = 0;
-
-                    // Loop through all stages to calculate the total score
                     for (let stage = 1; stage <= stages; stage++) {
                         const cellId = `classement-stage-${stage}-team-${team}-rider-${rider}`;
                         const cell = document.getElementById(cellId);
@@ -203,16 +195,15 @@
                 }
             }
 
-            // Step 2: Update the DOM with adjusted totals (relative to the minimum)
             for (const entry of totals) {
                 const adjusted = entry.total - minTotal;
-                const totalCellId = classement-total-team-${entry.team}-rider-${entry.rider};
+                const totalCellId = `classement-total-team-${entry.team}-rider-${entry.rider}`;
                 const totalCell = document.getElementById(totalCellId);
                 if (totalCell) {
                     totalCell.innerText = adjusted;
                 }
             }
-        } 
+        }
 
 
         function updateSegmentTotals(stages, teams, assistant) {
