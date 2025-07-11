@@ -170,15 +170,16 @@
         
         // Functions for updating Classement data
         function handleClassementChange(stage, team, rider, selectElement) {
-            const value = parseInt(selectElement.value) || 0;
+            const points = parseInt(selectElement.value) || 0;  // The value is the points
 
             // Update the corresponding classement cell in the scoreboard
             const cellId = `classement-stage-${stage}-team-${team}-rider-${rider}`;
             const cell = document.getElementById(cellId);
             if (cell) {
-                cell.innerText = value;
+                cell.innerText = points;
             }
 
+            // Send the data to the backend via AJAX
             fetch('/update-classement-result', {
                 method: 'POST',
                 headers: {
@@ -186,9 +187,10 @@
                 },
                 body: JSON.stringify({
                     stage_number: stage,
+                    race_id: race_id,  // Assuming race_id is available in your context
                     team_id: team + 1,  // Teams are 1-indexed in the DB
                     rider_id: rider + 1,  // Riders are 1-indexed in the DB
-                    placement: value
+                    placement: points  // Points are sent as placement
                 }),
             })
             .then(response => response.json())
@@ -203,10 +205,10 @@
                 console.error('Error sending classement data:', error);
             });
 
-
             // Recalculate totals
             updateClassementTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
         }
+
 
 
         function updateClassementTotals(stages, teams, assistant) {
