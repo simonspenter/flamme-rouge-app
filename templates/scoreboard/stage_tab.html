@@ -179,8 +179,7 @@
                 cell.innerText = value;
             }
 
-            // Send the data to the backend via AJAX
-            fetch('/update-classement-results', {
+            fetch('/update-classement-result', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -203,6 +202,7 @@
             .catch(error => {
                 console.error('Error sending classement data:', error);
             });
+
 
             // Recalculate totals
             updateClassementTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);

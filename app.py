@@ -329,9 +329,10 @@ def scoreboard():
         stage_type_icons=stage_type_icons
     )
 
-@app.route('/update-classement-results', methods=['POST'])
+@app.route('/update-classement-result', methods=['POST'])
 def update_classement_result():
     data = request.get_json()
+    print(data)  # Add this line to verify the data being received
 
     # Extract data from the request
     stage_number = data.get('stage_number')
@@ -354,6 +355,7 @@ def update_classement_result():
 
     # Return success response
     return jsonify({'status': 'success'})
+
 
 
 @app.route('/update-segment-result', methods=['POST'])
