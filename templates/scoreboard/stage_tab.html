@@ -123,10 +123,38 @@
         const NUM_TEAMS = {{ teams }};
         const NUM_ASSISTANTS = {{ assistant }};
         
-        // Functions for updating Classement data
         function handleClassementChange(stage, team, rider, selectElement) {
-            console.log("classement change");
+            // Get the value selected in the dropdown
+            const placement = parseInt(selectElement.value) || 0;
+
+            console.log("Classement change triggered: ", "Stage:", stage, "Team:", team, "Rider:", rider, "Placement:", placement);
+
+            // Send the data to the backend via AJAX (using fetch)
+            fetch('/update-classement-result', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    stage_number: stage,
+                    team_id: team + 1,  // Use 1-based index for team_id
+                    rider_id: rider + 1,  // Use 1-based index for rider_id
+                    placement: placement
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log('Classement result updated successfully!');
+                } else {
+                    console.error('Error updating classement result:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending classement data:', error);
+            });
         }
+
          
     </script>
 
