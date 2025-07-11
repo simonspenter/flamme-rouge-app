@@ -329,6 +329,33 @@ def scoreboard():
         stage_type_icons=stage_type_icons
     )
 
+@app.route('/update-classement-result', methods=['POST'])
+def update_classement_result():
+    data = request.get_json()
+
+    # Extract data from the request
+    stage_number = data.get('stage_number')
+    team_id = data.get('team_id')
+    rider_id = data.get('rider_id')
+    placement = data.get('placement')
+
+    # Insert the data into the classement_results table
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Insert the new row into classement_results
+    cursor.execute("""
+        INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement, points)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (race_id, stage_number, rider_id, team_id, placement, 0))  # Points can be set to 0 initially
+
+    conn.commit()
+    conn.close()
+
+    # Return success response
+    return jsonify({'status': 'success'})
+
+
 @app.route('/update-segment-result', methods=['POST'])
 def update_segment_result():
     data = request.get_json()

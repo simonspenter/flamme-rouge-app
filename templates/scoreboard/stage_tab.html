@@ -179,9 +179,35 @@
                 cell.innerText = value;
             }
 
+            // Send the data to the backend via AJAX
+            fetch('/update-classement', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    stage_number: stage,
+                    team_id: team + 1,  // Teams are 1-indexed in the DB
+                    rider_id: rider + 1,  // Riders are 1-indexed in the DB
+                    placement: value
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log('Classement data updated successfully!');
+                } else {
+                    console.error('Error updating classement data:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending classement data:', error);
+            });
+
             // Recalculate totals
             updateClassementTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
         }
+
 
         function updateClassementTotals(stages, teams, assistant) {
             // Step 1: Store totals in a 2D array and find the minimum total
