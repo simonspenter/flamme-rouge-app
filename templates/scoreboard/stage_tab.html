@@ -112,56 +112,10 @@
                 </tr>
 
 
-                <!-- Segment Rows for Stage -->
-                {% for segment in single_stage.segments %}
-                    <tr>
-                        <!-- Display the segment name and type -->
-                        <td>{{ segment["name"] }}</td>
-                        
-                        {% for team in range(teams) %}
-                            {% for rider in range(assistant) %}
-                                <td>
-                                    <select id="stage-segment-{{ single_stage.number }}-{{ segment['type'] }}-{{ loop.index0 }}-team-{{ team }}-rider-{{ rider }}"
-                                            data-category="{{ segment['type'][0] | upper }}"  <!-- Only 'S' for Sprint or 'M' for Mountain -->
-                                            onchange="handleSegmentChange({{ single_stage.number }}, {{ loop.index0 }}, {{ team }}, {{ rider }}, this)">
-                                        <option value="">Select</option>
-                                        {% for i in range(6) %}
-                                            <option value="{{ i }}">{{ i }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                            {% endfor %}
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-
             </tbody>
 
         </table>
     </div>
-
-    <script>
-        const sprintCategories = {{ sprint_categories | tojson }};
-        const mountainCategories = {{ mountain_categories | tojson }};
-    </script>
-
-    
-    <script>
-    // Mapping for Mountain and Sprint points
-    const mountainPoints = {
-        "cat3": {1: 3, 2: 2, 3: 1, 0: 0},
-        "cat2": {1: 5, 2: 3, 3: 1, 0: 0},
-        "cat1": {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0},
-        "HC":   {1: 20, 2: 14, 3: 10, 4: 7, 5: 3, 6: 1, 0: 0}
-    };
-
-    const sprintPoints = {
-        "S":  {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0},
-        "SF": {1: 20, 2: 14, 3: 10, 4: 6, 5: 2, 0: 0},
-        "MF": {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0}
-    };
-    </script>
-
 
     <script>
         // Inject stage/team/rider counts from Flask
@@ -172,102 +126,6 @@
         // Functions for updating Classement data
         function handleClassementChange(stage, team, rider, selectElement) {
             console.log("classement change");
-        }
-
-        function updateClassementTotals(stages, teams, assistant) {
-            let totals = [];
-            let minTotal = Infinity;
-
-            for (let team = 0; team < teams; team++) {
-                for (let rider = 0; rider < assistant; rider++) {
-                    let total = 0;
-                    for (let stage = 1; stage <= stages; stage++) {
-                        const cellId = `classement-stage-${stage}-team-${team}-rider-${rider}`;
-                        const cell = document.getElementById(cellId);
-                        const value = parseInt(cell?.innerText || "0");
-                        total += isNaN(value) ? 0 : value;
-                    }
-
-                    totals.push({ team, rider, total });
-                    if (total < minTotal) {
-                        minTotal = total;
-                    }
-                }
-            }
-
-            for (const entry of totals) {
-                const adjusted = entry.total - minTotal;
-                const totalCellId = `classement-total-team-${entry.team}-rider-${entry.rider}`;
-                const totalCell = document.getElementById(totalCellId);
-                if (totalCell) {
-                    totalCell.innerText = adjusted;
-                }
-            }
-        }
-
-
-        function updateSegmentTotals(stages, teams, assistant) {
-            // Loop over all stages, teams, and riders to calculate totals
-            for (let team = 1; team <= teams; team++) {
-                for (let rider = 1; rider <= assistant; rider++) {
-                    let total = 0;
-
-                    for (let stage = 1; stage <= stages; stage++) {
-                        // For each stage, calculate the total score for the rider/team
-                        const cellId = segment-stage-${stage}-team-${team}-rider-${rider};
-                        const cell = document.getElementById(cellId);
-                        const value = parseInt(cell?.innerText || "0");
-                        total += isNaN(value) ? 0 : value;
-                    }
-
-                    // Update the total cell for this rider/team in the scoreboard
-                    const totalCellId = segment-total-team-${team}-rider-${rider};
-                    const totalCell = document.getElementById(totalCellId);
-                    if (totalCell) {
-                        totalCell.innerText = total;
-                    }
-                }
-            }
-        }
-
-
-        function handleSegmentChange(stage, segmentIndex, team, rider, selectElement) {
-            let total = 0;
-
-            const position = parseInt(selectElement.value) || 0;
-            const segmentType = selectElement.dataset.category.toLowerCase();  // 'sprint' or 'mountain'
-            
-            // Send the data to the server via AJAX
-            fetch('/update-segment-result', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    stage_number: stage,
-                    segment_index: segmentIndex,
-                    type: segmentType,
-                    category: selectElement.dataset.category,
-                    team: team + 1,  // 1-based index for teams
-                    rider: rider + 1,  // 1-based index for riders
-                    position: position
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    // Handle success, maybe update a part of the UI
-                    console.log('Segment data updated successfully!');
-                } else {
-                    console.error('Error updating segment data:', data);
-                }
-            })
-            .catch(error => {
-                console.error('Error sending segment data:', error);
-            });
-
-            // Optionally, update the segment scores immediately on the client side if needed
-            updateSegmentTotals(NUM_STAGES, NUM_TEAMS, NUM_ASSISTANTS);
         }
          
     </script>
