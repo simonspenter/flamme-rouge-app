@@ -332,6 +332,8 @@ def scoreboard():
 @app.route('/update-classement-result', methods=['POST'])
 def update_classement_result():
     data = request.get_json()
+    print(f"Received data: {data}")  # Print the incoming data to the console
+
 
     # Extract data from the request
     stage_number = data.get('stage_number')
