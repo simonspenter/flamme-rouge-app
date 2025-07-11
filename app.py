@@ -331,9 +331,31 @@ def scoreboard():
 
 @app.route('/update-classement-result', methods=['POST'])
 def update_classement_result():
-    print("Classement result received")
+    data = request.get_json()
 
-    # Return a simple response
+    # Extract data from the request
+    stage_number = data.get('stage_number')
+    team_id = data.get('team_id')
+    rider_id = data.get('rider_id')
+    placement = data.get('placement')
+
+    # Assuming 'race_id' is a global variable or can be fetched as needed
+    race_id = get_race_id()  # Placeholder, replace with your logic to get the current race_id
+
+    # Insert the data into the classement_results table
+    conn = get_db_connection()  # Define this function to get a database connection
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement, points)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (race_id, stage_number, rider_id, team_id, placement, 0))  # Points can be set to 0 initially
+
+    conn.commit()
+    conn.close()
+
+    print(f"Classement result updated: race: {race_id}, stage: {stage_number}, team: {team_id}, rider: {rider_id}, placement: {placement}")
+
     return jsonify({'status': 'success'})
 
 
