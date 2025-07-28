@@ -267,6 +267,9 @@ def scoreboard():
             rider_names[team_id] = []
         rider_names[team_id].append(rider_name)
 
+    # Debug: Log the structure of rider_names to see its contents
+    print(f"rider_names: {rider_names}")  # This will log the structure of rider_names
+
     # Fetch all stages for the race
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,
@@ -289,46 +292,7 @@ def scoreboard():
             "elevation_m": stage[7],
             "route": stage[8],
             "route_image": stage[9],
-            "link": stage[10],
-            "segments": []  # Create a unified segments list
-        }
 
-        # Fetch segments for this stage
-        cursor.execute("""
-            SELECT name, type, category, order_in_stage
-            FROM segments
-            WHERE stage_id = ?
-            ORDER BY order_in_stage
-        """, (stage[0],))
-
-        for name, seg_type, cat, order in cursor.fetchall():
-            stage_dict["segments"].append({
-                "name": name,
-                "type": seg_type,
-                "category": cat,
-                "order": order
-            })
-
-        # Sort segments by the 'order' field
-        stage_dict["segments"].sort(key=lambda x: x["order"])
-
-        stage_data.append(stage_dict)
-
-    conn.close()
-
-    return render_template(
-        'scoreboard.html',
-        race_id=race_id,  # Pass the race_id to the template
-        stages=len(stage_data),
-        teams=teams,
-        team_names=team_names,  # Pass the team names to the template
-        rider_names=rider_names,  # Pass the rider names to the template
-        assistant=3 if assistant == 3 else 2,
-        stage_data=stage_data,
-        mountain_categories=mountain_categories,
-        sprint_categories=sprint_categories,
-        stage_type_icons=stage_type_icons
-    )
 
 @app.route('/update-classement-result', methods=['POST'])
 def update_classement_result():
