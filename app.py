@@ -322,6 +322,7 @@ def scoreboard():
 
     return render_template(
         'scoreboard.html',
+        race_id=race_id,
         stages=len(stage_data),
         teams=teams,
         team_names=team_names,  # Pass the team names to the template
@@ -361,7 +362,7 @@ def update_classement_result():
         cursor.execute("""
             INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement)
             VALUES (?, ?, ?, ?, ?)
-        """, (race_id, stage_number, rider_id, team_id, placement))  # Excluding points since it's no longer in the table
+        """, (race_id, stage_number, rider_id, team_id, placement))  
         conn.commit()
 
 

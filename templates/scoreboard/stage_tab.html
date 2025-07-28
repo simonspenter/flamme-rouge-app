@@ -1,9 +1,9 @@
 <!-- Content for each stage tab -->
 
-<!-- Hidden input for race_id -->
-<input type="hidden" id="race-id" value="{{ race_id }}">
-
 {% for single_stage in stage_data %}
+    
+    <!-- Hidden input for race_id -->
+    <input type="hidden" id="race-id" value="{{ race_id }}">
 
     <div id="stage{{ single_stage.number }}" class="stageTabcontent">
         
