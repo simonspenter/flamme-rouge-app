@@ -102,7 +102,7 @@
                 <tr>
                     <td>Classement</td>
                         {% for team_id, riders in rider_names.items() %}
-                            {% for rider_index, rider in enumerate(riders) %}
+                            {% for rider_index, rider in riders %}
                                 <td>
                                     <select id="stage-classement-{{ single_stage.number }}-team-{{ team_id }}-rider-{{ rider_index }}"
                                             data-team-id="{{ team_id }}" data-rider-id="{{ rider_index }}"
