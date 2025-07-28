@@ -17,6 +17,9 @@ import string
 #Debugging
 import logging
 
+#Looping in jinja
+from jinja2 import Environment
+
 # Always load .env in local dev
 #from dotenv import load_dotenv
 #load_dotenv()
@@ -329,7 +332,9 @@ def scoreboard():
         stage_data=stage_data,
         mountain_categories=mountain_categories,
         sprint_categories=sprint_categories,
-        stage_type_icons=stage_type_icons
+        stage_type_icons=stage_type_icons,
+        enumerate=enumerate  
+
     )
 
 
