@@ -105,8 +105,9 @@
                             {% for rider in range(assistant) %}
                                 <td>
                                     <select id="stage-classement-{{ single_stage.number }}-team-{{ team }}-rider-{{ rider }}"
-                                            data-team-id="{{ team }}" data-rider-id="{{ rider }}"
-                                            onchange="handleClassementChange({{ single_stage.number }}, {{ team }}, {{ rider }}, this)">
+                                            data-team-id="{{ team_names[team] }}" 
+                                            data-rider-id="{{ rider_names[team][rider] }}"  <!-- Assuming rider_names contains rider names or IDs -->
+                                            onchange="handleClassementChange({{ single_stage.number }}, this)">
                                         {% for value in range(21) %}
                                             <option value="{{ value }}">{{ value }}</option>
                                         {% endfor %}
@@ -114,7 +115,6 @@
                                 </td>
                             {% endfor %}
                         {% endfor %}
-
                 </tr>
 
                 <!-- Segment Rows for Stage -->
@@ -152,16 +152,18 @@
         const NUM_TEAMS = {{ teams }};
         const NUM_ASSISTANTS = {{ assistant }};
         
-        function handleClassementChange(stage, team_id, rider_id, selectElement) {
+        function handleClassementChange(stage, selectElement) {
             const raceId = document.getElementById('race-id').value; // Get race_id from the hidden input
+            const teamId = selectElement.getAttribute('data-team-id');  // Get team_id from data attribute
+            const riderId = selectElement.getAttribute('data-rider-id');  // Get rider_id from data attribute
             const placement = selectElement.value;  // Get the value of the dropdown (placement)
 
             // Log the data being sent to the backend
             console.log({
                 race_id: raceId,
                 stage_number: stage,
-                team_id: team_id,
-                rider_id: rider_id,
+                team_id: teamId,  // Use the correct team ID
+                rider_id: riderId,  // Use the correct rider ID
                 placement: placement
             });
 
@@ -174,8 +176,8 @@
                 body: JSON.stringify({
                     race_id: raceId,  // Send the race ID
                     stage_number: stage,
-                    team_id: team_id,
-                    rider_id: rider_id,
+                    team_id: teamId,  // Send the team ID
+                    rider_id: riderId,  // Send the rider ID
                     placement: placement  // Send the placement value from the dropdown
                 }),
             })
@@ -191,6 +193,7 @@
                 console.error('Error sending classement data:', error);
             });
         }
+
 
 
 
