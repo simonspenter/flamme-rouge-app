@@ -253,25 +253,23 @@ def scoreboard():
     code, teams, assistant = race_row
 
     # Fetch team names
-    cursor.execute("""
-        SELECT team_name FROM teams WHERE race_id = ?
-    """, (race_id,))
-
+    cursor.execute(""" SELECT team_name FROM teams WHERE race_id = ? """, (race_id,))
     team_names = [row[0] for row in cursor.fetchall()]
 
-    # Fetch rider names
-    cursor.execute("""
-        SELECT team_id, rider_name FROM riders WHERE race_id = ?
+    # Fetch rider names and IDs in a single query
+    cursor.execute(""" 
+        SELECT team_id, rider_id, rider_name 
+        FROM riders WHERE race_id = ? 
     """, (race_id,))
 
     rider_names = {}
-    for team_id, rider_name in cursor.fetchall():
+    rider_ids = {}
+    for team_id, rider_id, rider_name in cursor.fetchall():
         if team_id not in rider_names:
             rider_names[team_id] = []
+            rider_ids[team_id] = []
         rider_names[team_id].append(rider_name)
-
-    # Debug: Log the structure of rider_names to see its contents
-    print(f"rider_names: {rider_names}")  # This will log the structure of rider_names
+        rider_ids[team_id].append(rider_id)
 
     # Fetch all stages for the race
     cursor.execute("""
@@ -298,18 +296,6 @@ def scoreboard():
             "link": stage[10],
             "segments": []  # Create a unified segments list
         }
-
-        # Fetch rider names and IDs
-        cursor.execute(""" 
-            SELECT team_id, rider_id, rider_name FROM riders WHERE race_id = ? 
-        """, (race_id,))
-
-        rider_ids = {}  # New dictionary to store rider IDs by team
-        for team_id, rider_id, rider_name in cursor.fetchall():
-            if team_id not in rider_ids:
-                rider_ids[team_id] = []
-            rider_ids[team_id].append(rider_id)  # Store rider_id in place of rider_name
-
 
         # Fetch segments for this stage
         cursor.execute("""
@@ -340,6 +326,7 @@ def scoreboard():
         teams=teams,
         team_names=team_names,  # Pass the team names to the template
         rider_names=rider_names,  # Pass the rider names to the template
+        rider_ids=rider_ids,  # Pass the rider IDs to the template
         assistant=3 if assistant == 3 else 2,
         stage_data=stage_data,
         mountain_categories=mountain_categories,
@@ -347,6 +334,7 @@ def scoreboard():
         stage_type_icons=stage_type_icons,
         enumerate=enumerate  
     )
+
 
 
 @app.route('/update-classement-result', methods=['POST'])
