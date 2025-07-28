@@ -105,8 +105,8 @@
                             {% for rider_index, rider in enumerate(riders) %}
                                 <td>
                                     <select id="stage-classement-{{ single_stage.number }}-team-{{ team_id }}-rider-{{ rider_index }}"
-                                            data-team-id="{{ team_id }}" data-rider-id="{{ rider_index }}"
-                                            onchange="handleClassementChange({{ single_stage.number }}, {{ team_id }}, {{ rider_index }}, this)">
+                                        data-team-id="{{ team_id }}" data-rider-id="{{ rider_names[team_id][rider_index] }}" 
+                                        onchange="handleClassementChange({{ single_stage.number }}, {{ team_id }}, {{ rider_names[team_id][rider_index] }}, this)">
                                         {% for value in range(21) %}
                                             <option value="{{ value }}">{{ value }}</option>
                                         {% endfor %}
@@ -163,7 +163,7 @@
                 race_id: raceId,
                 stage_number: stage,
                 team_id: team_id,  // Now using team_id
-                rider_id: rider_id,  // Now using rider_id
+                rider_id: rider_id,  // Now using actual rider_id from rider_names
                 placement: placement
             });
 
@@ -193,6 +193,7 @@
                 console.error('Error sending classement data:', error);
             });
         }
+
 
 
 

@@ -334,7 +334,6 @@ def scoreboard():
         sprint_categories=sprint_categories,
         stage_type_icons=stage_type_icons,
         enumerate=enumerate  
-
     )
 
 
@@ -343,7 +342,7 @@ def update_classement_result():
     try:
         # Parse the incoming JSON data
         data = request.get_json()
-        
+
         # Log the received data to see what the backend is getting
         print(f"Received data: {data}")
 
@@ -360,10 +359,11 @@ def update_classement_result():
 
         # Insert the data into the database as required (example):
         cursor.execute("""
-            INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement, points)
-            VALUES (?, ?, ?, ?, ?, ?)
-        """, (race_id, stage_number, rider_id, team_id, placement, 0))  # Assuming 0 points for now
+            INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement)
+            VALUES (?, ?, ?, ?, ?)
+        """, (race_id, stage_number, rider_id, team_id, placement))  # Excluding points since it's no longer in the table
         conn.commit()
+
 
         # Return success response
         return jsonify({'status': 'success'})
