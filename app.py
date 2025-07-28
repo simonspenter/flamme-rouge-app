@@ -332,34 +332,37 @@ def scoreboard():
 @app.route('/update-classement-result', methods=['POST'])
 def update_classement_result():
     try:
+        # Parse the incoming JSON data
         data = request.get_json()
+        
+        # Log the received data to see what the backend is getting
+        print(f"Received data: {data}")
+
+        # Extract data from the request
         race_id = data.get('race_id')
         stage_number = data.get('stage_number')
         team_id = data.get('team_id')
         rider_id = data.get('rider_id')
         placement = data.get('placement')
 
-        # Validate the incoming data
+        # Check for missing data
         if not all([race_id, stage_number, team_id, rider_id, placement]):
             return jsonify({'status': 'error', 'message': 'Missing data'}), 400
 
-        # Insert into the classement_results table
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
+        # Insert the data into the database as required (example):
         cursor.execute("""
             INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement, points)
             VALUES (?, ?, ?, ?, ?, ?)
-        """, (race_id, stage_number, rider_id, team_id, placement, 0))  # Points set to 0 for now
-
+        """, (race_id, stage_number, rider_id, team_id, placement, 0))  # Assuming 0 points for now
         conn.commit()
-        conn.close()
 
+        # Return success response
         return jsonify({'status': 'success'})
+
     except Exception as e:
-        # Log the error and return a 500 error
-        app.logger.error(f"Error: {e}")
+        print(f"Error processing request: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
 
 
 

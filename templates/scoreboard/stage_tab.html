@@ -3,7 +3,7 @@
 
     <!-- Hidden input for race_id -->
     <input type="hidden" id="race-id" value="{{ race_id }}">
-    
+
     <div id="stage{{ single_stage.number }}" class="stageTabcontent">
         
         <div class="stage-card">
@@ -151,8 +151,17 @@
         const NUM_ASSISTANTS = {{ assistant }};
         
         function handleClassementChange(stage, team, rider, selectElement) {
-            const raceId = document.getElementById('race-id').value; // Assuming you have this hidden field in your HTML
-            const placement = selectElement.value;  // This is the value from the dropdown
+            const raceId = document.getElementById('race-id').value; // Get race_id from the hidden input
+            const placement = selectElement.value;  // Get the value of the dropdown (placement)
+
+            // Log the data being sent to the backend
+            console.log({
+                race_id: raceId,
+                stage_number: stage,
+                team_id: team,
+                rider_id: rider,
+                placement: placement
+            });
 
             // Send the data to the backend
             fetch('/update-classement-result', {
@@ -180,6 +189,7 @@
                 console.error('Error sending classement data:', error);
             });
         }
+
 
 
          
