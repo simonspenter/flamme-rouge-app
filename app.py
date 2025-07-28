@@ -318,6 +318,7 @@ def scoreboard():
 
     return render_template(
         'scoreboard.html',
+        race_id=race_id,  # Pass the race_id to the template
         stages=len(stage_data),
         teams=teams,
         team_names=team_names,  # Pass the team names to the template
