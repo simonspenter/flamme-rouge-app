@@ -299,6 +299,18 @@ def scoreboard():
             "segments": []  # Create a unified segments list
         }
 
+        # Fetch rider names and IDs
+        cursor.execute(""" 
+            SELECT team_id, rider_id, rider_name FROM riders WHERE race_id = ? 
+        """, (race_id,))
+
+        rider_ids = {}  # New dictionary to store rider IDs by team
+        for team_id, rider_id, rider_name in cursor.fetchall():
+            if team_id not in rider_ids:
+                rider_ids[team_id] = []
+            rider_ids[team_id].append(rider_id)  # Store rider_id in place of rider_name
+
+
         # Fetch segments for this stage
         cursor.execute("""
             SELECT name, type, category, order_in_stage
