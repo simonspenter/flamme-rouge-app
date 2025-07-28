@@ -105,7 +105,7 @@
                             {% for rider_index, rider in enumerate(riders) %}
                                 <td>
                                     <select id="stage-classement-{{ single_stage.number }}-team-{{ team_id }}-rider-{{ rider_index }}"
-                                        data-team-id="{{ team_id }}" data-rider-id="{{ rider_names[team_id][rider_index] }}" 
+                                        data-team-id="{{ team_id }}" data-rider-id="{{ rider_ids[team_id][rider_index] }}" 
                                         onchange="handleClassementChange({{ single_stage.number }}, {{ team_id }}, {{ rider_names[team_id][rider_index] }}, this)">
                                         {% for value in range(21) %}
                                             <option value="{{ value }}">{{ value }}</option>
