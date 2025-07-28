@@ -333,30 +333,27 @@ def scoreboard():
 def update_classement_result():
     data = request.get_json()
 
-    # Extract data from the request
+    # Extract the data from the request
     stage_number = data.get('stage_number')
     team_id = data.get('team_id')
     rider_id = data.get('rider_id')
     placement = data.get('placement')
 
-    # Assuming 'race_id' is a global variable or can be fetched as needed
-    race_id = get_race_id()  # Placeholder, replace with your logic to get the current race_id
-
-    # Insert the data into the classement_results table
-    conn = get_db_connection()  # Define this function to get a database connection
+    # Create a connection to the database
+    conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Insert the data into the classement_results table
     cursor.execute("""
         INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement, points)
         VALUES (?, ?, ?, ?, ?, ?)
-    """, (race_id, stage_number, rider_id, team_id, placement, 0))  # Points can be set to 0 initially
+    """, (1, stage_number, rider_id, team_id, placement, 0))  # Assuming race_id is 1 for now and points is 0
 
     conn.commit()
     conn.close()
 
-    print(f"Classement result updated: race: {race_id}, stage: {stage_number}, team: {team_id}, rider: {rider_id}, placement: {placement}")
-
     return jsonify({'status': 'success'})
+
 
 
 
