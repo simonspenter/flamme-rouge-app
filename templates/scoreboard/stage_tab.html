@@ -153,46 +153,49 @@
         const NUM_ASSISTANTS = {{ assistant }};
         
         function handleClassementChange(stage, team_id, rider_id, selectElement) {
-            // Get the team and rider IDs from the data attributes of the select element
-            const teamId = selectElement.getAttribute('data-team-id');
-            const riderId = selectElement.getAttribute('data-rider-id');
-            const raceId = document.getElementById('race-id').value; // Get race_id from the hidden input
-            const placement = selectElement.value;  // Get the value of the dropdown (placement)
+            try {
+                const teamId = selectElement.getAttribute('data-team-id');
+                const riderId = selectElement.getAttribute('data-rider-id');
+                const raceId = document.getElementById('race-id').value; // Get race_id from the hidden input
+                const placement = selectElement.value;  // Get the value of the dropdown (placement)
 
-            // Log the data being sent to the backend for debugging
-            console.log({
-                race_id: raceId,
-                stage_number: stage,
-                team_id: teamId,
-                rider_id: riderId,
-                placement: placement
-            });
-
-            // Send the data to the backend
-            fetch('/update-classement-result', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+                // Log the data being sent to the backend
+                console.log({
                     race_id: raceId,
                     stage_number: stage,
                     team_id: teamId,
                     rider_id: riderId,
                     placement: placement
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    console.log('Classement data updated successfully!');
-                } else {
-                    console.error('Error updating classement data:', data);
-                }
-            })
-            .catch(error => {
-                console.error('Error sending classement data:', error);
-            });
+                });
+
+                // Send the data to the backend
+                fetch('/update-classement-result', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        race_id: raceId,
+                        stage_number: stage,
+                        team_id: teamId,
+                        rider_id: riderId,
+                        placement: placement
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        console.log('Classement data updated successfully!');
+                    } else {
+                        console.error('Error updating classement data:', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error sending classement data:', error);
+                });
+            } catch (error) {
+                console.error('Error in handleClassementChange:', error);
+            }
         }
 
 
