@@ -358,13 +358,16 @@ def update_classement_result():
         if not all([race_id, stage_number, team_id, rider_id, placement]):
             return jsonify({'status': 'error', 'message': 'Missing data'}), 400
 
+        # Establish a database connection
+        conn = get_db_connection()
+        cursor = conn.cursor()  # Define the cursor here
+
         # Insert the data into the database as required (example):
         cursor.execute("""
             INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement)
             VALUES (?, ?, ?, ?, ?)
-        """, (race_id, stage_number, rider_id, team_id, placement))  
-        conn.commit()
-
+        """, (race_id, stage_number, rider_id, team_id, placement))  # No 'points' column anymore
+        conn.commit()  # Commit the changes
 
         # Return success response
         return jsonify({'status': 'success'})
@@ -372,6 +375,7 @@ def update_classement_result():
     except Exception as e:
         print(f"Error processing request: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
 
 
 
