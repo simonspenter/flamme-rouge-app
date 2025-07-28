@@ -102,11 +102,11 @@
                 <tr>
                     <td>Classement</td>
                         {% for team_id, riders in rider_names.items() %}
-                            {% for rider_index, rider in riders %}
+                            {% for rider in riders %}
                                 <td>
-                                    <select id="stage-classement-{{ single_stage.number }}-team-{{ team_id }}-rider-{{ rider_index }}"
-                                            data-team-id="{{ team_id }}" data-rider-id="{{ rider_index }}"
-                                            onchange="handleClassementChange({{ single_stage.number }}, {{ team_id }}, {{ rider_index }}, this)">
+                                    <select id="stage-classement-{{ single_stage.number }}-team-{{ team_id }}-rider-{{ loop.index0 }}"
+                                            data-team-id="{{ team_id }}" data-rider-id="{{ loop.index0 }}"
+                                            onchange="handleClassementChange({{ single_stage.number }}, {{ team_id }}, {{ loop.index0 }}, this)">
                                         {% for value in range(21) %}
                                             <option value="{{ value }}">{{ value }}</option>
                                         {% endfor %}
@@ -114,6 +114,7 @@
                                 </td>
                             {% endfor %}
                         {% endfor %}
+
 
                 </tr>
 
