@@ -331,28 +331,35 @@ def scoreboard():
 
 @app.route('/update-classement-result', methods=['POST'])
 def update_classement_result():
-    data = request.get_json()
+    try:
+        data = request.get_json()
+        race_id = data.get('race_id')
+        stage_number = data.get('stage_number')
+        team_id = data.get('team_id')
+        rider_id = data.get('rider_id')
+        placement = data.get('placement')
 
-    # Extract the data from the request
-    stage_number = data.get('stage_number')
-    team_id = data.get('team_id')
-    rider_id = data.get('rider_id')
-    placement = data.get('placement')
+        # Validate the incoming data
+        if not all([race_id, stage_number, team_id, rider_id, placement]):
+            return jsonify({'status': 'error', 'message': 'Missing data'}), 400
 
-    # Create a connection to the database
-    conn = get_db_connection()
-    cursor = conn.cursor()
+        # Insert into the classement_results table
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-    # Insert the data into the classement_results table
-    cursor.execute("""
-        INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement, points)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (1, stage_number, rider_id, team_id, placement, 0))  # Assuming race_id is 1 for now and points is 0
+        cursor.execute("""
+            INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement, points)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (race_id, stage_number, rider_id, team_id, placement, 0))  # Points set to 0 for now
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
-    return jsonify({'status': 'success'})
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        # Log the error and return a 500 error
+        app.logger.error(f"Error: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
 

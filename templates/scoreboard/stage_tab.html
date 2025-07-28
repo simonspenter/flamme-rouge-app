@@ -147,35 +147,36 @@
         const NUM_ASSISTANTS = {{ assistant }};
         
         function handleClassementChange(stage, team, rider, selectElement) {
-            console.log("classement change triggered for:", stage, team, rider, selectElement.value);
+            const raceId = document.getElementById('race-id').value; // Assuming you have this hidden field in your HTML
+            const placement = selectElement.value;  // This is the value from the dropdown
 
-            const placement = parseInt(selectElement.value) || 0;  // Ensure it's a number, default to 0 if empty
-
-            // Send the data to the backend via AJAX
+            // Send the data to the backend
             fetch('/update-classement-result', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    race_id: raceId,  // Send the race ID
                     stage_number: stage,
-                    team_id: team + 1,  // 1-based index for teams (assuming DB uses 1-based indexing)
-                    rider_id: rider + 1,  // 1-based index for riders (assuming DB uses 1-based indexing)
-                    placement: placement
+                    team_id: team,
+                    rider_id: rider,
+                    placement: placement  // Send the placement value from the dropdown
                 }),
             })
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    console.log('Classement data sent successfully!');
+                    console.log('Classement data updated successfully!');
                 } else {
-                    console.error('Error sending classement data:', data);
+                    console.error('Error updating classement data:', data);
                 }
             })
             .catch(error => {
                 console.error('Error sending classement data:', error);
             });
         }
+
 
          
     </script>
