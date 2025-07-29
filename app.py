@@ -339,14 +339,14 @@ def scoreboard():
     # Initialize the dictionary to store total placements
     total_classement_data = {}
 
-    # Populate the total_classement_data with appropriate data
+    # Populate the total_classement_data with dummy values (you can implement logic for this later)
     stages = len(stage_data)  # Define stages as the length of stage_data
     for stage in range(stages):
         for team_id in rider_names:
             for rider_index, rider in enumerate(rider_names[team_id]):
                 rider_id = rider_ids[team_id][rider_index]
-                # Assuming get_total_placement() is a function you define to get total placements
-                total_classement_data.setdefault(team_id, {})[rider_id] = get_total_placement(stage, team_id, rider_id)
+                # Temporarily setting all placements to 0 (or other default value) for now
+                total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value
 
 
     conn.close()
