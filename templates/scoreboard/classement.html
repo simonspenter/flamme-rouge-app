@@ -21,8 +21,12 @@
                 <tr>
                     <td>Stage {{ stage + 1 }}</td>
                     {% for team_id in rider_names %}
-                        {% for rider in rider_names[team_id] %}
-                            <td id="classement-stage-{{ stage + 1 }}-team-{{ team_id }}-rider-{{ loop.index }}"></td>
+                        {% for rider_index, rider in enumerate(rider_names[team_id]) %}
+                            <td id="classement-stage-{{ stage + 1 }}-team-{{ team_id }}-rider-{{ rider_index }}">
+                                {% set rider_id = rider_ids[team_id][rider_index] %}
+                                {% set placement = classement_data[stage + 1][team_id][rider_id] %}
+                                {{ placement if placement is not none else 'N/A' }}
+                            </td>
                         {% endfor %}
                     {% endfor %}
                 </tr>
@@ -30,8 +34,18 @@
             <tr>
                 <td>Total</td>
                 {% for team_id in rider_names %}
-                    {% for rider in rider_names[team_id] %}
-                        <td id="classement-total-team-{{ team_id }}-rider-{{ loop.index }}"></td>
+                    {% for rider_index, rider in enumerate(rider_names[team_id]) %}
+                        <td id="classement-total-team-{{ team_id }}-rider-{{ rider_index }}">
+                            {% set rider_id = rider_ids[team_id][rider_index] %}
+                            {% set total = 0 %}
+                            {% for stage_id in stage_data %}
+                                {% set placement = classement_data[stage_id.id][team_id][rider_id] %}
+                                {% if placement %}
+                                    {% set total = total + placement %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ total }}
+                        </td>
                     {% endfor %}
                 {% endfor %}
             </tr>

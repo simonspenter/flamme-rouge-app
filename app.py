@@ -318,6 +318,24 @@ def scoreboard():
 
         stage_data.append(stage_dict)
 
+        # Fetch classement data for each stage and rider
+        classement_data = {}
+        for stage in stage_data:
+            stage_id = stage['id']
+            classement_data[stage_id] = {}
+            for team_id in rider_ids:
+                classement_data[stage_id][team_id] = {}
+                for rider_index, rider_id in enumerate(rider_ids[team_id]):
+                    cursor.execute("""
+                        SELECT placement FROM classement_results 
+                        WHERE race_id = ? AND stage_id = ? AND team_id = ? AND rider_id = ?
+                    """, (race_id, stage_id, team_id, rider_id))
+                    result = cursor.fetchone()
+                    if result:
+                        classement_data[stage_id][team_id][rider_id] = result[0]
+                    else:
+                        classement_data[stage_id][team_id][rider_id] = None  # If no result, set to None
+
     conn.close()
 
     return render_template(
@@ -328,6 +346,8 @@ def scoreboard():
         team_names=team_names,  # Pass the team names to the template
         rider_names=rider_names,  # Pass the rider names to the template
         rider_ids=rider_ids,  # Pass the rider IDs to the template
+        classement_data=classement_data, 
+
         assistant=3 if assistant == 3 else 2,
         stage_data=stage_data,
         mountain_categories=mountain_categories,
