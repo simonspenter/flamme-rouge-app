@@ -350,6 +350,10 @@ def scoreboard():
     # Debug: Log stage data before passing to the template
     print(f"stage_data: {stage_data}")
 
+    # Debugging: Log the classement data to verify its structure
+    print(f"classement_data: {classement_data}")
+
+
     return render_template(
         'scoreboard.html',
         stages=len(stage_data),
