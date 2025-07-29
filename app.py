@@ -362,11 +362,28 @@ def update_classement_result():
         conn = get_db_connection()
         cursor = conn.cursor()  # Define the cursor here
 
-        # Insert the data into the database as required (example):
+        # Check if the record already exists
         cursor.execute("""
-            INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement)
-            VALUES (?, ?, ?, ?, ?)
-        """, (race_id, stage_number, rider_id, team_id, placement))  # No 'points' column anymore
+            SELECT id FROM classement_results 
+            WHERE race_id = ? AND stage_id = ? AND team_id = ? AND rider_id = ?
+        """, (race_id, stage_number, team_id, rider_id))
+
+        existing_result = cursor.fetchone()
+
+        if existing_result:
+            # If a result exists, update the existing record
+            cursor.execute("""
+                UPDATE classement_results 
+                SET placement = ? 
+                WHERE id = ?
+            """, (placement, existing_result[0]))  # existing_result[0] is the ID of the existing record
+        else:
+            # If no result exists, insert a new record
+            cursor.execute("""
+                INSERT INTO classement_results (race_id, stage_id, rider_id, team_id, placement)
+                VALUES (?, ?, ?, ?, ?)
+            """, (race_id, stage_number, rider_id, team_id, placement))
+
         conn.commit()  # Commit the changes
 
         # Return success response
@@ -375,6 +392,7 @@ def update_classement_result():
     except Exception as e:
         print(f"Error processing request: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
 
 
 
