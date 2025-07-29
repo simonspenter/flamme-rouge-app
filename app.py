@@ -336,16 +336,17 @@ def scoreboard():
 
         stage_data.append(stage_dict)
 
-        # Initialize the dictionary to store total placements
-        total_classement_data = {}
+    # Initialize the dictionary to store total placements
+    total_classement_data = {}
 
-        # Populate the total_classement_data with appropriate data
-        for stage in range(stages):
-            for team_id in rider_names:
-                for rider_index, rider in enumerate(rider_names[team_id]):
-                    rider_id = rider_ids[team_id][rider_index]
-                    # Assuming get_total_placement() is a function you define to get total placements
-                    total_classement_data.setdefault(team_id, {})[rider_id] = get_total_placement(stage, team_id, rider_id)
+    # Populate the total_classement_data with appropriate data
+    stages = len(stage_data)  # Define stages as the length of stage_data
+    for stage in range(stages):
+        for team_id in rider_names:
+            for rider_index, rider in enumerate(rider_names[team_id]):
+                rider_id = rider_ids[team_id][rider_index]
+                # Assuming get_total_placement() is a function you define to get total placements
+                total_classement_data.setdefault(team_id, {})[rider_id] = get_total_placement(stage, team_id, rider_id)
 
 
     conn.close()
@@ -360,14 +361,14 @@ def scoreboard():
         rider_ids=rider_ids,
         classement_data=classement_dict,  # Pass the classement data to the template
         total_classement_data=total_classement_data,  # Pass the total placement data to the template
-
         assistant=3 if assistant == 3 else 2,
         stage_data=stage_data,
         mountain_categories=mountain_categories,
         sprint_categories=sprint_categories,
         stage_type_icons=stage_type_icons,
-        enumerate=enumerate
+        enumerate=enumerate  # Pass enumerate for looping in the template
     )
+
 
 
 
