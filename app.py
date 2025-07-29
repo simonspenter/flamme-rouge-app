@@ -394,6 +394,12 @@ def update_classement_result():
         if not all([race_id, stage_number, team_id, rider_id, placement]):
             return jsonify({'status': 'error', 'message': 'Missing data'}), 400
 
+        # Ensure placement is an integer (force conversion)
+        try:
+            placement = int(placement)
+        except ValueError:
+            return jsonify({'status': 'error', 'message': 'Invalid placement value'}), 400
+
         # Establish a database connection
         conn = get_db_connection()
         cursor = conn.cursor()  # Define the cursor here
@@ -428,6 +434,7 @@ def update_classement_result():
     except Exception as e:
         print(f"Error processing request: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
 
 
 
