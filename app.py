@@ -287,7 +287,9 @@ def scoreboard():
             classement_dict[stage_id] = {}
         if team_id not in classement_dict[stage_id]:
             classement_dict[stage_id][team_id] = {}
-        classement_dict[stage_id][team_id][rider_id] = placement
+        # Convert placement to integer before storing it
+        classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0  # Default to 0 if None or empty string
+
 
     # Fetch stage data
     cursor.execute("""
