@@ -340,6 +340,7 @@ def scoreboard():
 
     return render_template(
         'scoreboard.html',
+        race_id=race_id,
         stages=len(stage_data),
         teams=teams,
         team_names=team_names,
