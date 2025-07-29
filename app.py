@@ -253,7 +253,7 @@ def scoreboard():
     code, teams, assistant = race_row
 
     # Fetch team names
-    cursor.execute(""" SELECT team_name FROM teams WHERE race_id = ? """, (race_id,))
+    cursor.execute("SELECT team_name FROM teams WHERE race_id = ?", (race_id,))
     team_names = [row[0] for row in cursor.fetchall()]
 
     # Fetch rider names and IDs in a single query
@@ -271,22 +271,16 @@ def scoreboard():
         rider_names[team_id].append(rider_name)
         rider_ids[team_id].append(rider_id)
 
-    # Debug: Log rider_names and rider_ids
-    print(f"rider_names: {rider_names}")
-    print(f"rider_ids: {rider_ids}")
-
-    # Fetch classement data (assuming you have a query for this)
+    # Fetch classement results for the race
     cursor.execute("""
         SELECT stage_id, team_id, rider_id, placement
         FROM classement_results
         WHERE race_id = ?
     """, (race_id,))
+
     classement_data = cursor.fetchall()
 
-    # Debug: Log the fetched classement_data
-    print(f"classement_data: {classement_data}")
-
-    # Process classement_data into a dictionary structure
+    # Prepare the classement data in a dictionary
     classement_dict = {}
     for stage_id, team_id, rider_id, placement in classement_data:
         if stage_id not in classement_dict:
@@ -295,10 +289,7 @@ def scoreboard():
             classement_dict[stage_id][team_id] = {}
         classement_dict[stage_id][team_id][rider_id] = placement
 
-    # Debug: Log the processed classement_dict
-    print(f"classement_dict: {classement_dict}")
-
-    # Fetch all stages for the race
+    # Fetch stage data
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,
             length_km, elevation_m, route, route_image, link
@@ -347,13 +338,6 @@ def scoreboard():
 
     conn.close()
 
-    # Debug: Log stage data before passing to the template
-    print(f"stage_data: {stage_data}")
-
-    # Debugging: Log the classement data to verify its structure
-    print(f"classement_data: {classement_data}")
-
-
     return render_template(
         'scoreboard.html',
         stages=len(stage_data),
@@ -361,13 +345,13 @@ def scoreboard():
         team_names=team_names,
         rider_names=rider_names,
         rider_ids=rider_ids,
-        classement_data=classement_dict,  # Pass processed classement data
+        classement_data=classement_dict,  # Pass the classement data to the template
         assistant=3 if assistant == 3 else 2,
         stage_data=stage_data,
         mountain_categories=mountain_categories,
         sprint_categories=sprint_categories,
         stage_type_icons=stage_type_icons,
-        enumerate=enumerate  
+        enumerate=enumerate
     )
 
 
