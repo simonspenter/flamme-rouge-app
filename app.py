@@ -234,8 +234,6 @@ def create_rider_in_db(race_id, team_id, rider_number, rider_name, rider_positio
     conn.close()
 
 
-
-
 @app.route("/scoreboard")
 def scoreboard():
     race_id = request.args.get('race')
@@ -272,6 +270,7 @@ def scoreboard():
         rider_ids[team_id].append(rider_id)
 
     # Fetch classement results for the race
+    print(f"Fetching classement data for race_id: {race_id}")
     cursor.execute("""
         SELECT stage_id, team_id, rider_id, placement
         FROM classement_results
@@ -374,7 +373,6 @@ def scoreboard():
         stage_data=stage_data,
         enumerate=enumerate  # Pass enumerate for looping in the template
     )
-
 
 
 
