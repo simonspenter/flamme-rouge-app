@@ -312,7 +312,7 @@ def scoreboard():
             "name": stage[2],
             "start": stage[3],
             "end": stage[4],
-            "type": stage[5],
+            "type": stage[5],  # This is where we fetch the type from the database
             "length_km": stage[6],
             "elevation_m": stage[7],
             "route": stage[8],
@@ -342,14 +342,14 @@ def scoreboard():
 
         stage_data.append(stage_dict)
 
-    # Define stage type icons (map of stage types to icons)
+    # Define the icon mapping for stage types
     stage_type_icons = {
-        'Time trial': 'timetrial.svg',
-        'Mountain': 'mountain.svg',
-        'Hilly': 'hilly.svg',
-        'Flat': 'flat.svg',
-        'Cobblestone': 'cobblestone.svg',
-        'Default': 'default.svg'  # Default icon for unspecified stage types
+        'timetrial': 'timetrial.svg',
+        'mountain': 'mountain.svg',
+        'hilly': 'hilly.svg',
+        'flat': 'flat.svg',
+        'default': 'default.svg',
+        'cobblestone': 'cobblestone.svg'
     }
 
     # Initialize the dictionary to store total placements
@@ -379,11 +379,12 @@ def scoreboard():
         rider_ids=rider_ids,
         classement_data=classement_dict,  # Pass the classement data to the template
         total_classement_data=total_classement_data,  # Pass the total placement data to the template
-        stage_type_icons=stage_type_icons,  # Pass the stage_type_icons to the template
-        assistant=3 if assistant == 3 else 2,
         stage_data=stage_data,
+        stage_type_icons=stage_type_icons,  # Passing icons mapping
+        assistant=3 if assistant == 3 else 2,
         enumerate=enumerate  # Pass enumerate for looping in the template
     )
+
 
 
 @app.route('/update-classement-result', methods=['POST'])
