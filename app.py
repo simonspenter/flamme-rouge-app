@@ -271,6 +271,33 @@ def scoreboard():
         rider_names[team_id].append(rider_name)
         rider_ids[team_id].append(rider_id)
 
+    # Debug: Log rider_names and rider_ids
+    print(f"rider_names: {rider_names}")
+    print(f"rider_ids: {rider_ids}")
+
+    # Fetch classement data (assuming you have a query for this)
+    cursor.execute("""
+        SELECT stage_id, team_id, rider_id, placement
+        FROM classement_results
+        WHERE race_id = ?
+    """, (race_id,))
+    classement_data = cursor.fetchall()
+
+    # Debug: Log the fetched classement_data
+    print(f"classement_data: {classement_data}")
+
+    # Process classement_data into a dictionary structure
+    classement_dict = {}
+    for stage_id, team_id, rider_id, placement in classement_data:
+        if stage_id not in classement_dict:
+            classement_dict[stage_id] = {}
+        if team_id not in classement_dict[stage_id]:
+            classement_dict[stage_id][team_id] = {}
+        classement_dict[stage_id][team_id][rider_id] = placement
+
+    # Debug: Log the processed classement_dict
+    print(f"classement_dict: {classement_dict}")
+
     # Fetch all stages for the race
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,
@@ -318,36 +345,19 @@ def scoreboard():
 
         stage_data.append(stage_dict)
 
-        # Fetch classement data for each stage and rider
-        classement_data = {}
-        for stage in stage_data:
-            stage_id = stage['id']
-            classement_data[stage_id] = {}
-            for team_id in rider_ids:
-                classement_data[stage_id][team_id] = {}
-                for rider_index, rider_id in enumerate(rider_ids[team_id]):
-                    cursor.execute("""
-                        SELECT placement FROM classement_results 
-                        WHERE race_id = ? AND stage_id = ? AND team_id = ? AND rider_id = ?
-                    """, (race_id, stage_id, team_id, rider_id))
-                    result = cursor.fetchone()
-                    if result:
-                        classement_data[stage_id][team_id][rider_id] = result[0]
-                    else:
-                        classement_data[stage_id][team_id][rider_id] = None  # If no result, set to None
-
     conn.close()
+
+    # Debug: Log stage data before passing to the template
+    print(f"stage_data: {stage_data}")
 
     return render_template(
         'scoreboard.html',
-        race_id=race_id,
         stages=len(stage_data),
         teams=teams,
-        team_names=team_names,  # Pass the team names to the template
-        rider_names=rider_names,  # Pass the rider names to the template
-        rider_ids=rider_ids,  # Pass the rider IDs to the template
-        classement_data=classement_data, 
-
+        team_names=team_names,
+        rider_names=rider_names,
+        rider_ids=rider_ids,
+        classement_data=classement_dict,  # Pass processed classement data
         assistant=3 if assistant == 3 else 2,
         stage_data=stage_data,
         mountain_categories=mountain_categories,

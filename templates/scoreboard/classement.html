@@ -26,7 +26,7 @@
                                 {% set rider_id = rider_ids[team_id][rider_index] %}
                                 {% set stage_id = stage_data[stage].id %}  <!-- Fetch the stage_id from the stage_data -->
                                 {% set placement = classement_data[stage_id][team_id][rider_id] %}
-                                {{ placement if placement is not none else 'N/A' }}
+                                {{ placement if placement is not none else '' }}
                             </td>
                         {% endfor %}
                     {% endfor %}
