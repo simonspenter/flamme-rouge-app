@@ -280,6 +280,9 @@ def scoreboard():
 
     classement_data = cursor.fetchall()
 
+    # Log the fetched classement data
+    print(f"Fetched classement data: {classement_data}")
+
     # Prepare the classement data in a dictionary
     classement_dict = {}
     for stage_id, team_id, rider_id, placement in classement_data:
@@ -290,6 +293,8 @@ def scoreboard():
         # Convert placement to integer before storing it
         classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0  # Default to 0 if None or empty string
 
+    # Log the structure of classement_dict
+    print(f"Classement dictionary: {classement_dict}")
 
     # Fetch stage data
     cursor.execute("""
@@ -350,6 +355,8 @@ def scoreboard():
                 # Temporarily setting all placements to 0 (or other default value) for now
                 total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value
 
+    # Log the data being passed to the template
+    print(f"Data being passed to template: race_id={race_id}, stages={len(stage_data)}, classement_data={classement_dict}")
 
     conn.close()
 
@@ -365,9 +372,6 @@ def scoreboard():
         total_classement_data=total_classement_data,  # Pass the total placement data to the template
         assistant=3 if assistant == 3 else 2,
         stage_data=stage_data,
-        mountain_categories=mountain_categories,
-        sprint_categories=sprint_categories,
-        stage_type_icons=stage_type_icons,
         enumerate=enumerate  # Pass enumerate for looping in the template
     )
 
