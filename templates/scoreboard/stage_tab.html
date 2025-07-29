@@ -158,8 +158,8 @@
         const NUM_ASSISTANTS = {{ assistant }};
         
         function handleClassementChange(stage, team_id, rider_id, selectElement) {
-            const raceId = document.getElementById('race-id').value; // Get race_id from the hidden input
-            const placement = selectElement.value;  // Get the value of the dropdown (placement)
+            const raceId = document.getElementById('race-id').value;  // Get race_id from the hidden input
+            const placement = parseInt(selectElement.value, 10);  // Convert the selected value to an integer
 
             // Log the data being sent to the backend
             console.log({
@@ -181,7 +181,7 @@
                     stage_number: stage,
                     team_id: team_id,  // Send the team_id
                     rider_id: rider_id,  // Send the rider_id
-                    placement: placement  // Send the placement value from the dropdown
+                    placement: placement  // Send the placement value as an integer
                 }),
             })
             .then(response => response.json())
@@ -196,6 +196,7 @@
                 console.error('Error sending classement data:', error);
             });
         }
+
 
 
 
