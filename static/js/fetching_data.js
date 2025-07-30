@@ -1,6 +1,5 @@
 // Function to log when the Classement tab is clicked
 function onClassementTabOpened(event) {
-    console.log("Tab clicked:", event.target); // Check which element was clicked
     if (event.target && event.target.id === "classementTabButton") {
         console.log("Event triggered: Classement tab opened.");
         // Call the function to fetch classement data when the tab is opened
