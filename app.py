@@ -238,7 +238,7 @@ def create_rider_in_db(race_id, team_id, rider_number, rider_name, rider_positio
 def scoreboard():
     race_id = request.args.get('race')
 
-    conn = get_db_connection()
+    conn = get_db_connection()  # Open the connection
     cursor = conn.cursor()
 
     # Fetch race info
@@ -254,7 +254,7 @@ def scoreboard():
     cursor.execute("SELECT team_name FROM teams WHERE race_id = ?", (race_id,))
     team_names = [row[0] for row in cursor.fetchall()]
 
-    # Fetch rider names, team IDs, and rider IDs
+    # Fetch rider names and IDs in a single query
     cursor.execute(""" 
         SELECT team_id, rider_id, rider_name 
         FROM riders WHERE race_id = ? 
@@ -270,11 +270,10 @@ def scoreboard():
         rider_ids[team_id].append(rider_id)
 
     # Fetch classement results for the race
-    print(f"Fetching classement data for race_id: {race_id}")
-    cursor.execute("""
-        SELECT stage_id, team_id, rider_id, placement
-        FROM classement_results
-        WHERE race_id = ?
+    cursor.execute(""" 
+        SELECT stage_id, team_id, rider_id, placement 
+        FROM classement_results 
+        WHERE race_id = ? 
     """, (race_id,))
 
     classement_data = cursor.fetchall()
@@ -289,81 +288,10 @@ def scoreboard():
         # Convert placement to integer before storing it
         classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0  # Default to 0 if None or empty string
 
-    conn.close()
+    # Log the structure of classement_dict
+    print(f"Classement dictionary: {classement_dict}")
 
-    # Fetch stage data
-    cursor.execute("""
-        SELECT id, number, name, start_location, end_location, type,
-            length_km, elevation_m, route, route_image, link
-        FROM stages
-        WHERE race_code = ?
-        ORDER BY number
-    """, (code,))
-
-    stage_data = []
-    for stage in cursor.fetchall():
-        stage_dict = {
-            "id": stage[0],
-            "number": stage[1],
-            "name": stage[2],
-            "start": stage[3],
-            "end": stage[4],
-            "type": stage[5],  # This is where we fetch the type from the database
-            "length_km": stage[6],
-            "elevation_m": stage[7],
-            "route": stage[8],
-            "route_image": stage[9],
-            "link": stage[10],
-            "segments": []  # Create a unified segments list
-        }
-
-        # Fetch segments for this stage
-        cursor.execute("""
-            SELECT name, type, category, order_in_stage
-            FROM segments
-            WHERE stage_id = ?
-            ORDER BY order_in_stage
-        """, (stage[0],))
-
-        for name, seg_type, cat, order in cursor.fetchall():
-            stage_dict["segments"].append({
-                "name": name,
-                "type": seg_type,
-                "category": cat,
-                "order": order
-            })
-
-        # Sort segments by the 'order' field
-        stage_dict["segments"].sort(key=lambda x: x["order"])
-
-        stage_data.append(stage_dict)
-
-    # Define the icon mapping for stage types
-    stage_type_icons = {
-        'timetrial': 'timetrial.svg',
-        'mountain': 'mountain.svg',
-        'hilly': 'hilly.svg',
-        'flat': 'flat.svg',
-        'default': 'default.svg',
-        'cobblestone': 'cobblestone.svg'
-    }
-
-    # Initialize the dictionary to store total placements
-    total_classement_data = {}
-
-    # Populate the total_classement_data with dummy values (you can implement logic for this later)
-    stages = len(stage_data)  # Define stages as the length of stage_data
-    for stage in range(stages):
-        for team_id in rider_names:
-            for rider_index, rider in enumerate(rider_names[team_id]):
-                rider_id = rider_ids[team_id][rider_index]
-                # Temporarily setting all placements to 0 (or other default value) for now
-                total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value
-
-    # Log the data being passed to the template
-    print(f"Data being passed to template: race_id={race_id}, stages={len(stage_data)}, classement_data={classement_dict}")
-
-    conn.close()
+    conn.close()  # Close the connection after all queries
 
     return render_template(
         'scoreboard.html',
@@ -375,9 +303,8 @@ def scoreboard():
         rider_ids=rider_ids,
         classement_data=classement_dict,  # Pass the classement data to the template
         total_classement_data=total_classement_data,  # Pass the total placement data to the template
-        stage_data=stage_data,
-        stage_type_icons=stage_type_icons,  # Passing icons mapping
         assistant=3 if assistant == 3 else 2,
+        stage_data=stage_data,
         enumerate=enumerate  # Pass enumerate for looping in the template
     )
 
