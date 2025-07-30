@@ -31,26 +31,15 @@
 
 {% block scripts %}
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Log to confirm that the page is loaded and the script is executing
-        console.log("DOMContentLoaded event triggered.");
-
-        // Function to log the event trigger when the 'Classement' sub-tab is opened
-        function onClassementTabOpened(event) {
-            console.log("Tab clicked:", event.target); // Log which element was clicked
-            if (event.target && event.target.id === "classementTabButton") {
-                // Log the event trigger
-                console.log("Event triggered: Classement tab opened.");
-            }
+    // Function to log when the Classement tab is clicked
+    function onClassementTabOpened(event) {
+        console.log("Tab clicked:", event.target); // Check which element was clicked
+        if (event.target && event.target.id === "classementTabButton") {
+            console.log("Event triggered: Classement tab opened.");
         }
+    }
 
-        // Attach the event listener to the parent div that contains the sub-tab buttons
-        const tabContainer = document.querySelector(".tab");  // .tab is the parent container for the sub-tabs
-
-        // Ensure the parent container exists before adding the event listener
-        if (tabContainer) {
-            tabContainer.addEventListener("click", onClassementTabOpened);
-        }
-    });
+    // Add the event listener directly to the button for testing
+    document.getElementById("classementTabButton").addEventListener("click", onClassementTabOpened);
 </script>
 {% endblock %}
