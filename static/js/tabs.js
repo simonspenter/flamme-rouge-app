@@ -46,7 +46,7 @@ function openStageTab(evt, stageTabName) {
 }
 
 window.onload = function() {
-    document.getElementById("defaultOpen").click(); // open scoreboard tab
+    document.getElementById("scoreboardTabButton").click(); // open scoreboard tab
     document.querySelector(".subTablinks").click(); // open first sub-tab (Classement)
 };
 
