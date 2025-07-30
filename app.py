@@ -307,17 +307,6 @@ def scoreboard():
             classement_dict[stage_id][team_id] = {}
         classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0  # Default to 0 if None or empty string
 
-    # Initialize the dictionary to store total placements
-    total_classement_data = {}
-
-    # Populate total_classement_data with placeholder values (0 or None)
-    for stage in range(len(stage_data)):  # stages as the length of stage_data
-        for team_id in rider_names:
-            for rider_index, rider in enumerate(rider_names[team_id]):
-                rider_id = rider_ids[team_id][rider_index]
-                # Set the initial placement to 0 or another default value
-                total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value
-
     # Fetch stage data
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,
@@ -364,6 +353,18 @@ def scoreboard():
         stage_dict["segments"].sort(key=lambda x: x["order"])
 
         stage_data.append(stage_dict)
+
+    # Initialize the dictionary to store total placements
+    total_classement_data = {}
+
+    # Populate total_classement_data with placeholder values (0 or None)
+    for stage in range(len(stage_data)):  # stages as the length of stage_data
+        for team_id in rider_names:
+            for rider_index, rider in enumerate(rider_names[team_id]):
+                rider_id = rider_ids[team_id][rider_index]
+                # Set the initial placement to 0 or another default value
+                total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value
+
 
 
     conn.close()
