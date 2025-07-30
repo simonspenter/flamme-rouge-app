@@ -255,32 +255,6 @@ def scoreboard():
 
     code, teams, assistant = race_row
 
-    # Fetch stage data
-    cursor.execute("""
-        SELECT id, number, name, start_location, end_location, type,
-               length_km, elevation_m, route, route_image, link
-        FROM stages
-        WHERE race_code = ?
-        ORDER BY number
-    """, (code,))
-
-    stage_data = []
-    for stage in cursor.fetchall():
-        stage_dict = {
-            "id": stage[0],
-            "number": stage[1],
-            "name": stage[2],
-            "start": stage[3],
-            "end": stage[4],
-            "type": stage[5],
-            "length_km": stage[6],
-            "elevation_m": stage[7],
-            "route": stage[8],
-            "route_image": stage[9],
-            "link": stage[10]
-        }
-        stage_data.append(stage_dict)
-
     # Fetch segments for this stage
     cursor.execute("""
         SELECT name, type, category, order_in_stage
@@ -364,6 +338,32 @@ def scoreboard():
                 rider_id = rider_ids[team_id][rider_index]
                 # Set the initial placement to 0 or another default value
                 total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value
+
+    # Fetch stage data
+    cursor.execute("""
+        SELECT id, number, name, start_location, end_location, type,
+               length_km, elevation_m, route, route_image, link
+        FROM stages
+        WHERE race_code = ?
+        ORDER BY number
+    """, (code,))
+
+    stage_data = []
+    for stage in cursor.fetchall():
+        stage_dict = {
+            "id": stage[0],
+            "number": stage[1],
+            "name": stage[2],
+            "start": stage[3],
+            "end": stage[4],
+            "type": stage[5],
+            "length_km": stage[6],
+            "elevation_m": stage[7],
+            "route": stage[8],
+            "route_image": stage[9],
+            "link": stage[10]
+        }
+        stage_data.append(stage_dict)
 
 
     conn.close()
