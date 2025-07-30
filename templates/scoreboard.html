@@ -12,8 +12,8 @@
 <div id="scoreboard" class="tabcontent">
     <div class="tab">
         <button class="subTablinks" id="classementTabButton" onclick="openSubTab(event, 'classement')">Classement</button>
-        <button class="subTablinks" id="SprintTabButton"onclick="openSubTab(event, 'sprint')">Sprint</button>
-        <button class="subTablinks" id="MountainTabButton"onclick="openSubTab(event, 'mountain')">King of the Mountain</button>
+        <button class="subTablinks" id="SprintTabButton" onclick="openSubTab(event, 'sprint')">Sprint</button>
+        <button class="subTablinks" id="MountainTabButton" onclick="openSubTab(event, 'mountain')">King of the Mountain</button>
     </div>
 
     <!-- Sub-tab content (IDs and classes are inside each included file) -->
@@ -31,15 +31,22 @@
 
 {% block scripts %}
 <script>
-    // Function to log when the Classement tab is clicked
-    function onClassementTabOpened(event) {
-        console.log("Tab clicked:", event.target); // Check which element was clicked
-        if (event.target && event.target.id === "classementTabButton") {
-            console.log("Event triggered: Classement tab opened.");
+    document.addEventListener("DOMContentLoaded", function () {
+        // Function to log when the Classement tab is clicked
+        function onClassementTabOpened(event) {
+            console.log("Tab clicked:", event.target); // Check which element was clicked
+            if (event.target && event.target.id === "classementTabButton") {
+                console.log("Event triggered: Classement tab opened.");
+            }
         }
-    }
 
-    // Add the event listener directly to the button for testing
-    document.getElementById("classementTabButton").addEventListener("click", onClassementTabOpened);
+        // Add the event listener directly to the button after the DOM is fully loaded
+        const classementTabButton = document.getElementById("classementTabButton");
+
+        // Ensure the button exists before attaching the event listener
+        if (classementTabButton) {
+            classementTabButton.addEventListener("click", onClassementTabOpened);
+        }
+    });
 </script>
 {% endblock %}
