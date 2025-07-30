@@ -9,7 +9,7 @@
 {% include 'scoreboard/tabs.html' %}
 
 <!-- Scoreboard Tab Content -->
-<div id="scoreboard" class="tabcontent">
+<div id="scoreboardTab" class="tabcontent">
     <div class="tab">
         <button class="subTablinks" onclick="openSubTab(event, 'classement')">Classement</button>
         <button class="subTablinks" onclick="openSubTab(event, 'sprint')">Sprint</button>
@@ -32,18 +32,18 @@
 {% block scripts %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Function to log the event trigger when scoreboard tab is opened
+        // Function to log the event trigger when the scoreboard tab is opened
         function onScoreboardTabOpened() {
             // Log the event trigger
             console.log("Event triggered: Scoreboard tab opened.");
         }
 
-        // Find the Scoreboard tab button and add the event listener
-        const scoreboardTabButton = document.querySelector("#scoreboardTabButton");
+        // Find the main Scoreboard tab by its id
+        const scoreboardTab = document.getElementById("scoreboardTab");
 
-        // Ensure the button exists before adding the event listener
-        if (scoreboardTabButton) {
-            scoreboardTabButton.addEventListener("click", onScoreboardTabOpened);
+        // Ensure the Scoreboard tab exists before adding the event listener
+        if (scoreboardTab) {
+            scoreboardTab.addEventListener("click", onScoreboardTabOpened);
         }
     });
 </script>
