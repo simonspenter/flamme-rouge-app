@@ -301,7 +301,7 @@ def scoreboard():
     # Fetch stage data
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,
-               length_km, elevation_m, route, route_image, link
+            length_km, elevation_m, route, route_image, link
         FROM stages
         WHERE race_code = ?
         ORDER BY number
