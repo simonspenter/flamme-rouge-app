@@ -254,7 +254,7 @@ def scoreboard():
     cursor.execute("SELECT team_name FROM teams WHERE race_id = ?", (race_id,))
     team_names = [row[0] for row in cursor.fetchall()]
 
-    # Fetch rider names and IDs in a single query
+    # Fetch rider names, team IDs, and rider IDs
     cursor.execute(""" 
         SELECT team_id, rider_id, rider_name 
         FROM riders WHERE race_id = ? 
@@ -279,9 +279,6 @@ def scoreboard():
 
     classement_data = cursor.fetchall()
 
-    # Log the fetched classement data
-    print(f"Fetched classement data: {classement_data}")
-
     # Prepare the classement data in a dictionary
     classement_dict = {}
     for stage_id, team_id, rider_id, placement in classement_data:
@@ -292,8 +289,7 @@ def scoreboard():
         # Convert placement to integer before storing it
         classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0  # Default to 0 if None or empty string
 
-    # Log the structure of classement_dict
-    print(f"Classement dictionary: {classement_dict}")
+    conn.close()
 
     # Fetch stage data
     cursor.execute("""

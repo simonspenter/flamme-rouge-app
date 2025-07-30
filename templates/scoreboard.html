@@ -10,8 +10,6 @@
 
 <!-- Scoreboard Tab Content -->
 <div id="scoreboard" class="tabcontent">
-
-    <!-- Sub-tabs only visible inside the Scoreboard tab -->
     <div class="tab">
         <button class="subTablinks" onclick="openSubTab(event, 'classement')">Classement</button>
         <button class="subTablinks" onclick="openSubTab(event, 'sprint')">Sprint</button>
@@ -35,7 +33,6 @@
 <script>
 // Add event listener to the scoreboard tab
 document.addEventListener("DOMContentLoaded", function () {
-    // When the user clicks the "Scoreboard" tab, fetch the classement data
     const scoreboardTab = document.getElementById("scoreboard");
 
     if (scoreboardTab) {
@@ -59,15 +56,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Log the fetched data to see if we are receiving it properly
                 console.log("Fetched data:", data);
 
-                // Placeholder: process and display the data as needed
-                if (data.status === 'success') {
-                    console.log('Classement data fetched successfully!');
-                    console.log('Riders:', data.rider_names);
-                    console.log('Teams:', data.team_names);
-                    console.log('Classement Data:', data.classement_data);
-                    console.log('Stage Types:', data.stage_types);
-                } else {
-                    console.error('Error fetching classement data:', data.message);
+                // Now process and display the data (classement_data)
+                const classementData = data.classement_data;
+                console.log("Classement Data to be displayed:", classementData);
+
+                // Placeholder to display classement data in console
+                for (let stageId in classementData) {
+                    console.log(`Stage ${stageId}:`);
+                    for (let teamId in classementData[stageId]) {
+                        for (let riderId in classementData[stageId][teamId]) {
+                            const placement = classementData[stageId][teamId][riderId];
+                            console.log(`Team ${teamId}, Rider ${riderId} - Placement: ${placement}`);
+                        }
+                    }
                 }
             })
             .catch(error => {
