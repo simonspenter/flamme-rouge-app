@@ -38,12 +38,16 @@
             console.log("Event triggered: Scoreboard tab opened.");
         }
 
-        // Find the main Scoreboard tab by its id
-        const scoreboardTab = document.getElementById("scoreboard");
+        // Find the main Scoreboard tab button by its id
+        const scoreboardTabButton = document.getElementById("scoreboardTabButton");
 
-        // Ensure the Scoreboard tab exists before adding the event listener
-        if (scoreboardTab) {
-            scoreboardTab.addEventListener("click", onScoreboardTabOpened);
+        // Ensure the button exists before adding the event listener
+        if (scoreboardTabButton) {
+            // Add event listener to the button
+            scoreboardTabButton.addEventListener("click", function (event) {
+                onScoreboardTabOpened();  // Log message when clicked
+                openTab(event, 'scoreboard');  // Call the existing function for tab switching
+            });
         }
     });
 </script>
