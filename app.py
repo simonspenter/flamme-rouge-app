@@ -287,21 +287,10 @@ def scoreboard():
             classement_dict[stage_id][team_id] = {}
         classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0  # Default to 0 if None or empty string
 
-    # Initialize the dictionary to store total placements
-    total_classement_data = {}
-
-    # Populate total_classement_data with placeholder values (0 or None)
-    for stage in range(len(stage_data)):  # stages as the length of stage_data
-        for team_id in rider_names:
-            for rider_index, rider in enumerate(rider_names[team_id]):
-                rider_id = rider_ids[team_id][rider_index]
-                # Set the initial placement to 0 or another default value
-                total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value
-
     # Fetch stage data
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,
-            length_km, elevation_m, route, route_image, link
+               length_km, elevation_m, route, route_image, link
         FROM stages
         WHERE race_code = ?
         ORDER BY number
@@ -324,11 +313,22 @@ def scoreboard():
         }
         stage_data.append(stage_dict)
 
+    # Check if stage_data is populated correctly
+    if not stage_data:
+        return jsonify({"error": "No stage data found for the race."}), 404
+
+    # Initialize the dictionary to store total placements
+    total_classement_data = {}
+    for stage in stage_data:  # Iterate through the stages directly
+        for team_id in rider_names:
+            for rider_index, rider in enumerate(rider_names[team_id]):
+                rider_id = rider_ids[team_id][rider_index]
+                total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value
+
     conn.close()
 
     # If it's an AJAX request, return JSON data
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # If it's an AJAX request, return JSON data
         return jsonify({
             "race_id": race_id,
             "stages": stage_data,
@@ -339,7 +339,6 @@ def scoreboard():
             "rider_ids": rider_ids
         })
 
-
     # If it's a regular request, render the HTML template
     return render_template(
         'scoreboard.html',
@@ -349,13 +348,14 @@ def scoreboard():
         team_names=team_names,
         rider_names=rider_names,
         rider_ids=rider_ids,
-        classement_data=classement_dict,  # Pass the classement data to the template
-        total_classement_data=total_classement_data,  # Pass the total placement data (you can populate this if needed)
+        classement_data=classement_dict,
+        total_classement_data=total_classement_data,  # Pass the total placement data
         stage_data=stage_data,
-        stage_type_icons=stage_type_icons,  # Define your icons if needed
+        stage_type_icons={},  # Define your icons if needed
         assistant=3 if assistant == 3 else 2,
         enumerate=enumerate
     )
+
 
 
 
