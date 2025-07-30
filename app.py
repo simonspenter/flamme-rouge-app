@@ -287,6 +287,17 @@ def scoreboard():
             classement_dict[stage_id][team_id] = {}
         classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0  # Default to 0 if None or empty string
 
+    # Initialize the dictionary to store total placements
+    total_classement_data = {}
+
+    # Populate total_classement_data with placeholder values (0 or None)
+    for stage in range(len(stage_data)):  # stages as the length of stage_data
+        for team_id in rider_names:
+            for rider_index, rider in enumerate(rider_names[team_id]):
+                rider_id = rider_ids[team_id][rider_index]
+                # Set the initial placement to 0 or another default value
+                total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value
+
     # Fetch stage data
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,
@@ -315,7 +326,7 @@ def scoreboard():
 
     conn.close()
 
-    # Check if the request is AJAX (via `X-Requested-With` header)
+    # If it's an AJAX request, return JSON data
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         # If it's an AJAX request, return JSON data
         return jsonify({
@@ -328,6 +339,7 @@ def scoreboard():
             "rider_ids": rider_ids
         })
 
+
     # If it's a regular request, render the HTML template
     return render_template(
         'scoreboard.html',
@@ -338,9 +350,9 @@ def scoreboard():
         rider_names=rider_names,
         rider_ids=rider_ids,
         classement_data=classement_dict,  # Pass the classement data to the template
-        total_classement_data={},  # Pass the total placement data (you can populate this if needed)
+        total_classement_data=total_classement_data,  # Pass the total placement data (you can populate this if needed)
         stage_data=stage_data,
-        stage_type_icons={},  # Define your icons if needed
+        stage_type_icons=stage_type_icons,  # Define your icons if needed
         assistant=3 if assistant == 3 else 2,
         enumerate=enumerate
     )
