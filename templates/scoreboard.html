@@ -9,7 +9,7 @@
 {% include 'scoreboard/tabs.html' %}
 
 <!-- Scoreboard Tab Content -->
-<div id="scoreboardTab" class="tabcontent">
+<div id="scoreboard" class="tabcontent">
     <div class="tab">
         <button class="subTablinks" onclick="openSubTab(event, 'classement')">Classement</button>
         <button class="subTablinks" onclick="openSubTab(event, 'sprint')">Sprint</button>
@@ -39,7 +39,7 @@
         }
 
         // Find the main Scoreboard tab by its id
-        const scoreboardTab = document.getElementById("scoreboardTab");
+        const scoreboardTab = document.getElementById("scoreboard");
 
         // Ensure the Scoreboard tab exists before adding the event listener
         if (scoreboardTab) {
