@@ -33,17 +33,19 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Function to log the event trigger when the 'Classement' sub-tab is opened
-        function onClassementTabOpened() {
-            // Log the event trigger
-            console.log("Event triggered: Classement tab opened.");
+        function onClassementTabOpened(event) {
+            if (event.target && event.target.id === "classementTabButton") {
+                // Log the event trigger
+                console.log("Event triggered: Classement tab opened.");
+            }
         }
 
-        // Find the 'Classement' sub-tab button by its id
-        const classementTabButton = document.getElementById("classementTabButton");
+        // Attach the event listener to the parent div that contains the sub-tab buttons
+        const tabContainer = document.querySelector(".tab");  // .tab is the parent container for the sub-tabs
 
-        // Ensure the 'Classement' sub-tab button exists before adding the event listener
-        if (classementTabButton) {
-            classementTabButton.addEventListener("click", onClassementTabOpened);
+        // Ensure the parent container exists before adding the event listener
+        if (tabContainer) {
+            tabContainer.addEventListener("click", onClassementTabOpened);
         }
     });
 </script>
