@@ -36,9 +36,6 @@
         function onClassementTabOpened() {
             // Log the event trigger
             console.log("Event triggered: Classement tab opened.");
-
-            // Optionally: Fetch classement data
-            fetchClassementData();
         }
 
         // Find the 'Classement' sub-tab button by its id
@@ -48,41 +45,6 @@
         if (classementTabButton) {
             classementTabButton.addEventListener("click", onClassementTabOpened);
         }
-
-        // Function to fetch classement data
-        function fetchClassementData() {
-            const raceId = '{{ race_id }}';  // Ensure the race_id is accessible in the template
-
-            // Log the event trigger
-            console.log(`Event triggered, fetching data for race_id: ${raceId}`);
-
-            // Make the fetch request
-            fetch(`/scoreboard?race=${raceId}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Log the fetched data to see if we are receiving it properly
-                    console.log("Fetched data:", data);
-
-                    // Now process and display the data (classement_data)
-                    const classementData = data.classement_data;
-                    console.log("Classement Data to be displayed:", classementData);
-
-                    // Placeholder to display classement data in console
-                    for (let stageId in classementData) {
-                        console.log(`Stage ${stageId}:`);
-                        for (let teamId in classementData[stageId]) {
-                            for (let riderId in classementData[stageId][teamId]) {
-                                const placement = classementData[stageId][teamId][riderId];
-                                console.log(`Team ${teamId}, Rider ${riderId} - Placement: ${placement}`);
-                            }
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching classement data:', error);
-                });
-        }
     });
-
 </script>
 {% endblock %}
