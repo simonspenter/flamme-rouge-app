@@ -14,7 +14,16 @@ function fetchClassementData() {
 
     fetch(`/scoreboard?race=${raceId}`)
         .then(response => {
-            // Check if the response status is OK
+            // Log the status of the response
+            console.log(`Response status: ${response.status}`);
+            
+            // Check if the response is a redirect (status code 3xx)
+            if (response.status >= 300 && response.status < 400) {
+                console.error(`Redirect detected: ${response.status}`);
+                return response.text(); // If it's a redirect, fetch as text (HTML)
+            }
+
+            // If the status is not OK, throw an error
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -29,6 +38,7 @@ function fetchClassementData() {
             console.error("Error fetching data:", error);
         });
 }
+
 
 
 // Function to add event listener to the "Classement" tab button
