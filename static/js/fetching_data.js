@@ -8,32 +8,28 @@ function onClassementTabOpened(event) {
 }  // <-- Closing brace added here
 
 function fetchClassementData() {
-    // Fetch the race_id dynamically from the hidden input field
     const raceId = document.getElementById('race-id').value;  // Get the race_id from the hidden input field
     console.log(`Fetching classement data for race_id: ${raceId}`);
 
-    fetch(`/scoreboard?race=${raceId}`)
-        .then(response => {
-            // Log the raw response to inspect it
-            response.text().then(text => {
-                console.log("Raw response:", text);  // Log raw HTML content
-            });
+    const url = `/api/classement_data?race=${raceId}`;
+    console.log("Requesting URL:", url);  // Log the full URL
 
-            // Check if the response status is OK
+    fetch(url)
+        .then(response => {
+            console.log("Response status:", response.status);  // Log response status
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();  // Parse the response body as JSON
         })
         .then(data => {
-            // For now, we just log the fetched data to check
             console.log("Fetched data:", data);
         })
         .catch(error => {
-            // Log the error if there's any issue with the fetch
             console.error("Error fetching data:", error);
         });
 }
+
 
 
 

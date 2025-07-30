@@ -464,13 +464,6 @@ def update_classement_result():
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
-
-
-
-
-
-
-
 @app.route('/update-segment-result', methods=['POST'])
 def update_segment_result():
     data = request.get_json()
@@ -526,6 +519,40 @@ def update_segment_result():
     conn.close()
 
     return jsonify({"status": "success"}), 200
+
+
+@app.route("/api/classement_data")
+def get_classement_data():
+    race_id = request.args.get('race')
+
+    if not race_id:
+        return jsonify({"error": "race_id is missing"}), 400  # Return JSON error if race_id is missing
+
+    conn = get_db_connection()  # Open the connection
+    cursor = conn.cursor()
+
+    # Fetch classement results for the race
+    cursor.execute(""" 
+        SELECT stage_id, team_id, rider_id, placement 
+        FROM classement_results 
+        WHERE race_id = ? 
+    """, (race_id,))
+
+    classement_data = cursor.fetchall()
+
+    # Prepare the classement data in a dictionary
+    classement_dict = {}
+    for stage_id, team_id, rider_id, placement in classement_data:
+        if stage_id not in classement_dict:
+            classement_dict[stage_id] = {}
+        if team_id not in classement_dict[stage_id]:
+            classement_dict[stage_id][team_id] = {}
+        classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0  # Default to 0 if None or empty string
+
+    conn.close()
+
+    # Return the classement data as JSON
+    return jsonify(classement_dict)
 
 
 # Test route to verify database connection
