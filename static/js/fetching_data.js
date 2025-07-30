@@ -7,35 +7,20 @@ function onClassementTabOpened(event) {
     }
 }
 
-// Function to fetch classement data for the specific race
+// Function to fetch classement data and just log the message with correct race_id
 function fetchClassementData() {
-    const raceId = "{{ race_id }}";  // Ensure race_id is passed from the template
-
+    const raceId = "{{ race_id }}";  // Ensure race_id is passed correctly into the template
     console.log(`Fetching classement data for race_id: ${raceId}`);
 
-    // Fetch the data from the server (use the raceId dynamically in the URL)
+    // Perform the fetch request here for the correct race_id
     fetch(`/scoreboard?race=${raceId}`)
-        .then(response => response.json())  // Parse the JSON response
+        .then(response => response.json())
         .then(data => {
-            console.log("Fetched data:", data);  // Log the entire data for debugging
-
-            // Process and display the fetched data (classement_data)
-            const classementData = data.classement_data;
-            console.log("Classement Data to be displayed:", classementData);
-
-            // Example of iterating through the fetched classement data and logging it
-            for (let stageId in classementData) {
-                console.log(`Stage ${stageId}:`);
-                for (let teamId in classementData[stageId]) {
-                    for (let riderId in classementData[stageId][teamId]) {
-                        const placement = classementData[stageId][teamId][riderId];
-                        console.log(`Team ${teamId}, Rider ${riderId} - Placement: ${placement}`);
-                    }
-                }
-            }
+            // For now, we just log the fetched data to check
+            console.log("Fetched data:", data);
         })
         .catch(error => {
-            console.error("Error fetching data:", error);  // Handle errors if the fetch fails
+            console.error("Error fetching data:", error);
         });
 }
 
