@@ -4,12 +4,12 @@ function onClassementTabOpened(event) {
         console.log("Event triggered: Classement tab opened.");
         // Call the function to fetch classement data when the tab is opened
         fetchClassementData();
-    }
 }
 
 // Function to fetch classement data and just log the message with correct race_id
 function fetchClassementData() {
-    const raceId = "{{ race_id }}";  // Ensure race_id is passed correctly into the template
+    // Fetch the race_id dynamically from the hidden input field
+    const raceId = document.getElementById('race-id').value;  // Get the race_id from the hidden input field
     console.log(`Fetching classement data for race_id: ${raceId}`);
 
     // Perform the fetch request here for the correct race_id
