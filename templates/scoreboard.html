@@ -32,8 +32,12 @@
 {% block scripts %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Log to confirm that the page is loaded and the script is executing
+        console.log("DOMContentLoaded event triggered.");
+
         // Function to log the event trigger when the 'Classement' sub-tab is opened
         function onClassementTabOpened(event) {
+            console.log("Tab clicked:", event.target); // Log which element was clicked
             if (event.target && event.target.id === "classementTabButton") {
                 // Log the event trigger
                 console.log("Event triggered: Classement tab opened.");
