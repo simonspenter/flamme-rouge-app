@@ -242,7 +242,12 @@ def scoreboard():
     cursor = conn.cursor()
 
     # Fetch race info
-    cursor.execute("SELECT code, teams, assistant FROM races WHERE id = ?", (race_id,))
+    cursor.execute("""
+        SELECT code, teams, assistant 
+        FROM races 
+        WHERE id = ?
+        """, (race_id,))
+    
     race_row = cursor.fetchone()
 
     if not race_row:
@@ -250,14 +255,46 @@ def scoreboard():
 
     code, teams, assistant = race_row
 
+    # Fetch stage data
+    cursor.execute("""
+        SELECT id, number, name, start_location, end_location, type,
+               length_km, elevation_m, route, route_image, link
+        FROM stages
+        WHERE race_code = ?
+        ORDER BY number
+    """, (code,))
+
+    stage_data = []
+    for stage in cursor.fetchall():
+        stage_dict = {
+            "id": stage[0],
+            "number": stage[1],
+            "name": stage[2],
+            "start": stage[3],
+            "end": stage[4],
+            "type": stage[5],
+            "length_km": stage[6],
+            "elevation_m": stage[7],
+            "route": stage[8],
+            "route_image": stage[9],
+            "link": stage[10]
+        }
+        stage_data.append(stage_dict)
+
     # Fetch team names
-    cursor.execute("SELECT team_name FROM teams WHERE race_id = ?", (race_id,))
+    cursor.execute("""
+        SELECT team_name 
+        FROM teams 
+        WHERE race_id = ?
+    """, (race_id,))
+
     team_names = [row[0] for row in cursor.fetchall()]
 
     # Fetch rider names and IDs
     cursor.execute(""" 
         SELECT team_id, rider_id, rider_name 
-        FROM riders WHERE race_id = ? 
+        FROM riders 
+        WHERE race_id = ? 
     """, (race_id,))
 
     rider_names = {}
@@ -287,48 +324,23 @@ def scoreboard():
             classement_dict[stage_id][team_id] = {}
         classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0  # Default to 0 if None or empty string
 
-    # Fetch stage data
-    cursor.execute("""
-        SELECT id, number, name, start_location, end_location, type,
-               length_km, elevation_m, route, route_image, link
-        FROM stages
-        WHERE race_code = ?
-        ORDER BY number
-    """, (code,))
-
-    stage_data = []
-    for stage in cursor.fetchall():
-        stage_dict = {
-            "id": stage[0],
-            "number": stage[1],
-            "name": stage[2],
-            "start": stage[3],
-            "end": stage[4],
-            "type": stage[5],
-            "length_km": stage[6],
-            "elevation_m": stage[7],
-            "route": stage[8],
-            "route_image": stage[9],
-            "link": stage[10]
-        }
-        stage_data.append(stage_dict)
-
-    # Check if stage_data is populated correctly
-    if not stage_data:
-        return jsonify({"error": "No stage data found for the race."}), 404
-
     # Initialize the dictionary to store total placements
     total_classement_data = {}
-    for stage in stage_data:  # Iterate through the stages directly
+
+    # Populate total_classement_data with placeholder values (0 or None)
+    for stage in range(len(stage_data)):  # stages as the length of stage_data
         for team_id in rider_names:
             for rider_index, rider in enumerate(rider_names[team_id]):
                 rider_id = rider_ids[team_id][rider_index]
+                # Set the initial placement to 0 or another default value
                 total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value
+
 
     conn.close()
 
-    # If it's an AJAX request, return JSON data
+    # Check if the request is AJAX (via `X-Requested-With` header)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # If it's an AJAX request, return JSON data
         return jsonify({
             "race_id": race_id,
             "stages": stage_data,
@@ -348,14 +360,13 @@ def scoreboard():
         team_names=team_names,
         rider_names=rider_names,
         rider_ids=rider_ids,
-        classement_data=classement_dict,
-        total_classement_data=total_classement_data,  # Pass the total placement data
+        classement_data=classement_dict,  # Pass the classement data to the template
+        total_classement_data=total_classement_data,  # Pass the total placement data (you can populate this if needed)
         stage_data=stage_data,
-        stage_type_icons={},  # Define your icons if needed
+        stage_type_icons=stage_type_icons,  # Define your icons if needed
         assistant=3 if assistant == 3 else 2,
         enumerate=enumerate
     )
-
 
 
 
