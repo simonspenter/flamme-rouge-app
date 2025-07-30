@@ -17,16 +17,19 @@ function fetchClassementData() {
             // Log the status of the response
             console.log(`Response status: ${response.status}`);
             
-            // Check if the response is a redirect (status code 3xx)
-            if (response.status >= 300 && response.status < 400) {
-                console.error(`Redirect detected: ${response.status}`);
-                return response.text(); // If it's a redirect, fetch as text (HTML)
-            }
-
-            // If the status is not OK, throw an error
+            // If the response is not OK, check for HTML content
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
+
+            // If the response is HTML (not JSON), log the raw HTML
+            if (response.headers.get("Content-Type").includes("text/html")) {
+                response.text().then(html => {
+                    console.error("Unexpected HTML content received:", html);
+                });
+                throw new Error("Received HTML content, expected JSON.");
+            }
+
             return response.json();  // Parse the response body as JSON
         })
         .then(data => {
@@ -38,6 +41,7 @@ function fetchClassementData() {
             console.error("Error fetching data:", error);
         });
 }
+
 
 
 
