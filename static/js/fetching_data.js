@@ -14,22 +14,15 @@ function fetchClassementData() {
 
     fetch(`/scoreboard?race=${raceId}`)
         .then(response => {
-            // Log the status of the response
-            console.log(`Response status: ${response.status}`);
-            
-            // If the response is not OK, check for HTML content
+            // Log the raw response to inspect it
+            response.text().then(text => {
+                console.log("Raw response:", text);  // Log raw HTML content
+            });
+
+            // Check if the response status is OK
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-
-            // If the response is HTML (not JSON), log the raw HTML
-            if (response.headers.get("Content-Type").includes("text/html")) {
-                response.text().then(html => {
-                    console.error("Unexpected HTML content received:", html);
-                });
-                throw new Error("Received HTML content, expected JSON.");
-            }
-
             return response.json();  // Parse the response body as JSON
         })
         .then(data => {
@@ -41,6 +34,7 @@ function fetchClassementData() {
             console.error("Error fetching data:", error);
         });
 }
+
 
 
 
