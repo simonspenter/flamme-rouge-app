@@ -4,7 +4,8 @@ function onClassementTabOpened(event) {
         console.log("Event triggered: Classement tab opened.");
         // Call the function to fetch classement data when the tab is opened
         fetchClassementData();
-}
+    }
+}  // <-- Closing brace added here
 
 // Function to fetch classement data and just log the message with correct race_id
 function fetchClassementData() {
