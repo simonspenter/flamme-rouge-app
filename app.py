@@ -310,7 +310,7 @@ def scoreboard():
         'flat': 'flat.svg',
         'default': 'default.svg',
         'cobblestone': 'cobblestone.svg'
-
+    }
     # Fetch team names
     cursor.execute("""
         SELECT team_name 
