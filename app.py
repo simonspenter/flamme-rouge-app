@@ -281,6 +281,36 @@ def scoreboard():
         }
         stage_data.append(stage_dict)
 
+    # Fetch segments for this stage
+    cursor.execute("""
+        SELECT name, type, category, order_in_stage
+        FROM segments
+        WHERE stage_id = ?
+        ORDER BY order_in_stage
+    """, (stage[0],))
+
+    for name, seg_type, cat, order in cursor.fetchall():
+        stage_dict["segments"].append({
+            "name": name,
+            "type": seg_type,
+            "category": cat,
+            "order": order
+        })
+
+    # Sort segments by the 'order' field
+    stage_dict["segments"].sort(key=lambda x: x["order"])
+
+    stage_data.append(stage_dict)
+
+    # Define the icon mapping for stage types
+    stage_type_icons = {
+        'timetrial': 'timetrial.svg',
+        'mountain': 'mountain.svg',
+        'hilly': 'hilly.svg',
+        'flat': 'flat.svg',
+        'default': 'default.svg',
+        'cobblestone': 'cobblestone.svg'
+
     # Fetch team names
     cursor.execute("""
         SELECT team_name 
