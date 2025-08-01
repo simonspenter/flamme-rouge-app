@@ -381,6 +381,14 @@ def scoreboard():
             "rider_names": rider_names,
             "rider_ids": rider_ids
         })
+    
+    # Debugging: Check the data before rendering
+    print(f"race_id: {race_id}")
+    print(f"team_names: {team_names}")
+    print(f"rider_names: {rider_names}")
+    print(f"rider_ids: {rider_ids}")
+    print(f"classement_data: {classement_data}")
+    print(f"stage_data: {stage_data}")
 
     # If it's a regular request, render the HTML template
     return render_template(
