@@ -8,8 +8,10 @@ function onClassementTabOpened(event) {
 }  
 
 function updateClassementTable(classementData) {
+    console.log("UpdateClassementTable function started");
 
-    console.log("UpdateClassementTable func received data:", data);
+
+    console.log("UpdateClassementTable func received data:", classementData);
 
     // Loop through each stage
     Object.keys(classementData).forEach(stage_id => {
