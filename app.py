@@ -280,23 +280,6 @@ def scoreboard():
         rider_names[team_id].append(rider_name)
         rider_ids[team_id].append(rider_id)
 
-    # Fetch classement results for the race
-    cursor.execute(""" 
-        SELECT stage_id, team_id, rider_id, placement 
-        FROM classement_results 
-        WHERE race_id = ? 
-    """, (race_id,))
-
-    classement_data = cursor.fetchall()
-
-    # Prepare the classement data in a dictionary
-    classement_dict = {}
-    for stage_id, team_id, rider_id, placement in classement_data:
-        if stage_id not in classement_dict:
-            classement_dict[stage_id] = {}
-        if team_id not in classement_dict[stage_id]:
-            classement_dict[stage_id][team_id] = {}
-        classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0  # Default to 0 if None or empty string
 
     # Fetch stage data
     cursor.execute("""
@@ -392,7 +375,6 @@ def scoreboard():
         team_names=team_names,
         rider_names=rider_names,
         rider_ids=rider_ids,
-        classement_data=classement_dict,  # Pass the classement data to the template
         total_classement_data=total_classement_data,  # Pass the total placement data (you can populate this if needed)
         stage_data=stage_data,
         stage_type_icons=stage_type_icons,  # Define your icons if needed
