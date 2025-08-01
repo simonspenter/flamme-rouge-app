@@ -22,7 +22,7 @@
                     <td>Stage {{ stage + 1 }}</td>
                     {% for team_id in rider_names %}
                         {% for rider_index, rider in enumerate(rider_names[team_id]) %}
-                            <td id="classement-stage-{{ stage + 1 }}-team-{{ team_id }}-rider-{{ rider_index }}">
+                            <td id="classement-stage-{{ stage_data[stage].id }}-team-{{ team_id }}-rider-{{ rider_ids[team_id][rider_index] }}">
                                 {% set rider_id = rider_ids[team_id][rider_index] %}
                                 {% set stage_id = stage_data[stage].id %}
                                 {% set placement = classement_data[stage_id][team_id][rider_id] if stage_id in classement_data and team_id in classement_data[stage_id] and rider_id in classement_data[stage_id][team_id] else '' %}
