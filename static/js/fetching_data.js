@@ -7,29 +7,24 @@ function onClassementTabOpened(event) {
     }
 }  
 
-function updateClassementTable(data) {
-    console.log("Updating classement table with data:", data);
-    
-    // Loop through each stage in the data
-    for (let stage_id in data) {
-        let stageData = data[stage_id];
-        for (let team_id in stageData) {
-            let teamData = stageData[team_id];
-            for (let rider_id in teamData) {
-                let placement = teamData[rider_id];
-
-                // Construct the corresponding table cell
-                let cellId = `classement-stage-${stage_id}-team-${team_id}-rider-${rider_id}`;
-                let cell = document.getElementById(cellId);
-
+function updateClassementTable(classementData) {
+    // Loop through each stage
+    Object.keys(classementData).forEach(stage_id => {
+        let stage = classementData[stage_id];
+        Object.keys(stage).forEach(team_id => {
+            let team = stage[team_id];
+            Object.keys(team).forEach(rider_id => {
+                // Get the table cell by ID (combining stage_id, team_id, rider_id)
+                let cell = document.getElementById(`classement-stage-${stage_id}-team-${team_id}-rider-${rider_id}`);
                 if (cell) {
-                    // Set the placement in the correct table cell
-                    cell.textContent = placement || '';  // If no placement, leave it empty
+                    // Update the cell with the placement data
+                    cell.innerHTML = team[rider_id];
                 }
-            }
-        }
-    }
+            });
+        });
+    });
 }
+
 
 
 function fetchClassementData() {
