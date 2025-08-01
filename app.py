@@ -255,15 +255,6 @@ def scoreboard():
 
     code, teams, assistant = race_row
 
-    # Define the icon mapping for stage types
-    stage_type_icons = {
-        'timetrial': 'timetrial.svg',
-        'mountain': 'mountain.svg',
-        'hilly': 'hilly.svg',
-        'flat': 'flat.svg',
-        'default': 'default.svg',
-        'cobblestone': 'cobblestone.svg'
-    }
     # Fetch team names
     cursor.execute("""
         SELECT team_name 
@@ -369,6 +360,16 @@ def scoreboard():
 
     conn.close()
 
+    # Define the icon mapping for stage types
+    stage_type_icons = {
+        'timetrial': 'timetrial.svg',
+        'mountain': 'mountain.svg',
+        'hilly': 'hilly.svg',
+        'flat': 'flat.svg',
+        'default': 'default.svg',
+        'cobblestone': 'cobblestone.svg'
+    }
+
     # Check if the request is AJAX (via `X-Requested-With` header)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         # If it's an AJAX request, return JSON data
@@ -381,14 +382,6 @@ def scoreboard():
             "rider_names": rider_names,
             "rider_ids": rider_ids
         })
-    
-    # Debugging: Check the data before rendering
-    print(f"race_id: {race_id}")
-    print(f"team_names: {team_names}")
-    print(f"rider_names: {rider_names}")
-    print(f"rider_ids: {rider_ids}")
-    print(f"classement_data: {classement_data}")
-    print(f"stage_data: {stage_data}")
 
     # If it's a regular request, render the HTML template
     return render_template(
