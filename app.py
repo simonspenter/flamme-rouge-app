@@ -559,6 +559,9 @@ def get_classement_data():
 
     conn.close()
 
+    # Debug statement to confirm function is activated
+    print("get_classement_data function activated")
+
     # Return the classement data as JSON
     return jsonify(classement_dict)
 
