@@ -8,9 +8,6 @@ function onClassementTabOpened(event) {
 }  
 
 function updateClassementTable(classementData) {
-    console.log("UpdateClassementTable function started");
-
-
     console.log("UpdateClassementTable func received data:", classementData);
 
     // Loop through each stage
