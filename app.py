@@ -359,7 +359,6 @@ def scoreboard():
         return jsonify({
             "race_id": race_id,
             "stages": stage_data,
-            "classement_data": classement_dict,
             "teams": teams,
             "team_names": team_names,
             "rider_names": rider_names,
