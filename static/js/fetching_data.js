@@ -8,6 +8,9 @@ function onClassementTabOpened(event) {
 }  
 
 function updateClassementTable(classementData) {
+
+    console.log("UpdateClassementTable func received data:", data);
+
     // Loop through each stage
     Object.keys(classementData).forEach(stage_id => {
         let stage = classementData[stage_id];
