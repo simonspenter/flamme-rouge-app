@@ -133,7 +133,7 @@
                                 <td>
                                     <select id="stage-segment-{{ single_stage.number }}-{{ segment['id'] }}-team-{{ team_id }}-rider-{{ rider_ids[team_id][rider_index] }}"
                                             data-category="{{ segment['category'] }}" 
-                                            onchange="handleSegmentChange({{ single_stage.number }}, {{ segment['id'] }}, {{ team_id }}, {{ rider_ids[team_id][rider_index] }}, '{{ segment['category'] }}', this)">
+                                            onchange="handleSegmentChange({{ single_stage.number }}, {{ segment['id'] }}, {{ team_id }}, {{ rider_ids[team_id][rider_index] }}, '{{ segment['category'] }}', '{{ segment['type'] }}', this)">
                                         <option value="">Select</option>
                                         {% for i in range(6) %}
                                             <option value="{{ i }}">{{ i }}</option>
@@ -200,7 +200,7 @@
         });
     }
 
-    function handleSegmentChange(stage, segment_id, team_id, rider_id, segment_category, selectElement) {
+    function handleSegmentChange(stage, segment_id, team_id, rider_id, segment_category, segment_type, selectElement) {
         const raceId = document.getElementById('race-id').value;  // Get race_id from the hidden input
         const placement = parseInt(selectElement.value, 10);  // Get the placement value (0 to 5)
 
@@ -211,11 +211,12 @@
             segment_id: segment_id,
             team_id: team_id,
             rider_id: rider_id,
-            segment_category: segment_category,  // Category name passed directly here (e.g., 'cat3', 'S')
+            segment_category: segment_category, 
+            segment_type: segment_type,  // Type of the segment (e.g., 'sprint', 'mountain')
             placement: placement
         });
 
-        // Send the data to the backend for insertion into the database
+        // Send the data to the backend for insertion into the segment_results table
         fetch('/update-segment-result', {
             method: 'POST',
             headers: {
@@ -228,6 +229,7 @@
                 team_id: team_id,
                 rider_id: rider_id,
                 segment_category: segment_category,
+                segment_type: segment_type,  // Send the segment type (e.g., 'sprint', 'mountain')
                 placement: placement
             }),
         })
@@ -243,6 +245,7 @@
             console.error('Error sending segment data:', error);
         });
     }
+
 
 
 
