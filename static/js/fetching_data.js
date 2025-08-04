@@ -1,3 +1,5 @@
+// CLASSEMENT DATA //
+
 // Function to log when the Classement tab is clicked
 function onClassementTabOpened(event) {
     if (event.target && event.target.id === "classementTabButton") {
@@ -69,3 +71,103 @@ document.addEventListener("DOMContentLoaded", function () {
     // Attach the event listener to the "Classement" tab button
     attachClassementTabListener();
 });
+
+
+// SEGMENT DATA //
+
+// Function to log when the Sprint tab is clicked
+function onSprintTabOpened(event) {
+    if (event.target && event.target.id === "sprintTabButton") {
+        console.log("Event triggered: Sprint tab opened.");
+        // Fetch sprint data
+        fetchSegmentData('sprint');
+    }
+}
+
+// Function to log when the Mountain tab is clicked
+function onMountainTabOpened(event) {
+    if (event.target && event.target.id === "mountainTabButton") {
+        console.log("Event triggered: Mountain tab opened.");
+        // Fetch mountain data
+        fetchSegmentData('mountain');
+    }
+}
+
+// Attach event listeners to the tab buttons
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("sprintTabButton").addEventListener("click", onSprintTabOpened);
+    document.getElementById("mountainTabButton").addEventListener("click", onMountainTabOpened);
+});
+
+
+// Function to fetch segment data for the relevant table
+function fetchSegmentData(segmentType) {
+    const raceId = document.getElementById('race-id').value;  // Get race_id from the hidden input field
+    console.log(`Fetching ${segmentType} data for race_id: ${raceId}`);
+
+    const url = `/api/segment_data?race=${raceId}&segment_type=${segmentType}`;
+    console.log("Requesting URL:", url);
+
+    fetch(url)
+        .then(response => {
+            console.log("Response status:", response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();  // Parse the response body as JSON
+        })
+        .then(data => {
+            console.log(`Fetched ${segmentType} data:`, data);
+            // Pass the fetched data to the table update function
+            if (segmentType === 'sprint') {
+                updateSprintTable(data);
+            } else if (segmentType === 'mountain') {
+                updateMountainTable(data);
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
+        });
+}
+
+// Function to update the sprint table
+function updateSprintTable(sprintData) {
+    console.log("UpdateSprintTable func received data:", sprintData);
+
+    // Loop through each stage and team
+    Object.keys(sprintData).forEach(stage_id => {
+        let stage = sprintData[stage_id];
+        Object.keys(stage).forEach(team_id => {
+            let team = stage[team_id];
+            Object.keys(team).forEach(rider_id => {
+                // Get the table cell by ID
+                let cell = document.getElementById(`sprint-stage-${stage_id}-team-${team_id}-rider-${rider_id}`);
+                if (cell) {
+                    // Update the cell with the points data
+                    cell.innerHTML = team[rider_id];
+                }
+            });
+        });
+    });
+}
+
+// Function to update the mountain table
+function updateMountainTable(mountainData) {
+    console.log("UpdateMountainTable func received data:", mountainData);
+
+    // Loop through each stage and team
+    Object.keys(mountainData).forEach(stage_id => {
+        let stage = mountainData[stage_id];
+        Object.keys(stage).forEach(team_id => {
+            let team = stage[team_id];
+            Object.keys(team).forEach(rider_id => {
+                // Get the table cell by ID
+                let cell = document.getElementById(`mountain-stage-${stage_id}-team-${team_id}-rider-${rider_id}`);
+                if (cell) {
+                    // Update the cell with the points data
+                    cell.innerHTML = team[rider_id];
+                }
+            });
+        });
+    });
+}
