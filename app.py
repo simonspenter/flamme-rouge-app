@@ -463,24 +463,19 @@ sprint_categories = {
 }
 
 # Function to calculate segment points based on category and placement
-def calculate_points(segment_category, placement, category_name=None):
+def calculate_points(segment_category, placement):
     # Log the segment category and category_name before calculation
-    print(f"Segment Category: {segment_category}, Category Name: {category_name}, Placement: {placement}")
+    print(f"Segment Category: {segment_category}, Placement: {placement}")
 
     # If the category is mountain (e.g., cat3, cat2, cat1, HC)
     if segment_category in mountain_categories:
-        # If category_name is provided, get points from that category
-        if category_name and category_name in mountain_categories:
-            # Log the category points for debugging
-            print(f"Mountain Category '{category_name}' points available: {mountain_categories[category_name]['points']}")
-            # Ensure that placement is within valid range (1, 2, 3, etc.)
-            points = mountain_categories[category_name]["points"].get(placement, 0)
-            print(f"Points for Placement {placement}: {points}")
-            return points
-        else:
-            # If no category_name is provided, return 0 points
-            print("No category name provided for mountain segment. Returning 0 points.")
-            return 0  # No points if category_name is not provided
+        # Log the category points for debugging
+        print(f"Mountain Category '{segment_category}' points available: {mountain_categories[segment_category]['points']}")
+        # Ensure that placement is within valid range (1, 2, 3, etc.)
+        points = mountain_categories[segment_category]["points"].get(placement, 0)
+        print(f"Points for Placement {placement}: {points}")
+        return points
+
 
     # If the category is sprint (e.g., S, SF, MF)
     if segment_category in sprint_categories:
