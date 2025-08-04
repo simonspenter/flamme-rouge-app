@@ -199,4 +199,51 @@
         });
     }
 
+
+    function handleSegmentChange(stage, segment_index, team_id, rider_id, selectElement) {
+        const raceId = document.getElementById('race-id').value;  // Get race_id from the hidden input
+        const segmentCategory = selectElement.getAttribute('data-category');  // Get the segment category ('S' for Sprint, 'M' for Mountain)
+        const position = parseInt(selectElement.value, 10);  // Convert the selected value to an integer (0-5 for positions)
+
+        // Log the data being sent to the backend
+        console.log({
+            race_id: raceId,
+            stage_number: stage,
+            segment_index: segment_index,
+            team_id: team_id,  // Team ID
+            rider_id: rider_id,  // Rider ID
+            segment_category: segmentCategory,  // Segment type (S/M)
+            position: position  // Position for the segment (0-5)
+        });
+
+        // Send the data to the backend
+        fetch('/update-segment-result', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                race_id: raceId,  // Send the race ID
+                stage_number: stage,
+                segment_index: segment_index,  // Segment Index to identify which segment
+                team_id: team_id,  // Send the team_id
+                rider_id: rider_id,  // Send the rider_id
+                segment_category: segmentCategory,  // Send the segment type (S or M)
+                position: position  // Send the position as an integer
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                console.log('Segment data updated successfully!');
+            } else {
+                console.error('Error updating segment data:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error sending segment data:', error);
+        });
+    }
+
+
 </script>

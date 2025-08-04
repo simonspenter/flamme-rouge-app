@@ -450,57 +450,35 @@ def update_classement_result():
 def update_segment_result():
     data = request.get_json()
 
-    stage_number = data['stage_number']
-    segment_index = data['segment_index']
-    segment_type = data['type']  # 'sprint' or 'mountain'
-    category = data['category']
-    team = data['team']
-    rider = data['rider']
-    position = data['position']
-    race_id = request.args.get("race")  # You might pass this another way if needed
+    # Extract the data from the incoming request
+    race_id = data.get('race_id')
+    stage_number = data.get('stage_number')
+    segment_index = data.get('segment_index')
+    team_id = data.get('team_id')
+    rider_id = data.get('rider_id')
+    segment_category = data.get('segment_category')
+    position = data.get('position')
 
-    # Look up stage_id based on race_code and stage_number
+    # Validate and process the data (you might want to add error checking here)
+    if not race_id or not stage_number or not segment_index or not team_id or not rider_id or position is None:
+        return jsonify({"status": "error", "message": "Missing required data"}), 400
+
+    # Logic to store the segment result in your database goes here
+    # Example: Save the segment result in the database
     conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT id FROM stages
-        WHERE race_code = (SELECT code FROM races WHERE id = ?) AND number = ?
-    """, (race_id, stage_number))
-    stage_row = cursor.fetchone()
-    if not stage_row:
-        conn.close()
-        return jsonify({"error": "Stage not found"}), 404
-
-    stage_id = stage_row[0]
-
-    # Look up segment_id based on order, type, and stage_id
-    cursor.execute("""
-        SELECT id FROM segments
-        WHERE stage_id = ? AND type = ? AND order_in_stage = ?
-    """, (stage_id, segment_type, segment_index + 1))  # `segment_index + 1` to match the order
-    segment_row = cursor.fetchone()
-    if not segment_row:
-        conn.close()
-        return jsonify({"error": "Segment not found"}), 404
-
-    segment_id = segment_row[0]
-
-    # Insert or update result
-    cursor.execute("""
-        MERGE segment_results AS target
-        USING (SELECT ? AS segment_id, ? AS team, ? AS rider) AS source
-        ON target.segment_id = source.segment_id AND target.team = source.team AND target.rider = source.rider
-        WHEN MATCHED THEN
-            UPDATE SET position = ?
-        WHEN NOT MATCHED THEN
-            INSERT (segment_id, team, rider, position) VALUES (?, ?, ?, ?);
-    """, (segment_id, team, rider, position, position, segment_id, team, rider, position))
+        INSERT INTO segment_results (race_id, stage_number, segment_index, team_id, rider_id, segment_category, position)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (race_id, stage_number, segment_index, team_id, rider_id, segment_category, position))
 
     conn.commit()
     conn.close()
 
-    return jsonify({"status": "success"}), 200
+    # Return a success response
+    return jsonify({"status": "success", "message": "Segment data updated"})
+
 
 
 @app.route("/api/classement_data")
