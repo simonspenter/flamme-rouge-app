@@ -131,10 +131,9 @@
                         {% for team_id, riders in rider_names.items() %}
                             {% for rider_index, rider in enumerate(riders) %}
                                 <td>
-                                    <!-- Correctly reference segment['id'] in the ID and onchange handler -->
                                     <select id="stage-segment-{{ single_stage.number }}-{{ segment['id'] }}-team-{{ team_id }}-rider-{{ rider_ids[team_id][rider_index] }}"
                                             data-category="{{ segment['category'] }}" 
-                                            onchange="handleSegmentChange({{ single_stage.number }}, {{ segment['id'] }}, {{ team_id }}, {{ rider_ids[team_id][rider_index] }}, this)">
+                                            onchange="handleSegmentChange({{ single_stage.number }}, {{ segment['id'] }}, {{ team_id }}, {{ rider_ids[team_id][rider_index] }}, '{{ segment['category'] }}', this)">
                                         <option value="">Select</option>
                                         {% for i in range(6) %}
                                             <option value="{{ i }}">{{ i }}</option>
@@ -169,8 +168,8 @@
         console.log({
             race_id: raceId,
             stage_number: stage,
-            team_id: team_id,  // Now using team_id
-            rider_id: rider_id,  // Now using actual rider_id from rider_names
+            team_id: team_id,  
+            rider_id: rider_id,  
             placement: placement
         });
 
@@ -201,11 +200,9 @@
         });
     }
 
-    function handleSegmentChange(stage, segment_id, team_id, rider_id, selectElement) {
-        const raceId = document.getElementById('race-id').value;
-        const segmentCategory = selectElement.getAttribute("data-category");  // 'S' or 'M'
-        const placement = parseInt(selectElement.value, 10);  // Convert the selected value to an integer
-        const categoryName = selectElement.getAttribute("data-category-name");  // e.g., cat3, cat2, etc.
+    function handleSegmentChange(stage, segment_id, team_id, rider_id, segment_category, selectElement) {
+        const raceId = document.getElementById('race-id').value;  // Get race_id from the hidden input
+        const placement = parseInt(selectElement.value, 10);  // Get the placement value (0 to 5)
 
         // Log the data being sent to the backend for debugging
         console.log({
@@ -214,9 +211,8 @@
             segment_id: segment_id,
             team_id: team_id,
             rider_id: rider_id,
-            segment_category: segmentCategory,
-            placement: placement,
-            category_name: categoryName
+            segment_category: segment_category,  // Category name passed directly here (e.g., 'cat3', 'S')
+            placement: placement
         });
 
         // Send the data to the backend for insertion into the database
@@ -231,9 +227,8 @@
                 segment_id: segment_id,
                 team_id: team_id,
                 rider_id: rider_id,
-                segment_category: segmentCategory,
-                placement: placement,
-                category_name: categoryName  // Pass the category name
+                segment_category: segment_category,
+                placement: placement
             }),
         })
         .then(response => response.json())
@@ -248,6 +243,7 @@
             console.error('Error sending segment data:', error);
         });
     }
+
 
 
 
