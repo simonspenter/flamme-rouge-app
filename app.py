@@ -307,21 +307,24 @@ def scoreboard():
             "segments": []  # Create a unified segments list
         }
 
-        # Fetch segments for this stage
+        # Fetch segments for this stage, including segment id
         cursor.execute("""
-            SELECT name, type, category, order_in_stage
+            SELECT id, name, type, category, order_in_stage
             FROM segments
             WHERE stage_id = ?
             ORDER BY order_in_stage
         """, (stage[0],))
 
-        for name, seg_type, cat, order in cursor.fetchall():
+
+        for segment_id, name, seg_type, cat, order in cursor.fetchall():
             stage_dict["segments"].append({
+                "id": segment_id,  # Include segment_id in the data
                 "name": name,
                 "type": seg_type,
                 "category": cat,
                 "order": order
             })
+
 
         # Sort segments by the 'order' field
         stage_dict["segments"].sort(key=lambda x: x["order"])
