@@ -159,6 +159,7 @@
     const NUM_TEAMS = {{ teams }};
     const NUM_ASSISTANTS = {{ assistant }};
     
+    // Function to send classement data to the classement_results table in the SQL server
     function handleClassementChange(stage, team_id, rider_id, selectElement) {
         const raceId = document.getElementById('race-id').value;  // Get race_id from the hidden input
         const placement = parseInt(selectElement.value, 10);  // Convert the selected value to an integer
@@ -199,13 +200,14 @@
         });
     }
 
-
+    // Function to send segment data to the segment_results table in the SQL server
     function handleSegmentChange(stage, segment_index, team_id, rider_id, selectElement) {
         const raceId = document.getElementById('race-id').value;  // Get race_id from the hidden input
         const segmentCategory = selectElement.getAttribute('data-category');  // Get the segment category ('S' for Sprint, 'M' for Mountain)
         const position = parseInt(selectElement.value, 10);  // Convert the selected value to an integer (0-5 for positions)
 
         // Log the data being sent to the backend
+        console.log("Segment change detected:");
         console.log({
             race_id: raceId,
             stage_number: stage,
@@ -215,6 +217,9 @@
             segment_category: segmentCategory,  // Segment type (S/M)
             position: position  // Position for the segment (0-5)
         });
+
+        // Add a console log to confirm that the segment result update function is triggered
+        console.log(`Segment result updated for Stage ${stage}, Segment ${segmentCategory}, Team ${team_id}, Rider ${rider_id}, Position ${position}`);
 
         // Send the data to the backend
         fetch('/update-segment-result', {
@@ -244,6 +249,7 @@
             console.error('Error sending segment data:', error);
         });
     }
+
 
 
 </script>
