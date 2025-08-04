@@ -385,8 +385,9 @@ def scoreboard():
     )
 
 
+### Functions and routes for updating classement scoreboard
 
-
+# Function to insert classement result into the classement_result table in the SQL database
 @app.route('/update-classement-result', methods=['POST'])
 def update_classement_result():
     try:
@@ -448,87 +449,7 @@ def update_classement_result():
         print(f"Error processing request: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-# Define the categories and point distribution for segments
-mountain_categories = {
-    "cat3": {"points": {1: 3, 2: 2, 3: 1, 0: 0}},
-    "cat2": {"points": {1: 5, 2: 3, 3: 1, 0: 0}},
-    "cat1": {"points": {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0}},
-    "HC":   {"points": {1: 20, 2: 14, 3: 10, 4: 7, 5: 3, 6: 1, 0: 0}},
-}
-
-sprint_categories = {
-    "S":  {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0},
-    "SF": {1: 20, 2: 14, 3: 10, 4: 6, 5: 2, 0: 0},
-    "MF": {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0},
-}
-
-# Function to calculate segment points based on category and placement
-def calculate_points(segment_category, placement):
-    # Log the segment category and category_name before calculation
-    print(f"Segment Category: {segment_category}, Placement: {placement}")
-
-    # If the category is mountain (e.g., cat3, cat2, cat1, HC)
-    if segment_category in mountain_categories:
-        # Log the category points for debugging
-        print(f"Mountain Category '{segment_category}' points available: {mountain_categories[segment_category]['points']}")
-        # Ensure that placement is within valid range (1, 2, 3, etc.)
-        points = mountain_categories[segment_category]["points"].get(placement, 0)
-        print(f"Points for Placement {placement}: {points}")
-        return points
-
-
-    # If the category is sprint (e.g., S, SF, MF)
-    if segment_category in sprint_categories:
-        # Log the sprint category points for debugging
-        print(f"Sprint Category '{segment_category}' points available: {sprint_categories[segment_category]}")
-        # Ensure placement is within valid range (1, 2, 3, etc.)
-        points = sprint_categories[segment_category].get(placement, 0)
-        print(f"Points for Placement {placement}: {points}")
-        return points
-
-    # Return 0 points for invalid categories or placements
-    print(f"Invalid segment category '{segment_category}' or placement {placement}. Returning 0 points.")
-    return 0
-
-
-
-
-
-
-@app.route('/update-segment-result', methods=['POST'])
-def update_segment_result():
-    data = request.get_json()
-
-    # Extract data from the request
-    race_id = data.get('race_id')
-    stage_number = data.get('stage_number')
-    segment_id = data.get('segment_id')
-    team_id = data.get('team_id')
-    rider_id = data.get('rider_id')
-    segment_category = data.get('segment_category') 
-    placement = data.get('placement')
-
-    # You can calculate the points based on segment_category, placement, etc.
-    # Here is just an example where points for Sprint (S) are calculated:
-    points = calculate_points(segment_category, placement)
-
-    # SQL to insert into the segment_results table
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        INSERT INTO segment_results (race_id, segment_id, rider_id, team_id, placement, points)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (race_id, segment_id, rider_id, team_id, placement, points))
-
-    conn.commit()
-    conn.close()
-
-    return jsonify({"status": "success"})
-
-
-
-
+# Function to fetch classement results from classement_results table and return it in json
 @app.route("/api/classement_data")
 def get_classement_data():
     race_id = request.args.get('race')
@@ -565,6 +486,76 @@ def get_classement_data():
     # Return the classement data as JSON
     return jsonify(classement_dict)
 
+
+
+### Functions, routes and mapping for updating segment scoreboard
+
+# Define the categories and point distribution for segments
+mountain_categories = {
+    "cat3": {"points": {1: 3, 2: 2, 3: 1, 0: 0}},
+    "cat2": {"points": {1: 5, 2: 3, 3: 1, 0: 0}},
+    "cat1": {"points": {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0}},
+    "HC":   {"points": {1: 20, 2: 14, 3: 10, 4: 7, 5: 3, 6: 1, 0: 0}},
+}
+
+sprint_categories = {
+    "S":  {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0},
+    "SF": {1: 20, 2: 14, 3: 10, 4: 6, 5: 2, 0: 0},
+    "MF": {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0},
+}
+
+# Function to calculate segment points based on category and placement
+def calculate_points(segment_category, placement):
+
+    # If the category is mountain (cat3, cat2, cat1, HC)
+    if segment_category in mountain_categories:
+        points = mountain_categories[segment_category]["points"].get(placement, 0)
+        return points
+
+    # If the category is sprint (S, SF, MF)
+    if segment_category in sprint_categories:
+        points = sprint_categories[segment_category].get(placement, 0)
+        return points
+
+    # Return 0 points for invalid categories or placements
+    print(f"Invalid segment category '{segment_category}' or placement {placement}. Returning 0 points.")
+    return 0
+
+
+# Function to insert segment results into the segment_result table in the SQL database
+@app.route('/update-segment-result', methods=['POST'])
+def update_segment_result():
+    data = request.get_json()
+
+    # Extract data from the request
+    race_id = data.get('race_id')
+    segment_id = data.get('segment_id')
+    team_id = data.get('team_id')
+    rider_id = data.get('rider_id')
+    segment_category = data.get('segment_category') 
+    placement = data.get('placement')
+
+    # Calculate points for segments using calculate_points function
+    points = calculate_points(segment_category, placement)
+
+    # SQL to insert into the segment_results table
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO segment_results (race_id, segment_id, rider_id, team_id, placement, points)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (race_id, segment_id, rider_id, team_id, placement, points))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"status": "success"})
+
+
+
+
+### Other functions and routes. 
 
 # Test route to verify database connection
 @app.route("/test-db")
