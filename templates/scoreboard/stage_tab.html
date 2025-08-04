@@ -128,12 +128,12 @@
                         <!-- Display the segment name and type -->
                         <td>{{ segment["name"] }}</td>
                         
-                        {% for team in range(teams) %}
-                            {% for rider in range(assistant) %}
+                        {% for team_id, riders in rider_names.items() %}
+                            {% for rider_index, rider in enumerate(riders) %}
                                 <td>
-                                    <select id="stage-segment-{{ single_stage.number }}-{{ segment['type'] }}-{{ loop.index0 }}-team-{{ team }}-rider-{{ rider }}"
+                                    <select id="stage-segment-{{ single_stage.number }}-{{ segment['type'] }}-{{ segment['id'] }}-team-{{ team_id }}-rider-{{ rider_ids[team_id][rider_index] }}"
                                             data-category="{{ segment['type'][0] | upper }}" 
-                                            onchange="handleSegmentChange({{ single_stage.number }}, {{ loop.index0 }}, {{ team_id }}, {{ rider_ids[team_id][rider_index] }}, this)">
+                                            onchange="handleSegmentChange({{ single_stage.number }}, {{ segment['id'] }}, {{ team_id }}, {{ rider_ids[team_id][rider_index] }}, this)">
                                         <option value="">Select</option>
                                         {% for i in range(6) %}
                                             <option value="{{ i }}">{{ i }}</option>
