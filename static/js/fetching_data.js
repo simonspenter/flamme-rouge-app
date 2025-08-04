@@ -56,7 +56,13 @@ function fetchClassementData() {
 
 
 
-
+// Function to add event listener to the "Classement" tab button
+function attachClassementTabListener() {
+    const classementTabButton = document.getElementById("classementTabButton");
+    if (classementTabButton) {
+        classementTabButton.addEventListener("click", onClassementTabOpened);
+    }
+}
 
 // Ensure the DOM is loaded before attaching event listeners
 document.addEventListener("DOMContentLoaded", function () {
