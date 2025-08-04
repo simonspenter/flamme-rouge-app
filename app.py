@@ -445,39 +445,69 @@ def update_classement_result():
         print(f"Error processing request: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+# Define the categories and point distribution for segments
+mountain_categories = {
+    "cat3": {"points": {1: 3, 2: 2, 3: 1, 0: 0}},
+    "cat2": {"points": {1: 5, 2: 3, 3: 1, 0: 0}},
+    "cat1": {"points": {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0}},
+    "HC":   {"points": {1: 20, 2: 14, 3: 10, 4: 7, 5: 3, 6: 1, 0: 0}},
+}
+
+sprint_categories = {
+    "S":  {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0},
+    "SF": {1: 20, 2: 14, 3: 10, 4: 6, 5: 2, 0: 0},
+    "MF": {1: 10, 2: 7, 3: 5, 4: 3, 5: 1, 0: 0},
+}
+
+# Function to calculate segment points based on category and placement
+def calculate_points(segment_category, placement, category_name=None):
+    # If the category is mountain (e.g., cat3, cat2, cat1, HC)
+    if segment_category in mountain_categories:
+        # If category_name is provided, get points from that category
+        if category_name and category_name in mountain_categories:
+            return mountain_categories[category_name]["points"].get(placement, 0)
+        else:
+            return 0  # No points if category_name is not provided
+
+    # If the category is sprint (e.g., S, SF, MF)
+    if segment_category in sprint_categories:
+        return sprint_categories[segment_category].get(placement, 0)
+    
+    return 0  # Return 0 points for invalid categories or placements
+
+
 
 @app.route('/update-segment-result', methods=['POST'])
 def update_segment_result():
     data = request.get_json()
 
-    # Extract the data from the incoming request
+    # Extract data from the request
     race_id = data.get('race_id')
     stage_number = data.get('stage_number')
-    segment_index = data.get('segment_index')
+    segment_id = data.get('segment_id')
     team_id = data.get('team_id')
     rider_id = data.get('rider_id')
-    segment_category = data.get('segment_category')
-    position = data.get('position')
+    segment_category = data.get('segment_category')  # 'S' for Sprint or 'M' for Mountain
+    placement = data.get('placement')
 
-    # Validate and process the data (you might want to add error checking here)
-    if not race_id or not stage_number or not segment_index or not team_id or not rider_id or position is None:
-        return jsonify({"status": "error", "message": "Missing required data"}), 400
+    # You can calculate the points based on segment_category, placement, etc.
+    # Here is just an example where points for Sprint (S) are calculated:
+    points = calculate_points(segment_category, placement)
 
-    # Logic to store the segment result in your database goes here
-    # Example: Save the segment result in the database
+    # SQL to insert into the segment_results table
     conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO segment_results (race_id, stage_number, segment_index, team_id, rider_id, segment_category, position)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (race_id, stage_number, segment_index, team_id, rider_id, segment_category, position))
+        INSERT INTO segment_results (race_id, segment_id, rider_id, team_id, placement, points)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (race_id, segment_index, rider_id, team_id, placement, points))
 
     conn.commit()
     conn.close()
 
-    # Return a success response
-    return jsonify({"status": "success", "message": "Segment data updated"})
+    return jsonify({"status": "success"})
+
 
 
 

@@ -200,47 +200,45 @@
         });
     }
 
-    // Function to send segment data to the segment_results table in the SQL server
     function handleSegmentChange(stage, segment_index, team_id, rider_id, selectElement) {
         const raceId = document.getElementById('race-id').value;  // Get race_id from the hidden input
-        const segmentCategory = selectElement.getAttribute('data-category');  // Get the segment category ('S' for Sprint, 'M' for Mountain)
-        const position = parseInt(selectElement.value, 10);  // Convert the selected value to an integer (0-5 for positions)
+        const segmentCategory = selectElement.getAttribute("data-category");  // Get segment category (S or M)
+        const placement = parseInt(selectElement.value, 10);  // Get the placement value (0 to 5)
+        const categoryName = selectElement.getAttribute("data-category-name");  // Get the category name (e.g., cat3, SF)
 
-        // Log the data being sent to the backend
-        console.log("Segment change detected:");
+        // Log the data being sent to the backend for debugging
         console.log({
             race_id: raceId,
             stage_number: stage,
             segment_index: segment_index,
-            team_id: team_id,  // Team ID
-            rider_id: rider_id,  // Rider ID
-            segment_category: segmentCategory,  // Segment type (S/M)
-            position: position  // Position for the segment (0-5)
+            team_id: team_id,
+            rider_id: rider_id,
+            segment_category: segmentCategory,  // 'S' for Sprint or 'M' for Mountain
+            placement: placement,
+            category_name: categoryName  // Category name like 'cat3', 'SF'
         });
 
-        // Add a console log to confirm that the segment result update function is triggered
-        console.log(`Segment result updated for Stage ${stage}, Segment ${segmentCategory}, Team ${team_id}, Rider ${rider_id}, Position ${position}`);
-
-        // Send the data to the backend
+        // Send the data to the backend for insertion into the database
         fetch('/update-segment-result', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                race_id: raceId,  // Send the race ID
+                race_id: raceId,
                 stage_number: stage,
-                segment_index: segment_index,  // Segment Index to identify which segment
-                team_id: team_id,  // Send the team_id
-                rider_id: rider_id,  // Send the rider_id
-                segment_category: segmentCategory,  // Send the segment type (S or M)
-                position: position  // Send the position as an integer
+                segment_index: segment_index,
+                team_id: team_id,
+                rider_id: rider_id,
+                segment_category: segmentCategory,
+                placement: placement,
+                category_name: categoryName  // Pass the category name
             }),
         })
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                console.log('Segment data updated successfully!');
+                console.log('Segment result updated successfully!');
             } else {
                 console.error('Error updating segment data:', data);
             }
@@ -249,6 +247,8 @@
             console.error('Error sending segment data:', error);
         });
     }
+
+
 
 
 
