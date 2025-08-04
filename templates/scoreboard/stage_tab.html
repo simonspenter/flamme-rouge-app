@@ -132,7 +132,7 @@
                             {% for rider in range(assistant) %}
                                 <td>
                                     <select id="stage-segment-{{ single_stage.number }}-{{ segment['type'] }}-{{ loop.index0 }}-team-{{ team }}-rider-{{ rider }}"
-                                            data-category="{{ segment['type'][0] | upper }}"  <!-- Only 'S' for Sprint or 'M' for Mountain -->
+                                            data-category="{{ segment['type'][0] | upper }}" 
                                             onchange="handleSegmentChange({{ single_stage.number }}, {{ loop.index0 }}, {{ team }}, {{ rider }}, this)">
                                         <option value="">Select</option>
                                         {% for i in range(6) %}
