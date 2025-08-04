@@ -501,7 +501,7 @@ def update_segment_result():
     cursor.execute("""
         INSERT INTO segment_results (race_id, segment_id, rider_id, team_id, placement, points)
         VALUES (?, ?, ?, ?, ?, ?)
-    """, (race_id, segment_index, rider_id, team_id, placement, points))
+    """, (race_id, segment_id, rider_id, team_id, placement, points))
 
     conn.commit()
     conn.close()
