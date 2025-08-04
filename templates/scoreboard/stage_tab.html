@@ -202,10 +202,10 @@
     }
 
     function handleSegmentChange(stage, segment_id, team_id, rider_id, selectElement) {
-        const raceId = document.getElementById('race-id').value;  // Get race_id from the hidden input
-        const segmentCategory = selectElement.getAttribute("data-category");  // Get segment category (S or M)
-        const placement = parseInt(selectElement.value, 10);  // Get the placement value (0 to 5)
-        const categoryName = selectElement.getAttribute("data-category-name");  // Get the category name (e.g., cat3, SF)
+        const raceId = document.getElementById('race-id').value;
+        const segmentCategory = selectElement.getAttribute("data-category");  // 'S' or 'M'
+        const placement = parseInt(selectElement.value, 10);  // Convert the selected value to an integer
+        const categoryName = selectElement.getAttribute("data-category-name");  // e.g., cat3, cat2, etc.
 
         // Log the data being sent to the backend for debugging
         console.log({
@@ -214,13 +214,10 @@
             segment_id: segment_id,
             team_id: team_id,
             rider_id: rider_id,
-            segment_category: segmentCategory,  // 'S' for Sprint or 'M' for Mountain
+            segment_category: segmentCategory,
             placement: placement,
-            category_name: categoryName  // Category name like 'cat3', 'SF'
+            category_name: categoryName
         });
-
-        // New console message: Log when the dropdown is used
-        console.log(`Dropdown menu used for Stage ${stage}, Segment ID ${segment_id}, Team ID ${team_id}, Rider ID ${rider_id}`);
 
         // Send the data to the backend for insertion into the database
         fetch('/update-segment-result', {
@@ -251,6 +248,7 @@
             console.error('Error sending segment data:', error);
         });
     }
+
 
 
 

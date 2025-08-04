@@ -468,7 +468,7 @@ def calculate_points(segment_category, placement, category_name=None):
     print(f"Segment Category: {segment_category}, Category Name: {category_name}, Placement: {placement}")
 
     # If the category is mountain (e.g., cat3, cat2, cat1, HC)
-    if segment_category in mountain_categories:
+    if segment_category == "M":
         # If category_name is provided, get points from that category
         if category_name and category_name in mountain_categories:
             # Log the category points for debugging
@@ -483,7 +483,7 @@ def calculate_points(segment_category, placement, category_name=None):
             return 0  # No points if category_name is not provided
 
     # If the category is sprint (e.g., S, SF, MF)
-    if segment_category in sprint_categories:
+    if segment_category == "S":
         # Log the sprint category points for debugging
         print(f"Sprint Category '{segment_category}' points available: {sprint_categories[segment_category]}")
         # Ensure placement is within valid range (1, 2, 3, etc.)
@@ -494,6 +494,7 @@ def calculate_points(segment_category, placement, category_name=None):
     # Return 0 points for invalid categories or placements
     print(f"Invalid segment category '{segment_category}' or placement {placement}. Returning 0 points.")
     return 0
+
 
 
 
