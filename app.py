@@ -468,7 +468,7 @@ def calculate_points(segment_category, placement, category_name=None):
     print(f"Segment Category: {segment_category}, Category Name: {category_name}, Placement: {placement}")
 
     # If the category is mountain (e.g., cat3, cat2, cat1, HC)
-    if segment_category == "M":
+    if segment_category in mountain_categories:
         # If category_name is provided, get points from that category
         if category_name and category_name in mountain_categories:
             # Log the category points for debugging
@@ -483,7 +483,7 @@ def calculate_points(segment_category, placement, category_name=None):
             return 0  # No points if category_name is not provided
 
     # If the category is sprint (e.g., S, SF, MF)
-    if segment_category == "S":
+    if segment_category in sprint_categories:
         # Log the sprint category points for debugging
         print(f"Sprint Category '{segment_category}' points available: {sprint_categories[segment_category]}")
         # Ensure placement is within valid range (1, 2, 3, etc.)
@@ -499,6 +499,7 @@ def calculate_points(segment_category, placement, category_name=None):
 
 
 
+
 @app.route('/update-segment-result', methods=['POST'])
 def update_segment_result():
     data = request.get_json()
@@ -509,7 +510,7 @@ def update_segment_result():
     segment_id = data.get('segment_id')
     team_id = data.get('team_id')
     rider_id = data.get('rider_id')
-    segment_category = data.get('segment_category')  # 'S' for Sprint or 'M' for Mountain
+    segment_category = data.get('segment_category') 
     placement = data.get('placement')
 
     # You can calculate the points based on segment_category, placement, etc.
