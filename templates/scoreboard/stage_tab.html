@@ -219,6 +219,9 @@
             category_name: categoryName  // Category name like 'cat3', 'SF'
         });
 
+        // New console message: Log when the dropdown is used
+        console.log(`Dropdown menu used for Stage ${stage}, Segment ID ${segment_id}, Team ID ${team_id}, Rider ID ${rider_id}`);
+
         // Send the data to the backend for insertion into the database
         fetch('/update-segment-result', {
             method: 'POST',
@@ -248,6 +251,7 @@
             console.error('Error sending segment data:', error);
         });
     }
+
 
 
 
