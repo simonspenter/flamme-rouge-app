@@ -131,7 +131,8 @@
                         {% for team_id, riders in rider_names.items() %}
                             {% for rider_index, rider in enumerate(riders) %}
                                 <td>
-                                    <select id="stage-segment-{{ single_stage.number }}-{{ segment['type'] }}-{{ segment['id'] }}-team-{{ team_id }}-rider-{{ rider_ids[team_id][rider_index] }}"
+                                    <!-- Correctly reference segment['id'] in the ID and onchange handler -->
+                                    <select id="stage-segment-{{ single_stage.number }}-{{ segment['id'] }}-team-{{ team_id }}-rider-{{ rider_ids[team_id][rider_index] }}"
                                             data-category="{{ segment['type'][0] | upper }}" 
                                             onchange="handleSegmentChange({{ single_stage.number }}, {{ segment['id'] }}, {{ team_id }}, {{ rider_ids[team_id][rider_index] }}, this)">
                                         <option value="">Select</option>
