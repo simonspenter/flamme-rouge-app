@@ -200,7 +200,7 @@
         });
     }
 
-    function handleSegmentChange(stage, segment_index, team_id, rider_id, selectElement) {
+    function handleSegmentChange(stage, segment_id, team_id, rider_id, selectElement) {
         const raceId = document.getElementById('race-id').value;  // Get race_id from the hidden input
         const segmentCategory = selectElement.getAttribute("data-category");  // Get segment category (S or M)
         const placement = parseInt(selectElement.value, 10);  // Get the placement value (0 to 5)
@@ -210,7 +210,7 @@
         console.log({
             race_id: raceId,
             stage_number: stage,
-            segment_index: segment_index,
+            segment_id: segment_id,
             team_id: team_id,
             rider_id: rider_id,
             segment_category: segmentCategory,  // 'S' for Sprint or 'M' for Mountain
@@ -227,7 +227,7 @@
             body: JSON.stringify({
                 race_id: raceId,
                 stage_number: stage,
-                segment_index: segment_index,
+                segment_id: segment_id,
                 team_id: team_id,
                 rider_id: rider_id,
                 segment_category: segmentCategory,
