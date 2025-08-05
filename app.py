@@ -371,7 +371,7 @@ def scoreboard():
     )
 
 
-### Functions and routes for updating classement scoreboard
+### Functions and routes for updating classement scoreboard 
 
 # Function to insert classement result into the classement_result table in the SQL database
 @app.route('/update-classement-result', methods=['POST'])
