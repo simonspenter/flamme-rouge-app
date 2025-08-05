@@ -280,6 +280,13 @@ def scoreboard():
         rider_names[team_id].append(rider_name)
         rider_ids[team_id].append(rider_id)
 
+    
+    # Initialize the dictionary for total classement data (with placeholder values)
+    total_classement_data = {}
+    for team_id in rider_names:
+        for rider_id in rider_ids[team_id]:
+            total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value for each rider
+
 
     # Fetch stage data
     cursor.execute("""
@@ -353,6 +360,8 @@ def scoreboard():
             "team_names": team_names,
             "rider_names": rider_names,
             "rider_ids": rider_ids
+            "total_classement_data": total_classement_data  # Pass placeholder data
+
         })
 
     # If it's a regular request, render the HTML template
