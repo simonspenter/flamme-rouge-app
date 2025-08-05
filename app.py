@@ -448,20 +448,26 @@ def get_classement_data():
     # Initialize total_classement_data
     total_classement_data = {}
 
-    # Calculate total classement data: Sum placements for each rider
+    # Calculate total classement data: Sum placements for each rider across all stages
     for stage_id in classement_dict:
         for team_id in classement_dict[stage_id]:
             for rider_id, placement in classement_dict[stage_id][team_id].items():
-                # Ensure the team_id and rider_id exist in total_classement_data
                 if team_id not in total_classement_data:
                     total_classement_data[team_id] = {}
                 total_classement_data[team_id][rider_id] = total_classement_data[team_id].get(rider_id, 0) + placement
 
-    # Find the lowest placement across all teams and adjust the totals
+    # Find the lowest total placement across all teams
+    all_rider_scores = []
     for team_id in total_classement_data:
-        min_score = min(total_classement_data[team_id].values())  # Find the lowest score for the team
         for rider_id in total_classement_data[team_id]:
-            total_classement_data[team_id][rider_id] -= min_score  # Subtract the lowest score to get the adjusted total
+            all_rider_scores.append(total_classement_data[team_id][rider_id])
+    
+    min_score = min(all_rider_scores)  # Find the global lowest score
+
+    # Adjust the totals by subtracting the global minimum
+    for team_id in total_classement_data:
+        for rider_id in total_classement_data[team_id]:
+            total_classement_data[team_id][rider_id] -= min_score  # Subtract the global minimum to adjust totals
 
     conn.close()
 
