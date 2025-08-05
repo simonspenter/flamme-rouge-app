@@ -529,7 +529,7 @@ def update_segment_result():
 
     # Extract data from the request
     race_id = data.get('race_id')
-    stage_id = data.get('stage_id')
+    stage_number = data.get('stage_number')
     segment_id = data.get('segment_id')
     team_id = data.get('team_id')
     rider_id = data.get('rider_id')
@@ -545,9 +545,9 @@ def update_segment_result():
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO segment_results (race_id, segment_id, rider_id, team_id, placement, points, segment_type, stageid)
+        INSERT INTO segment_results (race_id, segment_id, rider_id, team_id, placement, points, segment_type, stage_id)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    """, (race_id, segment_id, rider_id, team_id, placement, points, segment_type, stage_id))
+    """, (race_id, segment_id, rider_id, team_id, placement, points, segment_type, stage_number))
 
     conn.commit()
     conn.close()
