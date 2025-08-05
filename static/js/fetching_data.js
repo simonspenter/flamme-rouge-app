@@ -3,15 +3,12 @@
 // Function to log when the Classement tab is clicked
 function onClassementTabOpened(event) {
     if (event.target && event.target.id === "classementTabButton") {
-        console.log("Event triggered: Classement tab opened.");
         // Call the function to fetch classement data when the tab is opened
         fetchClassementData();
     }
 }  
 
 function updateClassementTable(classementData) {
-    console.log("UpdateClassementTable func received data:", classementData);
-
     // Loop through each stage
     Object.keys(classementData).forEach(stage_id => {
         let stage = classementData[stage_id];
@@ -36,11 +33,9 @@ function fetchClassementData() {
     console.log(`Fetching classement data for race_id: ${raceId}`);
 
     const url = `/api/classement_data?race=${raceId}`;
-    console.log("Requesting URL:", url);
 
     fetch(url)
         .then(response => {
-            console.log("Response status:", response.status);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -78,7 +73,6 @@ document.addEventListener("DOMContentLoaded", function () {
 // Function to log when the Sprint tab is clicked
 function onSprintTabOpened(event) {
     if (event.target && event.target.id === "sprintTabButton") {
-        console.log("Event triggered: Sprint tab opened.");
         // Fetch sprint data
         fetchSegmentData('sprint');
     }
@@ -87,7 +81,6 @@ function onSprintTabOpened(event) {
 // Function to log when the Mountain tab is clicked
 function onMountainTabOpened(event) {
     if (event.target && event.target.id === "mountainTabButton") {
-        console.log("Event triggered: Mountain tab opened.");
         // Fetch mountain data
         fetchSegmentData('mountain');
     }
@@ -103,14 +96,11 @@ document.addEventListener("DOMContentLoaded", function () {
 // Function to fetch segment data for the relevant table
 function fetchSegmentData(segmentType) {
     const raceId = document.getElementById('race-id').value;  // Get race_id from the hidden input field
-    console.log(`Fetching ${segmentType} data for race_id: ${raceId}`);
 
     const url = `/api/segment_data?race=${raceId}&segment_type=${segmentType}`;
-    console.log("Requesting URL:", url);
 
     fetch(url)
         .then(response => {
-            console.log("Response status:", response.status);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -132,8 +122,6 @@ function fetchSegmentData(segmentType) {
 
 // Function to update the sprint table
 function updateSprintTable(sprintData) {
-    console.log("UpdateSprintTable func received data:", sprintData);
-
     // Loop through each stage and team
     Object.keys(sprintData).forEach(stage_id => {
         let stage = sprintData[stage_id];
@@ -153,8 +141,6 @@ function updateSprintTable(sprintData) {
 
 // Function to update the mountain table
 function updateMountainTable(mountainData) {
-    console.log("UpdateMountainTable func received data:", mountainData);
-
     // Loop through each stage and team
     Object.keys(mountainData).forEach(stage_id => {
         let stage = mountainData[stage_id];
