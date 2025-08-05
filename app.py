@@ -331,19 +331,6 @@ def scoreboard():
 
         stage_data.append(stage_dict)
 
-    # Initialize the dictionary to store total placements
-    total_classement_data = {}
-
-    # Populate total_classement_data with placeholder values (0 or None)
-    for stage in range(len(stage_data)):  # stages as the length of stage_data
-        for team_id in rider_names:
-            for rider_index, rider in enumerate(rider_names[team_id]):
-                rider_id = rider_ids[team_id][rider_index]
-                # Set the initial placement to 0 or another default value
-                total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value
-
-
-
     conn.close()
 
     # Define the icon mapping for stage types
@@ -377,7 +364,6 @@ def scoreboard():
         team_names=team_names,
         rider_names=rider_names,
         rider_ids=rider_ids,
-        total_classement_data=total_classement_data,  # Pass the total placement data (you can populate this if needed)
         stage_data=stage_data,
         stage_type_icons=stage_type_icons,  # Define your icons if needed
         assistant=3 if assistant == 3 else 2,
@@ -478,13 +464,31 @@ def get_classement_data():
             classement_dict[stage_id][team_id] = {}
         classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0  # Default to 0 if None or empty string
 
+    # Calculate total classement data: Difference from the lowest score for each rider
+    total_classement_data = {}
+
+    for stage_id in classement_dict:
+        for team_id in classement_dict[stage_id]:
+            for rider_id, placement in classement_dict[stage_id][team_id].items():
+                total_classement_data.setdefault(team_id, {})[rider_id] = total_classement_data[team_id].get(rider_id, 0) + placement
+
+    # Find the lowest placement across all teams and adjust the totals
+    for team_id in total_classement_data:
+        min_score = min(total_classement_data[team_id].values())  # Find the lowest score for the team
+        for rider_id in total_classement_data[team_id]:
+            total_classement_data[team_id][rider_id] -= min_score  # Subtract the lowest score to get the adjusted total
+
+
     conn.close()
 
     # Debug statement to confirm function is activated
     print("get_classement_data function activated")
 
-    # Return the classement data as JSON
-    return jsonify(classement_dict)
+    # Return the classement data and total classement data as JSON
+    return jsonify({
+        "classement_data": classement_dict,
+        "total_classement_data": total_classement_data
+    })
 
 
 

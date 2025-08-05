@@ -8,7 +8,8 @@ function onClassementTabOpened(event) {
     }
 }  
 
-function updateClassementTable(classementData) {
+function updateClassementTable(classementData, totalClassementData) {
+
     // Loop through each stage
     Object.keys(classementData).forEach(stage_id => {
         let stage = classementData[stage_id];
@@ -22,6 +23,17 @@ function updateClassementTable(classementData) {
                     cell.innerHTML = team[rider_id];
                 }
             });
+        });
+    });
+
+    // Loop through total classement data and update the totals
+    Object.keys(totalClassementData).forEach(team_id => {
+        Object.keys(totalClassementData[team_id]).forEach(rider_id => {
+            let totalCell = document.getElementById(`classement-total-team-${team_id}-rider-${rider_id}`);
+            if (totalCell) {
+                // Update the total score for the rider
+                totalCell.innerHTML = totalClassementData[team_id][rider_id];
+            }
         });
     });
 }
@@ -43,7 +55,7 @@ function fetchClassementData() {
         .then(data => {
             console.log("Fetched data:", data);
             // Pass the fetched data to the table update function
-            updateClassementTable(data);
+            updateClassementTable(data.classement_data, data.total_classement_data);
         })
         .catch(error => {
             console.error("Error fetching data:", error);
