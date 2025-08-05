@@ -33,8 +33,7 @@
                 {% for team_id in rider_names %}
                     {% for rider_index, rider in enumerate(rider_names[team_id]) %}
                         <!-- Total row using team_id and rider_id -->
-                        <td id="mountain-total-team-{{ team_id }}-rider-{{ rider_ids[team_id][rider_index] }}"></td>
-                        
+                        <td id="mountain-total-team-{{ team_id }}-rider-{{ rider_id }}"></td>
                     {% endfor %}
                 {% endfor %}
             </tr>
