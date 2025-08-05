@@ -547,23 +547,23 @@ def update_segment_result():
 
     return jsonify({"status": "success"})
 
-
+# Function to fetch segment results from segment_results table and return it in json
 @app.route("/api/segment_data")
 def get_segment_data():
     race_id = request.args.get('race')
-    segment_type = request.args.get('segment_type')
+    segment_type = request.args.get('segment_type')  # 'sprint' or 'mountain'
 
     if not race_id or not segment_type:
-        return jsonify({"error": "race_id or segment_type is missing"}), 400  # Return JSON error if any parameter is missing
+        return jsonify({"error": "race_id or segment_type is missing"}), 400  # Return JSON error if missing
 
     conn = get_db_connection()  # Open the connection
     cursor = conn.cursor()
 
-    # Fetch the segment results for the race and segment_type (either sprint or mountain)
+    # Fetch segment results for the specified race and segment type
     cursor.execute("""
-        SELECT stage_id, team_id, rider_id, points, segment_type 
-        FROM segment_results 
-        WHERE race_id = ? AND segment_type = ? 
+        SELECT stage_id, team_id, rider_id, points, segment_type
+        FROM segment_results
+        WHERE race_id = ? AND segment_type = ?
     """, (race_id, segment_type))
 
     segment_data = cursor.fetchall()
@@ -575,16 +575,11 @@ def get_segment_data():
             segment_dict[stage_id] = {}
         if team_id not in segment_dict[stage_id]:
             segment_dict[stage_id][team_id] = {}
-        segment_dict[stage_id][team_id][rider_id] = int(points) if points else 0
+        segment_dict[stage_id][team_id][rider_id] = points
 
     conn.close()
 
-    # Return the segment data and total segment data as JSON
-    return jsonify({
-        "segment_data": segment_dict,
-        "total_segment_data": total_segment_data
-    })
-
+    return jsonify(segment_dict)
 
 
 
