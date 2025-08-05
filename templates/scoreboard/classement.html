@@ -36,7 +36,7 @@
                 <td>Total</td>
                 {% for team_id in rider_names %}
                     {% for rider_index, rider in enumerate(rider_names[team_id]) %}
-                        <td id="classement-total-team-{{ team_id }}-rider-{{ rider_index }}">
+                        <td id="classement-total-team-{{ team_id }}-rider-{{ rider_ids[team_id][rider_index] }}">
                             {% set rider_id = rider_ids[team_id][rider_index] %}
                             {% set total_placement = total_classement_data[team_id][rider_id] %}
                             {{ total_placement if total_placement is not none else '' }}
