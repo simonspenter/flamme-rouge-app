@@ -445,13 +445,17 @@ def get_classement_data():
             classement_dict[stage_id][team_id] = {}
         classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0
 
-    # Calculate total classement data: Difference from the lowest score for each rider
+    # Initialize total_classement_data
     total_classement_data = {}
 
+    # Calculate total classement data: Sum placements for each rider
     for stage_id in classement_dict:
         for team_id in classement_dict[stage_id]:
             for rider_id, placement in classement_dict[stage_id][team_id].items():
-                total_classement_data.setdefault(team_id, {})[rider_id] = total_classement_data[team_id].get(rider_id, 0) + placement
+                # Ensure the team_id and rider_id exist in total_classement_data
+                if team_id not in total_classement_data:
+                    total_classement_data[team_id] = {}
+                total_classement_data[team_id][rider_id] = total_classement_data[team_id].get(rider_id, 0) + placement
 
     # Find the lowest placement across all teams and adjust the totals
     for team_id in total_classement_data:
@@ -466,6 +470,7 @@ def get_classement_data():
         "classement_data": classement_dict,
         "total_classement_data": total_classement_data
     })
+
 
 
 
