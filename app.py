@@ -547,23 +547,22 @@ def update_segment_result():
 
     return jsonify({"status": "success"})
 
-# Function to fetch segment results from segment_results table and return it in json
 @app.route("/api/segment_data")
 def get_segment_data():
     race_id = request.args.get('race')
-    segment_type = request.args.get('segment_type')  # 'sprint' or 'mountain'
+    segment_type = request.args.get('segment_type')
 
     if not race_id or not segment_type:
-        return jsonify({"error": "race_id or segment_type is missing"}), 400  # Return JSON error if missing
+        return jsonify({"error": "race_id or segment_type is missing"}), 400  # Return JSON error if any parameter is missing
 
     conn = get_db_connection()  # Open the connection
     cursor = conn.cursor()
 
-    # Fetch segment results for the specified race and segment type
+    # Fetch the segment results for the race and segment_type (either sprint or mountain)
     cursor.execute("""
-        SELECT stage_id, team_id, rider_id, points, segment_type
-        FROM segment_results
-        WHERE race_id = ? AND segment_type = ?
+        SELECT stage_id, team_id, rider_id, points, segment_type 
+        FROM segment_results 
+        WHERE race_id = ? AND segment_type = ? 
     """, (race_id, segment_type))
 
     segment_data = cursor.fetchall()
@@ -575,11 +574,40 @@ def get_segment_data():
             segment_dict[stage_id] = {}
         if team_id not in segment_dict[stage_id]:
             segment_dict[stage_id][team_id] = {}
-        segment_dict[stage_id][team_id][rider_id] = points
+        segment_dict[stage_id][team_id][rider_id] = int(points) if points else 0
+
+    # Initialize total segment data (for sprint or mountain) with 0s as placeholders
+    total_segment_data = {}
+
+    # Calculate total segment data: Sum points for each rider across all stages
+    for stage_id in segment_dict:
+        for team_id in segment_dict[stage_id]:
+            for rider_id, points in segment_dict[stage_id][team_id].items():
+                if team_id not in total_segment_data:
+                    total_segment_data[team_id] = {}
+                total_segment_data[team_id][rider_id] = total_segment_data[team_id].get(rider_id, 0) + points
+
+    # Find the lowest total score across all teams
+    all_rider_scores = []
+    for team_id in total_segment_data:
+        for rider_id in total_segment_data[team_id]:
+            all_rider_scores.append(total_segment_data[team_id][rider_id])
+    
+    min_score = min(all_rider_scores)  # Find the global lowest score
+
+    # Adjust the totals by subtracting the global minimum
+    for team_id in total_segment_data:
+        for rider_id in total_segment_data[team_id]:
+            total_segment_data[team_id][rider_id] -= min_score  # Subtract the global minimum to adjust totals
 
     conn.close()
 
-    return jsonify(segment_dict)
+    # Return the segment data and total segment data as JSON
+    return jsonify({
+        "segment_data": segment_dict,
+        "total_segment_data": total_segment_data
+    })
+
 
 
 

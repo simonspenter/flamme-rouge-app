@@ -144,6 +144,9 @@ function updateSprintTable(sprintData) {
             });
         });
     });
+
+    // Update the total row for sprint
+    updateTotalRow(sprintData, 'sprint');
 }
 
 // Function to update the mountain table
@@ -161,6 +164,50 @@ function updateMountainTable(mountainData) {
                     cell.innerHTML = team[rider_id];
                 }
             });
+        });
+    });
+
+    // Update the total row for mountain
+    updateTotalRow(mountainData, 'mountain');
+}
+
+// Function to update the total points row
+function updateTotalRow(segmentData, segmentType) {
+    // Loop through total scores for each rider
+    Object.keys(segmentData).forEach(stage_id => {
+        let stage = segmentData[stage_id];
+        Object.keys(stage).forEach(team_id => {
+            let team = stage[team_id];
+            Object.keys(team).forEach(rider_id => {
+                // Initialize or update total points for the rider across all stages
+                if (!segmentData.total_segment_data) {
+                    segmentData.total_segment_data = {};  // Initialize if not already
+                }
+
+                if (!segmentData.total_segment_data[team_id]) {
+                    segmentData.total_segment_data[team_id] = {};  // Initialize if not already
+                }
+
+                if (!segmentData.total_segment_data[team_id][rider_id]) {
+                    segmentData.total_segment_data[team_id][rider_id] = 0;  // Initialize points for the rider if not already
+                }
+
+                // Add points from this stage to the total
+                segmentData.total_segment_data[team_id][rider_id] += team[rider_id];
+            });
+        });
+    });
+
+    // Now update the total row for sprint or mountain
+    const totalSegmentData = segmentData.total_segment_data;  // Assuming total_segment_data contains total points for each team/rider
+    Object.keys(totalSegmentData).forEach(team_id => {
+        Object.keys(totalSegmentData[team_id]).forEach(rider_id => {
+            // Get the total cell by ID
+            let totalCell = document.getElementById(`${segmentType}-total-team-${team_id}-rider-${rider_id}`);
+            if (totalCell) {
+                // Update the total cell with the adjusted total points
+                totalCell.innerHTML = totalSegmentData[team_id][rider_id];
+            }
         });
     });
 }
