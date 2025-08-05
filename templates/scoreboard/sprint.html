@@ -10,7 +10,7 @@
             </tr>
             <tr>
                 {% for team_id in rider_names %}
-                    {% for rider in rider_names[team_id] %}
+                    {% for rider_index, rider in enumerate(rider_names[team_id]) %}
                         <th>{{ rider }}</th>
                     {% endfor %}
                 {% endfor %}
@@ -21,8 +21,9 @@
                 <tr>
                     <td>Stage {{ stage + 1 }}</td>
                     {% for team_id in rider_names %}
-                        {% for rider in rider_names[team_id] %}
-                            <td id="sprint-stage-{{ stage + 1 }}-team-{{ team_id }}-rider-{{ loop.index }}"></td>
+                        {% for rider_index, rider in enumerate(rider_names[team_id]) %}
+                            <!-- Update the cell id to use team_id and rider_id -->
+                            <td id="sprint-stage-{{ stage + 1 }}-team-{{ team_id }}-rider-{{ rider_ids[team_id][rider_index] }}"></td>
                         {% endfor %}
                     {% endfor %}
                 </tr>
@@ -30,8 +31,9 @@
             <tr>
                 <td>Total</td>
                 {% for team_id in rider_names %}
-                    {% for rider in rider_names[team_id] %}
-                        <td id="sprint-total-team-{{ team_id }}-rider-{{ loop.index }}"></td>
+                    {% for rider_index, rider in enumerate(rider_names[team_id]) %}
+                        <!-- Total row using team_id and rider_id -->
+                        <td id="sprint-total-team-{{ team_id }}-rider-{{ rider_ids[team_id][rider_index] }}"></td>
                     {% endfor %}
                 {% endfor %}
             </tr>
