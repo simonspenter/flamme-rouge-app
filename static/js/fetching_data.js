@@ -104,17 +104,17 @@ document.addEventListener("DOMContentLoaded", function () {
 function fetchSegmentData(segmentType) {
     const raceId = document.getElementById('race-id').value;  // Get race_id from the hidden input field
 
-    const url = /api/segment_data?race=${raceId}&segment_type=${segmentType};
+    const url = `/api/segment_data?race=${raceId}&segment_type=${segmentType}`;
 
     fetch(url)
         .then(response => {
             if (!response.ok) {
-                throw new Error(HTTP error! Status: ${response.status});
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();  // Parse the response body as JSON
         })
         .then(data => {
-            console.log(Fetched ${segmentType} data:, data);
+            console.log(`Fetched ${segmentType} data:`, data);
             // Pass the fetched data to the table update function
             if (segmentType === 'sprint') {
                 updateSprintTable(data);
@@ -136,7 +136,7 @@ function updateSprintTable(sprintData) {
             let team = stage[team_id];
             Object.keys(team).forEach(rider_id => {
                 // Get the table cell by ID
-                let cell = document.getElementById(sprint-stage-${stage_id}-team-${team_id}-rider-${rider_id});
+                let cell = document.getElementById(`sprint-stage-${stage_id}-team-${team_id}-rider-${rider_id}`);
                 if (cell) {
                     // Update the cell with the points data
                     cell.innerHTML = team[rider_id];
@@ -155,7 +155,7 @@ function updateMountainTable(mountainData) {
             let team = stage[team_id];
             Object.keys(team).forEach(rider_id => {
                 // Get the table cell by ID
-                let cell = document.getElementById(mountain-stage-${stage_id}-team-${team_id}-rider-${rider_id});
+                let cell = document.getElementById(`mountain-stage-${stage_id}-team-${team_id}-rider-${rider_id}`);
                 if (cell) {
                     // Update the cell with the points data
                     cell.innerHTML = team[rider_id];

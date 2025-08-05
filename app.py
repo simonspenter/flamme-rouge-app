@@ -547,7 +547,6 @@ def update_segment_result():
 
     return jsonify({"status": "success"})
 
-# Function to fetch segment results from segment_results table and return it in json
 @app.route("/api/segment_data")
 def get_segment_data():
     race_id = request.args.get('race')
@@ -559,11 +558,11 @@ def get_segment_data():
     conn = get_db_connection()  # Open the connection
     cursor = conn.cursor()
 
-    # Fetch segment results for the specified race and segment type
+    # Fetch the segment results for the specified race and segment type
     cursor.execute("""
         SELECT stage_id, team_id, rider_id, points, segment_type
         FROM segment_results
-        WHERE race_id = ? AND segment_type = ?
+        WHERE race_id = ? AND segment_type = ? 
     """, (race_id, segment_type))
 
     segment_data = cursor.fetchall()
@@ -580,6 +579,7 @@ def get_segment_data():
     conn.close()
 
     return jsonify(segment_dict)
+
 
 
 
