@@ -547,6 +547,7 @@ def update_segment_result():
 
     return jsonify({"status": "success"})
 
+
 @app.route("/api/segment_data")
 def get_segment_data():
     race_id = request.args.get('race')
@@ -575,30 +576,6 @@ def get_segment_data():
         if team_id not in segment_dict[stage_id]:
             segment_dict[stage_id][team_id] = {}
         segment_dict[stage_id][team_id][rider_id] = int(points) if points else 0
-
-    # Initialize total segment data (for sprint or mountain) with 0s as placeholders
-    total_segment_data = {}
-
-    # Calculate total segment data: Sum points for each rider across all stages
-    for stage_id in segment_dict:
-        for team_id in segment_dict[stage_id]:
-            for rider_id, points in segment_dict[stage_id][team_id].items():
-                if team_id not in total_segment_data:
-                    total_segment_data[team_id] = {}
-                total_segment_data[team_id][rider_id] = total_segment_data[team_id].get(rider_id, 0) + points
-
-    # Find the lowest total score across all teams
-    all_rider_scores = []
-    for team_id in total_segment_data:
-        for rider_id in total_segment_data[team_id]:
-            all_rider_scores.append(total_segment_data[team_id][rider_id])
-    
-    min_score = min(all_rider_scores)  # Find the global lowest score
-
-    # Adjust the totals by subtracting the global minimum
-    for team_id in total_segment_data:
-        for rider_id in total_segment_data[team_id]:
-            total_segment_data[team_id][rider_id] -= min_score  # Subtract the global minimum to adjust totals
 
     conn.close()
 
