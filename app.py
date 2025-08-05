@@ -359,7 +359,7 @@ def scoreboard():
             "teams": teams,
             "team_names": team_names,
             "rider_names": rider_names,
-            "rider_ids": rider_ids
+            "rider_ids": rider_ids,
             "total_classement_data": total_classement_data  # Pass placeholder data
 
         })
