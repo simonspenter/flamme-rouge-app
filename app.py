@@ -245,9 +245,9 @@ def scoreboard():
     cursor.execute("""
         SELECT code, teams, assistant 
         FROM races 
-        WHERE id = ?
-        """, (race_id,))
-    
+        WHERE id = ? 
+    """, (race_id,))
+
     race_row = cursor.fetchone()
 
     if not race_row:
@@ -259,7 +259,7 @@ def scoreboard():
     cursor.execute("""
         SELECT team_name 
         FROM teams 
-        WHERE race_id = ?
+        WHERE race_id = ? 
     """, (race_id,))
 
     team_names = [row[0] for row in cursor.fetchall()]
@@ -280,20 +280,18 @@ def scoreboard():
         rider_names[team_id].append(rider_name)
         rider_ids[team_id].append(rider_id)
 
-    
-    # Initialize the dictionary for total classement data (with placeholder values)
+    # Initialize placeholder total_classement_data (before it’s updated in the API route)
     total_classement_data = {}
     for team_id in rider_names:
         for rider_id in rider_ids[team_id]:
             total_classement_data.setdefault(team_id, {})[rider_id] = 0  # Placeholder value for each rider
 
-
-    # Fetch stage data
+    # Fetch stage data (same as before)
     cursor.execute("""
         SELECT id, number, name, start_location, end_location, type,
                length_km, elevation_m, route, route_image, link
         FROM stages
-        WHERE race_code = ?
+        WHERE race_code = ? 
         ORDER BY number
     """, (code,))
 
@@ -314,14 +312,13 @@ def scoreboard():
             "segments": []  # Create a unified segments list
         }
 
-        # Fetch segments for this stage, including segment id
+        # Fetch segments for this stage
         cursor.execute("""
             SELECT id, name, type, category, order_in_stage
             FROM segments
             WHERE stage_id = ?
             ORDER BY order_in_stage
         """, (stage[0],))
-
 
         for segment_id, name, seg_type, cat, order in cursor.fetchall():
             stage_dict["segments"].append({
@@ -332,39 +329,13 @@ def scoreboard():
                 "order": order
             })
 
-
-        # Sort segments by the 'order' field
+        # Sort segments by 'order' field
         stage_dict["segments"].sort(key=lambda x: x["order"])
-
         stage_data.append(stage_dict)
 
     conn.close()
 
-    # Define the icon mapping for stage types
-    stage_type_icons = {
-        'timetrial': 'timetrial.svg',
-        'mountain': 'mountain.svg',
-        'hilly': 'hilly.svg',
-        'flat': 'flat.svg',
-        'default': 'default.svg',
-        'cobblestone': 'cobblestone.svg'
-    }
-
-    # Check if the request is AJAX (via `X-Requested-With` header)
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # If it's an AJAX request, return JSON data
-        return jsonify({
-            "race_id": race_id,
-            "stages": stage_data,
-            "teams": teams,
-            "team_names": team_names,
-            "rider_names": rider_names,
-            "rider_ids": rider_ids,
-            "total_classement_data": total_classement_data  # Pass placeholder data
-
-        })
-
-    # If it's a regular request, render the HTML template
+    # Return the placeholder total_classement_data as part of the response (it will be updated by API later)
     return render_template(
         'scoreboard.html',
         race_id=race_id,
@@ -374,7 +345,8 @@ def scoreboard():
         rider_names=rider_names,
         rider_ids=rider_ids,
         stage_data=stage_data,
-        stage_type_icons=stage_type_icons,  # Define your icons if needed
+        total_classement_data=total_classement_data,  # Send placeholder data
+        stage_type_icons=stage_type_icons,  
         assistant=3 if assistant == 3 else 2,
         enumerate=enumerate
     )
@@ -471,7 +443,7 @@ def get_classement_data():
             classement_dict[stage_id] = {}
         if team_id not in classement_dict[stage_id]:
             classement_dict[stage_id][team_id] = {}
-        classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0  # Default to 0 if None or empty string
+        classement_dict[stage_id][team_id][rider_id] = int(placement) if placement else 0
 
     # Calculate total classement data: Difference from the lowest score for each rider
     total_classement_data = {}
@@ -487,17 +459,14 @@ def get_classement_data():
         for rider_id in total_classement_data[team_id]:
             total_classement_data[team_id][rider_id] -= min_score  # Subtract the lowest score to get the adjusted total
 
-
     conn.close()
-
-    # Debug statement to confirm function is activated
-    print("get_classement_data function activated")
 
     # Return the classement data and total classement data as JSON
     return jsonify({
         "classement_data": classement_dict,
         "total_classement_data": total_classement_data
     })
+
 
 
 
