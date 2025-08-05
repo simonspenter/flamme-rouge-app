@@ -190,7 +190,6 @@
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                console.log('Classement data updated successfully!');
             } else {
                 console.error('Error updating classement data:', data);
             }
@@ -236,7 +235,6 @@
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                console.log('Segment result updated successfully!');
             } else {
                 console.error('Error updating segment data:', data);
             }

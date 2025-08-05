@@ -30,7 +30,6 @@ function updateClassementTable(classementData) {
 
 function fetchClassementData() {
     const raceId = document.getElementById('race-id').value;  // Get the race_id from the hidden input field
-    console.log(`Fetching classement data for race_id: ${raceId}`);
 
     const url = `/api/classement_data?race=${raceId}`;
 
