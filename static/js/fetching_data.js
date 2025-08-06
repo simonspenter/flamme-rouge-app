@@ -167,19 +167,37 @@ function updateSprintTable(sprintData) {
 
 // Function to update the mountain table
 function updateMountainTable(mountainData) {
+    console.log("Mountain data received:", mountainData);  // Log the entire mountain data
+    console.log("Total Mountain data:", mountainData.total_segment_data);  // Log just the total data
+
+    let totalMountainData = mountainData.total_segment_data;  // Get total points data
+
     // Loop through each stage and team
-    Object.keys(mountainData).forEach(stage_id => {
-        let stage = mountainData[stage_id];
+    Object.keys(mountainData.segment_data).forEach(stage_id => {
+        let stage = mountainData.segment_data[stage_id];
         Object.keys(stage).forEach(team_id => {
             let team = stage[team_id];
             Object.keys(team).forEach(rider_id => {
-                // Get the table cell by ID
+                // Get the table cell by ID for stage data
                 let cell = document.getElementById(`mountain-stage-${stage_id}-team-${team_id}-rider-${rider_id}`);
                 if (cell) {
-                    // Update the cell with the points data
+                    // Update the cell with the points data for this stage
                     cell.innerHTML = team[rider_id];
                 }
             });
         });
     });
+
+    // Now, update the total row
+    Object.keys(totalMountainData).forEach(team_id => {
+        Object.keys(totalMountainData[team_id]).forEach(rider_id => {
+            // Get the total cell by ID
+            let totalCell = document.getElementById(`mountain-total-team-${team_id}-rider-${rider_id}`);
+            if (totalCell) {
+                // Update the total cell with the cumulative points for this rider
+                totalCell.innerHTML = totalMountainData[team_id][rider_id];
+            }
+        });
+    });
 }
+
