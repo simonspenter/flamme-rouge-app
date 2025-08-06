@@ -1,12 +1,26 @@
-// CLASSEMENT DATA //
+// EVENT LISTENER //
 
-// Function to log when the Classement tab is clicked
-function onClassementTabOpened(event) {
-    if (event.target && event.target.id === "classementTabButton") {
-        // Call the function to fetch classement data when the tab is opened
+// Function to log when the Scoreboard tab is clicked
+function onScoreboardTabOpened(event) {
+    if (event.target && event.target.id === "scoreboardTabButton") {
+        // Fetch classement data
         fetchClassementData();
+        // Fetch segment data (for both sprint and mountain)
+        fetchSegmentData('sprint');
+        fetchSegmentData('mountain');
     }
-}  
+}
+
+// Function to add event listener to the "Scoreboard" tab button
+document.addEventListener("DOMContentLoaded", function () {
+    const scoreboardTabButton = document.getElementById("scoreboardTabButton");
+    if (scoreboardTabButton) {
+        scoreboardTabButton.addEventListener("click", onScoreboardTabOpened);
+    }
+});
+
+
+// CLASSEMENT DATA //
 
 function updateClassementTable(classementData, totalClassementData) {
     console.log("UpdateClassementTable func received data:", classementData, totalClassementData);
@@ -76,29 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // SEGMENT DATA //
-
-// Function to log when the Sprint tab is clicked
-function onSprintTabOpened(event) {
-    if (event.target && event.target.id === "sprintTabButton") {
-        // Fetch sprint data
-        fetchSegmentData('sprint');
-    }
-}
-
-// Function to log when the Mountain tab is clicked
-function onMountainTabOpened(event) {
-    if (event.target && event.target.id === "mountainTabButton") {
-        // Fetch mountain data
-        fetchSegmentData('mountain');
-    }
-}
-
-// Attach event listeners to the tab buttons
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("sprintTabButton").addEventListener("click", onSprintTabOpened);
-    document.getElementById("mountainTabButton").addEventListener("click", onMountainTabOpened);
-});
-
 
 // Function to fetch segment data for the relevant table
 function fetchSegmentData(segmentType) {
