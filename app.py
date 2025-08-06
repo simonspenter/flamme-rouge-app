@@ -587,22 +587,25 @@ def get_segment_data():
     segment_dict = {}
     total_segment_data = {}  # To store total points for each rider across all stages
 
+    # Aggregate the points for each stage, team, and rider
     for stage_id, team_id, rider_id, points, segment_type in segment_data:
         # Initialize segment_dict for stage and team if not present
         if stage_id not in segment_dict:
             segment_dict[stage_id] = {}
         if team_id not in segment_dict[stage_id]:
             segment_dict[stage_id][team_id] = {}
-        
-        # Add points to the stage data
-        segment_dict[stage_id][team_id][rider_id] = points
-        
+
+        # Add points to the stage data (summed points for the same stage)
+        if rider_id not in segment_dict[stage_id][team_id]:
+            segment_dict[stage_id][team_id][rider_id] = 0  # Initialize if not already present
+        segment_dict[stage_id][team_id][rider_id] += points  # Sum points for the same rider within the stage
+
         # Initialize the total points for the rider if not already initialized
         if team_id not in total_segment_data:
             total_segment_data[team_id] = {}
         if rider_id not in total_segment_data[team_id]:
             total_segment_data[team_id][rider_id] = 0
-        
+
         # Sum the points for the rider across stages
         total_segment_data[team_id][rider_id] += points
 
