@@ -372,14 +372,8 @@ def update_classement_result():
         placement = data.get('placement')
 
         # Check for missing data
-        if not all([race_id, stage_number, team_id, rider_id, placement]):
+        if not all([race_id, stage_number, team_id, rider_id, placement is not None]):
             return jsonify({'status': 'error', 'message': 'Missing data'}), 400
-
-        # Ensure placement is an integer (force conversion)
-        try:
-            placement = int(placement)
-        except ValueError:
-            return jsonify({'status': 'error', 'message': 'Invalid placement value'}), 400
 
         # Establish a database connection
         conn = get_db_connection()
