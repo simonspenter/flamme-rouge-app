@@ -527,16 +527,32 @@ def update_segment_result():
     team_id = data.get('team_id')
     rider_id = data.get('rider_id')
     segment_category = data.get('segment_category') 
-    segment_type = data.get('segment_type')  #
+    segment_type = data.get('segment_type') 
     placement = data.get('placement')
 
     # Calculate points for segments using calculate_points function
     points = calculate_points(segment_category, placement)
 
-    # SQL to insert into the segment_results table
+    # Establish a database connection
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Check if a record already exists for the given rider, segment, and stage
+    cursor.execute("""
+        SELECT id FROM segment_results 
+        WHERE race_id = ? AND stage_id = ? AND segment_id = ? AND team_id = ? AND rider_id = ?
+    """, (race_id, stage_number, segment_id, team_id, rider_id))
+
+    existing_result = cursor.fetchone()
+
+    if existing_result:
+        # If a result exists, delete it first
+        cursor.execute("""
+            DELETE FROM segment_results 
+            WHERE id = ?
+        """, (existing_result[0],))
+
+    # Now insert the new data
     cursor.execute("""
         INSERT INTO segment_results (race_id, segment_id, rider_id, team_id, placement, points, segment_type, stage_id)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
