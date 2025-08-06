@@ -312,7 +312,7 @@ button.selected {
 #mountain table {
     background-color: white;
     border-collapse: collapse;
-    color: #d50000;
+    color: #000000;
     font-weight: 600;
 }
 #mountain th, #mountain td {
