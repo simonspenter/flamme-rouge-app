@@ -312,7 +312,7 @@ button.selected {
 #mountain table {
     background-color: white;
     border-collapse: collapse;
-    color: #d50000;
+    color: #4b17da;
     font-weight: 600;
 }
 
@@ -330,7 +330,7 @@ button.selected {
 }
 
 #mountain td {
-    background-color: rgb(17, 233, 35);
+    background-color: white;
 }
 
 #mountain tbody tr:last-child td {
