@@ -312,10 +312,9 @@ button.selected {
 #mountain table {
     background-color: white;
     border-collapse: collapse;
-    color: #4b17da;
+    color: #d50000;
     font-weight: 600;
 }
-
 #mountain th, #mountain td {
     border: 1px solid #d50000;
     padding: 8px;
@@ -323,10 +322,13 @@ button.selected {
     background-image: radial-gradient(circle, #d50000 13%, transparent 13%);
     background-size: 40px 40px;
     background-repeat: repeat;
+    background-color: white;  /* Keep white background behind text */
 }
 
 #mountain th {
     background-color: #fff0f0;
+    background-color: white; /* Set white background color to match the td cells */
+    color: #d50000; /* Ensure text color in header is readable */
 }
 
 #mountain td {
