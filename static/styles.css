@@ -331,11 +331,28 @@ button.selected {
 
 #mountain td {
     background-color: white;
+    color: #d50000;  /* Ensure text remains visible with red */
+    font-weight: bold;
 }
 
+/* Add background color to the text for better visibility */
+#mountain td {
+    background-color: white;  /* Ensure the text background is solid */
+    color: #d50000;  /* Keep the text color red */
+    font-weight: bold;
+    padding: 6px;  /* Ensure padding is not too tight */
+}
+
+/* Highlight total row with a different background color */
 #mountain tbody tr:last-child td {
     font-weight: 700;
     background-color: #ffd6d6;
+}
+
+/* Highlight all regular data cells with a slight background to improve readability */
+#mountain td {
+    background-color: white;
+    background-color: #fefefe;  /* Light grey background */
 }
 
 /* ----------------------------------------------
