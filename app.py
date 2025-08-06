@@ -563,6 +563,7 @@ def update_segment_result():
 
     return jsonify({"status": "success"})
 
+# Backend: `get_segment_data` function
 @app.route("/api/segment_data")
 def get_segment_data():
     race_id = request.args.get('race')
@@ -615,6 +616,7 @@ def get_segment_data():
         "segment_data": segment_dict,
         "total_segment_data": total_segment_data  # Return the total points for each rider
     })
+
 
 
 
