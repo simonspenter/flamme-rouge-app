@@ -569,17 +569,33 @@ def get_segment_data():
 
     # Prepare the segment data in a dictionary
     segment_dict = {}
+    total_segment_data = {}  # To store total points for each rider across all stages
+
     for stage_id, team_id, rider_id, points, segment_type in segment_data:
+        # Initialize segment_dict for stage and team if not present
         if stage_id not in segment_dict:
             segment_dict[stage_id] = {}
         if team_id not in segment_dict[stage_id]:
             segment_dict[stage_id][team_id] = {}
+        
+        # Add points to the stage data
         segment_dict[stage_id][team_id][rider_id] = points
+        
+        # Initialize the total points for the rider if not already initialized
+        if team_id not in total_segment_data:
+            total_segment_data[team_id] = {}
+        if rider_id not in total_segment_data[team_id]:
+            total_segment_data[team_id][rider_id] = 0
+        
+        # Sum the points for the rider across stages
+        total_segment_data[team_id][rider_id] += points
 
     conn.close()
 
-    return jsonify(segment_dict)
-
+    return jsonify({
+        "segment_data": segment_dict,
+        "total_segment_data": total_segment_data  # Return the total points for each rider
+    })
 
 
 
