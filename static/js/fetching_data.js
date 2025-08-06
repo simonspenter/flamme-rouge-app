@@ -137,28 +137,42 @@ function updateSprintTable(sprintData) {
     // Loop through each stage and team
     Object.keys(sprintData.segment_data).forEach(stage_id => {
         let stage = sprintData.segment_data[stage_id];
+
+        // Initialize a temporary object to hold the aggregated points for each rider in the stage
+        let stageTotalPoints = {};
+
         Object.keys(stage).forEach(team_id => {
             let team = stage[team_id];
             Object.keys(team).forEach(rider_id => {
+                // Aggregate points for the rider in this stage
+                if (!stageTotalPoints[rider_id]) {
+                    stageTotalPoints[rider_id] = 0;
+                }
+                stageTotalPoints[rider_id] += team[rider_id];  // Add the points for this segment to the total for the rider
+
                 // Get the table cell by ID for stage data
                 let cell = document.getElementById(`sprint-stage-${stage_id}-team-${team_id}-rider-${rider_id}`);
                 if (cell) {
-                    // Update the cell with the points data for this stage
+                    // Update the cell with the aggregated points for this rider within the stage
                     cell.innerHTML = team[rider_id];
                 }
             });
         });
-    });
 
-    // Now, update the total row
-    Object.keys(totalSprintData).forEach(team_id => {
-        Object.keys(totalSprintData[team_id]).forEach(rider_id => {
-            // Get the total cell by ID
-            let totalCell = document.getElementById(`sprint-total-team-${team_id}-rider-${rider_id}`);
-            if (totalCell) {
-                // Update the total cell with the cumulative points for this rider
-                totalCell.innerHTML = totalSprintData[team_id][rider_id];
-            }
+        // Now update the total row by summing up the points for each rider
+        Object.keys(totalSprintData).forEach(team_id => {
+            Object.keys(totalSprintData[team_id]).forEach(rider_id => {
+                // Add the aggregated points for this stage to the rider's total points
+                if (stageTotalPoints[rider_id]) {
+                    totalSprintData[team_id][rider_id] += stageTotalPoints[rider_id];
+                }
+
+                // Get the total cell by ID and update it
+                let totalCell = document.getElementById(`sprint-total-team-${team_id}-rider-${rider_id}`);
+                if (totalCell) {
+                    totalCell.innerHTML = totalSprintData[team_id][rider_id];
+                }
+            });
         });
     });
 }
