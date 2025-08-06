@@ -328,7 +328,7 @@ button.selected {
 #mountain th {
     background-color: #fff0f0;
     background-color: white; /* Set white background color to match the td cells */
-    color: #d50000; /* Ensure text color in header is readable */
+    color: #000000; /* Ensure text color in header is readable */
 }
 
 #mountain td {
