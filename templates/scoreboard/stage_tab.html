@@ -109,7 +109,9 @@
                                             data-team-id="{{ team_id }}"
                                             data-rider-id="{{ rider_ids[team_id][rider_index] }}" 
                                             onchange="handleClassementChange({{ single_stage.number }}, {{ team_id }}, {{ rider_ids[team_id][rider_index] }}, this)">
-                                        {% for value in range(21) %}
+                                        <option value="">Select</option>
+                                        <option value="0">0</option>  <!-- Allow 0 to be selected -->
+                                        {% for value in range(1, 21) %}
                                             <option value="{{ value }}">{{ value }}</option>
                                         {% endfor %}
                                     </select>
