@@ -25,6 +25,9 @@
         <a href="{{ url_for('scoreboard') }}">
             <button class="{% if request.path == '/scoreboard' %}active{% endif %}">Scoreboard</button>
         </a>
+        <a href="{{ url_for('rules') }}">
+            <button class="{% if request.path == '/rules' %}active{% endif %}">Rules</button>
+        </a>
     </div>
 
     <!-- Page Content -->

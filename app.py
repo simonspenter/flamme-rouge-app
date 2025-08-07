@@ -645,6 +645,13 @@ def get_segment_data():
 
 ### Other functions and routes. 
 
+# Route for the rules page
+@app.route('/rules', methods=['GET', 'POST'])
+def scoreboard_input():
+    # Render the rules page 
+    return render_template('rules.html')
+
+
 # Test route to verify database connection
 @app.route("/test-db")
 def test_db():
