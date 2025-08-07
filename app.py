@@ -239,17 +239,10 @@ def scoreboard():
     race_id = request.args.get('race')
 
     if not race_id:
-        return redirect('/')  # Redirect to the default page if race ID is not provided
+        return render_template('scoreboard_input.html')  # A page with input for race_id
 
     conn = get_db_connection()  # Open the connection
     cursor = conn.cursor()
-
-    # Example query to check race exists
-    cursor.execute("""SELECT code FROM races WHERE id = ?""", (race_id,))
-    race = cursor.fetchone()
-    
-    if not race:
-        return jsonify({"error": "Race not found"}), 404
 
     # Fetch race info
     cursor.execute("""
@@ -360,6 +353,26 @@ def scoreboard():
         assistant=3 if assistant == 3 else 2,
         enumerate=enumerate
     )
+
+# Function to fetch raceID from the scoreboard_input page
+@app.route('/api/verify_race')
+def verify_race():
+    race_id = request.args.get('race')
+    
+    if not race_id:
+        return jsonify({"error": "Race ID is missing"}), 400
+    
+    # Check if the race ID exists in your database
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT id FROM races WHERE id = ?", (race_id,))
+    race = cursor.fetchone()
+    
+    if race:
+        return jsonify({"status": "success"})
+    else:
+        return jsonify({"error": "Race not found"}), 404
 
 
 ### Functions and routes for updating classement scoreboard
