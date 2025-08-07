@@ -5,14 +5,19 @@
 {% block content %}
 <h1>Scoreboard</h1>
 
-<input type="hidden" id="race-id" value="{{ race_id }}">
+<!-- Default Page to Enter Race ID -->
+<div id="default-scoreboard" style="text-align: center; margin-top: 50px;">
+    <h2>Enter Race ID</h2>
+    <form id="race-id-form">
+        <label for="race-id-input">Race ID:</label>
+        <input type="text" id="race-id-input" name="race_id" required>
+        <button type="submit">Go to Scoreboard</button>
+    </form>
+    <p id="error-message" style="color:red; display:none;">Invalid Race ID. Please try again.</p>
+</div>
 
-
-<!-- Main Tabs -->
-{% include 'scoreboard/tabs.html' %}
-
-<!-- Scoreboard Tab Content -->
-<div id="scoreboard" class="tabcontent">
+<!-- Main Tabs (This content will remain hidden initially) -->
+<div id="scoreboard" class="tabcontent" style="display:none;">
     <div class="tab">
         <button class="subTablinks" id="classementTabButton" onclick="openSubTab(event, 'classement')">Classement</button>
         <button class="subTablinks" id="sprintTabButton" onclick="openSubTab(event, 'sprint')">Sprint</button>
@@ -31,3 +36,50 @@
     {% include 'scoreboard/stage_tab.html' %}
 </div>
 {% endblock %}
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Handle the form submission for race ID
+        document.getElementById('race-id-form').addEventListener('submit', function (event) {
+            event.preventDefault();  // Prevent the default form submission
+
+            const raceId = document.getElementById('race-id-input').value;  // Get the race ID input value
+            const errorMessage = document.getElementById('error-message');  // Get the error message element
+
+            // Check if race ID is provided
+            if (!raceId) {
+                errorMessage.textContent = "Please enter a valid race ID.";
+                errorMessage.style.display = "block";
+                return;
+            }
+
+            // Fetch race information from the backend to verify if the race exists
+            fetch(`/api/verify_race?race=${raceId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Race not found');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // If the race exists, hide the form and show the scoreboard
+                    document.getElementById('default-scoreboard').style.display = "none";
+                    document.getElementById('scoreboard').style.display = "block";  // Show the scoreboard
+
+                    // Set the race ID for the page to fetch data later
+                    document.getElementById('race-id').value = raceId;  // Make sure the race ID is saved
+                    // Call the functions to fetch the data after loading the race
+                    fetchClassementData();  // Fetch classement data
+                    fetchSegmentData('sprint');  // Fetch sprint data
+                    fetchSegmentData('mountain');  // Fetch mountain data
+                })
+                .catch(error => {
+                    // If race is not found, show error message
+                    errorMessage.textContent = "Race not found. Please try again.";
+                    errorMessage.style.display = "block";
+                });
+        });
+    });
+
+</script>
