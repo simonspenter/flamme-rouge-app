@@ -354,6 +354,11 @@ def scoreboard():
         enumerate=enumerate
     )
 
+@app.route('/scoreboard_input', methods=['GET', 'POST'])
+def scoreboard_input():
+    # Render the scoreboard_input page (the form to enter a race ID)
+    return render_template('scoreboard_input.html')
+
 # Function to fetch raceID from the scoreboard_input page
 @app.route('/api/verify_race')
 def verify_race():
