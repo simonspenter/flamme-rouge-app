@@ -253,9 +253,6 @@ def scoreboard():
 
     race_row = cursor.fetchone()
 
-    if not race_row:
-        return jsonify({"error": "Race not found"}), 404  # Return JSON for error
-
     code, teams, assistant = race_row
 
     # Fetch team names
