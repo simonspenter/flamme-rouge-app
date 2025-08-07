@@ -238,9 +238,6 @@ def create_rider_in_db(race_id, team_id, rider_number, rider_name, rider_positio
 def scoreboard():
     race_id = request.args.get('race')
 
-    if not race_id:
-        return redirect('/scoreboard_input')
-
     conn = get_db_connection()  # Open the connection
     cursor = conn.cursor()
 
@@ -252,6 +249,9 @@ def scoreboard():
     """, (race_id,))
 
     race_row = cursor.fetchone()
+
+    if not race_row:
+        return jsonify({"error": "Race not found"}), 404  # Return JSON for error
 
     code, teams, assistant = race_row
 
