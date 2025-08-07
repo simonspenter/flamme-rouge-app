@@ -16,7 +16,6 @@
 </div>
 
 <script>
-
     document.addEventListener("DOMContentLoaded", function () {
         // Handle the form submission for race ID
         document.getElementById('race-id-form').addEventListener('submit', function (event) {
@@ -41,16 +40,8 @@
                     return response.json();
                 })
                 .then(data => {
-                    // If the race exists, hide the form and show the scoreboard
-                    document.getElementById('default-scoreboard').style.display = "none";
-                    document.getElementById('scoreboard').style.display = "block";  // Show the scoreboard
-
-                    // Set the race ID for the page to fetch data later
-                    document.getElementById('race-id').value = raceId;  // Make sure the race ID is saved
-                    // Call the functions to fetch the data after loading the race
-                    fetchClassementData();  // Fetch classement data
-                    fetchSegmentData('sprint');  // Fetch sprint data
-                    fetchSegmentData('mountain');  // Fetch mountain data
+                    // If the race exists, redirect to the scoreboard page
+                    window.location.href = `/scoreboard?race=${raceId}`;  // Redirect to the scoreboard page with the race ID
                 })
                 .catch(error => {
                     // If race is not found, show error message
@@ -59,7 +50,6 @@
                 });
         });
     });
-
 </script>
 
 {% endblock %}
