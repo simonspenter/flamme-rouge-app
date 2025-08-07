@@ -238,6 +238,10 @@ def create_rider_in_db(race_id, team_id, rider_number, rider_name, rider_positio
 def scoreboard():
     race_id = request.args.get('race')
 
+    if not race_id:
+        # If race_id is missing in the URL, redirect to the scoreboard input page
+        return redirect('/scoreboard_input')
+
     conn = get_db_connection()  # Open the connection
     cursor = conn.cursor()
 
