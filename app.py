@@ -239,7 +239,7 @@ def scoreboard():
     race_id = request.args.get('race')
 
     if not race_id:
-        return render_template('scoreboard_input.html')  # A page with input for race_id
+        return redirect('/scoreboard_input')
 
     conn = get_db_connection()  # Open the connection
     cursor = conn.cursor()

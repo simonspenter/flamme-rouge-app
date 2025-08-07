@@ -66,35 +66,6 @@ body {
 }
 
 
-
-/* ----------------------------------------------
-   DEFAULT SCOREBOARD PAGE
--------------------------------------------------*/
-
-#default-scoreboard {
-    text-align: center;
-    margin-top: 50px;
-}
-
-#race-id-input {
-    padding: 8px;
-    margin-right: 10px;
-    font-size: 16px;
-}
-
-button {
-    padding: 8px 12px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-#error-message {
-    margin-top: 10px;
-    color: red;
-    font-weight: bold;
-}
-
-
 /* ----------------------------------------------
    TABLES
 -------------------------------------------------*/
