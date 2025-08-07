@@ -647,7 +647,7 @@ def get_segment_data():
 
 # Route for the rules page
 @app.route('/rules', methods=['GET', 'POST'])
-def scoreboard_input():
+def rules():
     # Render the rules page 
     return render_template('rules.html')
 
