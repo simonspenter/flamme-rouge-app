@@ -3,25 +3,25 @@
 {% block title %}Scoreboard{% endblock %}
 
 {% block content %}
-<h1>Scoreboard</h1>
+    <h1>Scoreboard</h1>
 
-<!-- Main Tabs (This content will remain hidden initially) -->
-<div id="scoreboard" class="tabcontent" style="display:none;">
-    <div class="tab">
-        <button class="subTablinks" id="classementTabButton" onclick="openSubTab(event, 'classement')">Classement</button>
-        <button class="subTablinks" id="sprintTabButton" onclick="openSubTab(event, 'sprint')">Sprint</button>
-        <button class="subTablinks" id="mountainTabButton" onclick="openSubTab(event, 'mountain')">King of the Mountain</button>
+    <!-- Main Tabs (This content will remain hidden initially) -->
+    <div id="scoreboard" class="tabcontent" style="display:none;">
+        <div class="tab">
+            <button class="subTablinks" id="classementTabButton" onclick="openSubTab(event, 'classement')">Classement</button>
+            <button class="subTablinks" id="sprintTabButton" onclick="openSubTab(event, 'sprint')">Sprint</button>
+            <button class="subTablinks" id="mountainTabButton" onclick="openSubTab(event, 'mountain')">King of the Mountain</button>
+        </div>
+
+        <!-- Sub-tab content (IDs and classes are inside each included file) -->
+        {% include 'scoreboard/classement.html' %}
+        {% include 'scoreboard/sprint.html' %}
+        {% include 'scoreboard/mountain.html' %}
     </div>
 
-    <!-- Sub-tab content (IDs and classes are inside each included file) -->
-    {% include 'scoreboard/classement.html' %}
-    {% include 'scoreboard/sprint.html' %}
-    {% include 'scoreboard/mountain.html' %}
-</div>
-
-<!-- Stages Tab Content -->
-<div id="stages" class="tabcontent" style="display:none;">
-    {% include 'scoreboard/stage_selector.html' %}
-    {% include 'scoreboard/stage_tab.html' %}
-</div>
+    <!-- Stages Tab Content -->
+    <div id="stages" class="tabcontent" style="display:none;">
+        {% include 'scoreboard/stage_selector.html' %}
+        {% include 'scoreboard/stage_tab.html' %}
+    </div>
 {% endblock %}
