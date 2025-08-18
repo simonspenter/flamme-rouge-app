@@ -81,15 +81,29 @@
                 customizeTeamsBtnWrapper.style.display = 'block';
             } else {
                 customizeTeamsBtnWrapper.style.display = 'none';
-                teamNamesContainer.innerHTML = '';  // Clear team names if customization is not available
             }
+
+            // Always show default team names if not customizing
+            createDefaultTeamNames(teamCount);
 
             // Show the "Customize Rider Names" button if more than one assistant is selected
             if (assistantCount > 1) {
                 customizeRidersBtnWrapper.style.display = 'block';
             } else {
                 customizeRidersBtnWrapper.style.display = 'none';
-                riderNamesContainer.innerHTML = '';  // Clear rider names if customization is not available
+                riderNamesContainer.innerHTML = '';
+            }
+        }
+
+        // Create default team names if the user doesn't customize
+        function createDefaultTeamNames(teamCount) {
+            teamNamesContainer.innerHTML = "<legend>Team names:</legend>";
+            for (let i = 1; i <= teamCount; i++) {
+                const input = document.createElement('input');
+                input.type = 'hidden';  // hidden since these are defaults
+                input.name = `team_name_${i}`;
+                input.value = `Team ${i}`;
+                teamNamesContainer.appendChild(input);
             }
         }
 
