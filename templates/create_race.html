@@ -24,8 +24,7 @@
             <button type="button" id="customize-teams-btn" class="select-button">Customize team names</button>
         </div>
 
-        <div id="team-names-container" class="form-section">
-
+        <div id="team-names-container" class="form-section"></div>
     </fieldset>
 
     <fieldset class="form-section">
@@ -47,23 +46,17 @@
     <script>
         // Function to set input value based on button selection (e.g. race, teams, or assistants)
         function setInputValue(inputName, value) {
-            document.getElementById(inputName + 'Input').value = value;  // Set hidden input value
-            // Remove the 'selected' class from all buttons
-            document.querySelectorAll('[id^="' + inputName + '"]').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            // Add 'selected' class to the clicked button
+            document.getElementById(inputName + 'Input').value = value;
+            document.querySelectorAll('[id^="' + inputName + '"]').forEach(btn => btn.classList.remove('selected'));
             document.getElementById(inputName + value).classList.add('selected');
-            updateCustomizeButtonVisibility();  // Check if customization buttons should be shown
+            updateCustomizeButtonVisibility();
         }
 
-        // Function to submit the form if all selections are made
+        // Submit form if all selections are made
         function submitForm() {
             const race = document.getElementById('raceInput').value;
             const teams = document.getElementById('teamsInput').value;
             const assistant = document.getElementById('assistantInput').value;
-
-            // Ensure all categories (race, teams, assistant) are selected
             if (!race || !teams || !assistant) {
                 alert("Please make a selection for all categories.");
                 return;
@@ -71,48 +64,31 @@
             document.getElementById('inputForm').submit();
         }
 
-        // Function to update the visibility of customization buttons
+        // Update visibility of customization buttons
         function updateCustomizeButtonVisibility() {
-            const teamCount = parseInt(teamsInput.value);  // Get the number of teams
-            const assistantCount = parseInt(document.getElementById('assistantInput').value);  // Get the number of assistants
-
-            // Show the "Customize Team Names" button if more than one team is selected
-            if (!isNaN(teamCount) && teamCount > 1) {
-                customizeTeamsBtnWrapper.style.display = 'block';
-            } else {
-                customizeTeamsBtnWrapper.style.display = 'none';
-                teamNamesContainer.innerHTML = '';  // Clear team names if customization is not available
-            }
-
-            // Show the "Customize Rider Names" button if more than one assistant is selected
-            if (assistantCount > 1) {
-                customizeRidersBtnWrapper.style.display = 'block';
-            } else {
-                customizeRidersBtnWrapper.style.display = 'none';
-                riderNamesContainer.innerHTML = '';  // Clear rider names if customization is not available
-            }
+            const teamCount = parseInt(teamsInput.value);
+            const assistantCount = parseInt(assistantInput.value);
+            customizeTeamsBtnWrapper.style.display = (!isNaN(teamCount) && teamCount > 1) ? 'block' : 'none';
+            if (!(teamCount > 1)) teamNamesContainer.innerHTML = '';
+            customizeRidersBtnWrapper.style.display = (!isNaN(assistantCount) && assistantCount > 1) ? 'block' : 'none';
+            if (!(assistantCount > 1)) riderNamesContainer.innerHTML = '';
         }
 
-        // Handling the team selection and customizing the team names
+        // Elements
         const teamsInput = document.getElementById('teamsInput');
+        const assistantInput = document.getElementById('assistantInput');
         const customizeTeamsBtnWrapper = document.getElementById('customize-btn-wrapper-teams');
         const customizeTeamsBtn = document.getElementById('customize-teams-btn');
         const teamNamesContainer = document.getElementById('team-names-container');
+        const customizeRidersBtnWrapper = document.getElementById('customize-btn-wrapper-riders');
+        const customizeRidersBtn = document.getElementById('customize-riders-btn');
+        const riderNamesContainer = document.getElementById('rider-names-container');
 
-        // Trigger the customization options when the number of teams is selected
-        document.querySelectorAll('[id^="teams"]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                setTimeout(updateCustomizeButtonVisibility, 100);  // Slight delay to ensure teamsInput is updated
-            });
-        });
-
-        // When "Customize Team Names" button is clicked, show input fields for team names
+        // Regenerate team customization fields
         customizeTeamsBtn.addEventListener('click', () => {
             const teamCount = parseInt(teamsInput.value);
             if (isNaN(teamCount)) return;
-
-            teamNamesContainer.innerHTML = "<legend>Team names:</legend>";  // Clear previous input fields
-            // Create input fields for each team
+            teamNamesContainer.innerHTML = "<legend>Team names:</legend>";
             for (let i = 1; i <= teamCount; i++) {
                 const label = document.createElement('label');
                 label.textContent = `Team ${i}: `;
@@ -121,52 +97,59 @@
                 input.name = `team_name_${i}`;
                 input.placeholder = `Team ${i} name`;
                 input.classList.add('team-input');
+                input.value = `Team ${i}`;
                 teamNamesContainer.appendChild(label);
                 teamNamesContainer.appendChild(input);
-                teamNamesContainer.appendChild(document.createElement('br'));  // Add line breaks between inputs
+                teamNamesContainer.appendChild(document.createElement('br'));
             }
+            generateRiderNames(); // Update rider names automatically
         });
 
-        // Handling the rider name customization
-        const riderNamesContainer = document.getElementById('rider-names-container');
-        const customizeRidersBtnWrapper = document.getElementById('customize-btn-wrapper-riders');
-        const customizeRidersBtn = document.getElementById('customize-riders-btn');
-
-        // Trigger the rider name customization when the number of assistant riders is selected
-        document.querySelectorAll('[id^="assistant"]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                setTimeout(updateCustomizeButtonVisibility, 100);  // Slight delay to ensure assistantInput is updated
-            });
-        });
-
-        // When "Customize Rider Names" button is clicked, show input fields for rider names
-        customizeRidersBtn.addEventListener('click', () => {
-            const teamCount = parseInt(teamsInput.value);  // Get the number of teams
-            const assistantCount = parseInt(document.getElementById('assistantInput').value);  // Get the number of assistants
+        // Generate rider name inputs, using team names if available
+        function generateRiderNames() {
+            const teamCount = parseInt(teamsInput.value);
+            const assistantCount = parseInt(assistantInput.value);
             if (isNaN(teamCount) || isNaN(assistantCount)) return;
 
-            riderNamesContainer.innerHTML = "<legend>Rider names:</legend>";  // Clear previous input fields
-
-            // Create input fields for each rider based on team count and assistant count
+            // Read current team names if they exist
+            const teamNames = [];
             for (let i = 1; i <= teamCount; i++) {
-                for (let j = 1; j <= assistantCount; j++) {
+                const input = document.querySelector(`input[name="team_name_${i}"]`);
+                teamNames.push(input && input.value.trim() !== '' ? input.value.trim() : `Team ${i}`);
+            }
+
+            riderNamesContainer.innerHTML = "<legend>Rider names:</legend>";
+
+            const riderRoles = ["Roleur", "Sprinter", "Assistant"];
+
+            for (let i = 0; i < teamCount; i++) {
+                for (let j = 0; j < assistantCount; j++) {
                     const label = document.createElement('label');
-                    label.textContent = `Team ${i} - Rider ${j}: `;
+                    label.textContent = `Team ${i+1} - Rider ${j+1}: `;
                     const input = document.createElement('input');
                     input.type = 'text';
-                    input.name = `rider_name_team${i}_rider${j}`;
-                    input.placeholder = `Rider ${j} name`;
+                    input.name = `rider_name_team${i+1}_rider${j+1}`;
+                    input.placeholder = `Rider ${j+1} name`;
                     input.classList.add('rider-input');
+                    const role = riderRoles[j] || `Assistant ${j+1}`;
+                    input.value = `${teamNames[i]} ${role}`;
                     riderNamesContainer.appendChild(label);
                     riderNamesContainer.appendChild(input);
-                    riderNamesContainer.appendChild(document.createElement('br'));  // Add line breaks between inputs
+                    riderNamesContainer.appendChild(document.createElement('br'));
                 }
             }
-        });
-    
+        }
+
+        // Generate rider names when "Customize Rider Names" is clicked
+        customizeRidersBtn.addEventListener('click', generateRiderNames);
+
+        // Regenerate rider names automatically when team names are edited
+        teamNamesContainer.addEventListener('input', generateRiderNames);
+
+        // Ensure buttons trigger updates
+        document.querySelectorAll('[id^="teams"]').forEach(btn => btn.addEventListener('click', () => setTimeout(updateCustomizeButtonVisibility, 100)));
+        document.querySelectorAll('[id^="assistant"]').forEach(btn => btn.addEventListener('click', () => setTimeout(updateCustomizeButtonVisibility, 100)));
+
     </script>
-
-
 </form>
-
 {% endblock %}
