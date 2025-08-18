@@ -158,7 +158,12 @@ def create_race_in_db(code, teams, assistant, team_names, rider_names):
 
     # Insert teams for the created race
     for team_number in range(1, teams + 1):
-        team_name = team_names[team_number - 1]  # Get team name from the list
+
+        team_name = [
+            request.form.get(f"team_name_{i}") or f"Team {i}" 
+            for i in range(1, teams + 1)
+        ]
+
         team_id = create_team_in_db(race_id, team_number, team_name)
         print(f"Inserted team {team_number} with ID {team_id}")
 
