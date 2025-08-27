@@ -172,9 +172,6 @@ def create_race_in_db(code, teams, assistant, team_names, rider_names):
 
         # Insert riders for each team
         for rider_number in range(1, num_riders + 1):
-            rider_name_key = f"rider_name_team{team_number}_rider{rider_number}"
-            rider_name = rider_names.get(rider_name_key, f"Rider {team_number}-{rider_number}")
-
             # Assign rider role
             if rider_number == 1:
                 rider_position = "Roleur"
@@ -185,8 +182,13 @@ def create_race_in_db(code, teams, assistant, team_names, rider_names):
             else:
                 rider_position = "Assistant 2"
 
+            # Generate rider name: use provided name or default "{team_name} {rider_position}"
+            rider_name_key = f"rider_name_team{team_number}_rider{rider_number}"
+            rider_name = rider_names.get(rider_name_key) or f"{team_name} {rider_position}"
+
             rider_id = create_rider_in_db(race_id, team_id, rider_number, rider_name, rider_position)
             print(f"Inserted rider {rider_number} for team {team_number} with ID {rider_id}")
+
 
     conn.close()
 
