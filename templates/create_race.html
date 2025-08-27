@@ -98,7 +98,7 @@
 
         // Create default team names if the user doesn't customize
         function createDefaultTeamNames(teamCount) {
-            teamNamesContainer.innerHTML = "<legend>Team names:</legend>";
+            teamNamesContainer.innerHTML = "<legend> </legend>";
             for (let i = 1; i <= teamCount; i++) {
                 const input = document.createElement('input');
                 input.type = 'hidden';  // hidden since these are defaults
@@ -133,7 +133,7 @@
             const teamCount = parseInt(teamsInput.value);
             if (isNaN(teamCount)) return;
 
-            teamNamesContainer.innerHTML = "<legend>Team names:</legend>";  // Clear previous input fields
+            teamNamesContainer.innerHTML = "<legend> </legend>";  // Clear previous input fields
             for (let i = 1; i <= teamCount; i++) {
                 const label = document.createElement('label');
                 label.textContent = `Team ${i}: `;
@@ -167,7 +167,7 @@
             const assistantCount = parseInt(document.getElementById('assistantInput').value);  // Get the number of assistants
             if (isNaN(teamCount) || isNaN(assistantCount)) return;
 
-            riderNamesContainer.innerHTML = "<legend>Rider names:</legend>";  // Clear previous input fields
+            riderNamesContainer.innerHTML = "<legend> </legend>";  // Clear previous input fields
 
             // Create input fields for each rider based on team count and assistant count
             for (let i = 1; i <= teamCount; i++) {
