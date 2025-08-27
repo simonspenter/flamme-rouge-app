@@ -158,33 +158,32 @@ def create_race_in_db(code, teams, assistant, team_names, rider_names):
 
     # Insert teams for the created race
     for team_number in range(1, teams + 1):
-
-        team_name = [
-            request.form.get(f"team_name_{i}") or f"Team {i}" 
-            for i in range(1, teams + 1)
-        ]
+        # Get the name for this team, fallback to default if not provided
+        if team_names and len(team_names) >= team_number:
+            team_name = team_names[team_number - 1] or f"Team {team_number}"
+        else:
+            team_name = request.form.get(f"team_name_{team_number}") or f"Team {team_number}"
 
         team_id = create_team_in_db(race_id, team_number, team_name)
         print(f"Inserted team {team_number} with ID {team_id}")
 
-        # Determine the number of riders per team based on the assistant value
-        # 2 riders if no assistant, 3 if assistant is selected
+        # Determine number of riders
         num_riders = 3 if assistant == 3 else 2
 
         # Insert riders for each team
         for rider_number in range(1, num_riders + 1):
             rider_name_key = f"rider_name_team{team_number}_rider{rider_number}"
-            rider_name = rider_names.get(rider_name_key, f"Rider {team_number}-{rider_number}")  # Default name if none is provided
+            rider_name = rider_names.get(rider_name_key, f"Rider {team_number}-{rider_number}")
 
-            # Determine rider position based on the rider number
+            # Assign rider role
             if rider_number == 1:
                 rider_position = "Roleur"
             elif rider_number == 2:
                 rider_position = "Sprinter"
             elif rider_number == 3:
-                rider_position = "Assistant"  # Only for the 3rd rider if assistant > 0
+                rider_position = "Assistant"
             else:
-                rider_position = "Assistant 2"  # Default for any remaining riders
+                rider_position = "Assistant 2"
 
             rider_id = create_rider_in_db(race_id, team_id, rider_number, rider_name, rider_position)
             print(f"Inserted rider {rider_number} for team {team_number} with ID {rider_id}")
