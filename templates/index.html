@@ -3,32 +3,60 @@
 {% block title %}Flamme Rouge Scoreboard{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-4">Welcome to the Flamme Rouge Scoreboard</h1>
-
-    <p class="mb-4">
-        This is an <strong>independent fan project</strong> created by a couple of friends who enjoy playing 
-        <em>Flamme Rouge</em>. It is not affiliated with or commercially related to the official game.  
-        We simply wanted a way to play <strong>multi-stage races</strong> and keep track of results more easily.
+<div class="container" style="max-width: 820px; margin: 0 auto; padding: 2rem 1rem;">
+    <h1 style="margin-bottom: .5rem;">Welcome to the Flamme Rouge Scoreboard</h1>
+    <p style="margin: 0 0 1.25rem 0; color:#444;">
+        This is a fan-built tool made by a couple of friends who love the game.
     </p>
 
-    <p class="mb-4">
-        In addition to the standard rules, we have come up with a few extra twists and house rules to make the game 
-        even more exciting. You can read about these on the 
-        <a href="{{ url_for('rules') }}" class="text-blue-600 underline hover:text-blue-800">Rules page</a>.
+    <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Why this app?</h2>
+    <p style="margin: .5rem 0 1rem 0;">
+        The main purpose is to let you <strong>play stages continuously</strong> and run a proper
+        <strong>grand tour</strong> with clean tracking of GC, sprints, and mountain classifications.
     </p>
 
-    <h2 class="text-2xl font-semibold mt-6 mb-2">What you'll find on the Rules page</h2>
-    <ul class="list-disc list-inside space-y-1">
-        <li>Assistant rider concept</li>
-        <li>Time trial and team time trials</li>
-        <li>“Good day / Bad day” rider condition</li>
-        <li>Points systems for classement, sprints, and mountain sprints</li>
-        <li>...and more house rules we’ve experimented with</li>
-    </ul>
+    <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Optional house rules</h2>
+    <p style="margin: .5rem 0 1rem 0;">
+        We’ve written a short set of <em>additional rules</em>—totally optional but recommended for multi-stage play.
+        You’ll find ideas like an <strong>assistant rider</strong>, <strong>time trials</strong> (solo & team),
+        <strong>good/bad day</strong> conditions, and our <strong>points systems</strong> for classement, sprints,
+        and mountain sprints. Read them on the
+        <a href="{{ url_for('rules') }}">Rules page</a>.
+    </p>
 
-    <p class="mt-6">
-        Have fun exploring, and we hope this scoreboard helps bring your Flamme Rouge races to life!
+    <div style="display: grid; gap: 1rem; grid-template-columns: 1fr; margin-top: 1.5rem;">
+        <!-- Create a new race -->
+        <div style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem;">
+            <h3 style="margin: 0 0 .5rem 0;">New here?</h3>
+            <p style="margin: 0 0 .75rem 0;">Start a fresh multi-stage race.</p>
+            <a href="{{ url_for('create_race') }}"
+               style="display:inline-block; padding:.6rem 1rem; border-radius:10px; background:#111827; color:#fff; text-decoration:none;">
+                Create a race
+            </a>
+        </div>
+
+        <!-- Return to an existing race -->
+        <div style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem;">
+            <h3 style="margin: 0 0 .5rem 0;">Already have a race?</h3>
+            <p style="margin: 0 0 .75rem 0;">Go to the scoreboard and enter your Race ID to pick up where you left off.</p>
+            <form action="{{ url_for('scoreboard') }}" method="get" style="display:flex; gap:.5rem; align-items:center; flex-wrap: wrap;">
+                <label for="race_id" class="sr-only">Race ID</label>
+                <input id="race_id" name="race_id" type="text" placeholder="Enter Race ID"
+                       required
+                       style="flex:1 1 220px; padding:.55rem .7rem; border:1px solid #d1d5db; border-radius:8px;">
+                <button type="submit"
+                        style="padding:.55rem 1rem; border-radius:10px; border:1px solid #111827; background:#fff; color:#111827;">
+                    Go to scoreboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <hr style="margin: 2rem 0; border:none; border-top:1px solid #e5e7eb;">
+
+    <p style="font-size:.9rem; color:#6b7280; margin:0;">
+        <em>Disclaimer:</em> This is an independent fan project and is <strong>not</strong> affiliated with, endorsed by,
+        or commercially related to the official <em>Flamme Rouge</em> game or its publishers.
     </p>
 </div>
 {% endblock %}
