@@ -45,6 +45,9 @@
     <button type="button" onclick="submitForm()" class="submit-button">Submit</button>
 
     <script>
+
+        let customizingTeams = false;
+
         // Function to set input value based on button selection (e.g. race, teams, or assistants)
         function setInputValue(inputName, value) {
             document.getElementById(inputName + 'Input').value = value;  // Set hidden input value
@@ -83,8 +86,6 @@
                 customizeTeamsBtnWrapper.style.display = 'none';
             }
 
-            // Always show default team names if not customizing
-            createDefaultTeamNames(teamCount);
 
             // Show the "Customize Rider Names" button if more than one assistant is selected
             if (assistantCount > 1) {
@@ -116,17 +117,23 @@
         // Trigger the customization options when the number of teams is selected
         document.querySelectorAll('[id^="teams"]').forEach(btn => {
             btn.addEventListener('click', () => {
-                setTimeout(updateCustomizeButtonVisibility, 100);  // Slight delay to ensure teamsInput is updated
+                customizingTeams = false;  // reset flag if they reselect team count
+                setTimeout(() => {
+                    updateCustomizeButtonVisibility();
+                    if (!customizingTeams) {
+                        createDefaultTeamNames(parseInt(teamsInput.value));
+                    }
+                }, 100);
             });
         });
 
-        // When "Customize Team Names" button is clicked, show input fields for team names
+
         customizeTeamsBtn.addEventListener('click', () => {
+            customizingTeams = true;  // User clicked to customize team names
             const teamCount = parseInt(teamsInput.value);
             if (isNaN(teamCount)) return;
 
             teamNamesContainer.innerHTML = "<legend>Team names:</legend>";  // Clear previous input fields
-            // Create input fields for each team
             for (let i = 1; i <= teamCount; i++) {
                 const label = document.createElement('label');
                 label.textContent = `Team ${i}: `;
@@ -137,9 +144,10 @@
                 input.classList.add('team-input');
                 teamNamesContainer.appendChild(label);
                 teamNamesContainer.appendChild(input);
-                teamNamesContainer.appendChild(document.createElement('br'));  // Add line breaks between inputs
+                teamNamesContainer.appendChild(document.createElement('br'));
             }
         });
+
 
         // Handling the rider name customization
         const riderNamesContainer = document.getElementById('rider-names-container');
