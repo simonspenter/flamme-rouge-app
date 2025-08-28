@@ -1,8 +1,144 @@
 {% extends 'base.html' %}
 
-{% block title %}Landing page {% endblock %}
+{% block title %}Rules{% endblock %}
 
 {% block content %}
-    Read about the special rules of the game here 
+<div style="max-width: 860px; padding: 2rem 1rem; text-align: left;">
 
+  <h1 style="margin-bottom: .75rem;">House Rules & Concepts</h1>
+  <p style="color:#444; margin: 0 0 1rem 0;">
+    The general rules of <em>Flamme Rouge</em> are unchanged—play the base game as normal. 
+    These are optional add-ons designed for multi-stage play and grand tours.
+  </p>
+
+  <!-- Scoring & Tables -->
+  <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Point systems & using the tables</h2>
+
+  <h3 style="margin: .75rem 0 .25rem 0;">General Classification (GC)</h3>
+  <ul style="margin-left: 1.25rem;">
+    <li>The stage winner is assigned <strong>0</strong>.</li>
+    <li>Every other rider gets the number of <strong>spaces</strong> they finish behind the stage winner.</li>
+    <li>The rider leading GC (yellow jersey) therefore has the <strong>lowest total</strong> (often 0 if they’ve led from the start).</li>
+    <li>This mirrors time gaps in real grand tours: you “add up” how far each rider is behind the GC leader.</li>
+  </ul>
+
+  <h3 style="margin: .75rem 0 .25rem 0;">Sprints & Mountain sprints</h3>
+  <ul style="margin-left: 1.25rem;">
+    <li>In the app, open the sprint/mountain tables and use the <strong>dropdown</strong> to select each rider’s placement.</li>
+    <li>The appropriate points for that placement are <strong>assigned automatically</strong>.</li>
+  </ul>
+
+  <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #e5e7eb;">
+
+  <!-- Assistant Rider -->
+  <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Assistant riders (optional)</h2>
+  <p style="margin: .5rem 0 0.75rem 0;">
+    You may add an <strong>Assistant</strong> to your team. The Assistant uses <em>Rouleur</em> cards
+    but with the following deck:
+  </p>
+  <ul style="margin-left: 1.25rem;">
+    <li><strong>No</strong> 5-cards.</li>
+    <li>Add one extra <strong>2-card</strong> (slipstream helper).</li>
+    <li>Final Assistant deck: <strong>3×7, 3×6, 3×4, 3×3, 1×2</strong>.</li>
+  </ul>
+
+  <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #e5e7eb;">
+
+  <!-- Time Trials -->
+  <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Time trials</h2>
+
+  <h3 style="margin: .75rem 0 .25rem 0;">Single Time Trial (STT)</h3>
+  <ul style="margin-left: 1.25rem;">
+    <li>Start order: <strong>every 3 rounds</strong>, riders launch in ascending order of GC (lowest placed starts first).</li>
+    <li><strong>Pacing rule:</strong> In any rolling window of 3 turns, a rider may move at most <strong>16 spaces</strong>.</li>
+    <li>If a rider exceeds 16 spaces in that window, apply a <strong>2-space penalty</strong> on the following round 
+        (same magnitude as a wet-surface crash penalty).</li>
+    <li>The goal is to pace efficiently—maximize cards so you’re always close to (but not over) the 16-space window.</li>
+  </ul>
+
+  <h3 style="margin: .75rem 0 .25rem 0;">Team Time Trial (TTT)</h3>
+  <ul style="margin-left: 1.25rem;">
+    <li>All riders on a team start together.</li>
+    <li>Slipstream can yield an <strong>extra space</strong> (as per your house rule).</li>
+    <li>To avoid exhaustion, a rider must have another rider directly <strong>in the lane ahead</strong> of them.</li>
+    <li>If you have one rider leading and two riders directly behind (one behind each lane), the rider in the 
+        <strong>left</strong> lane still receives an exhaustion card (only the rider directly aligned behind the leader is protected).</li>
+  </ul>
+
+  <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #e5e7eb;">
+
+  <!-- Good/Bad Day -->
+  <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Good/Bad day conditions</h2>
+  <ul style="margin-left: 1.25rem;">
+    <li>Before each stage, roll a die for each rider to check their condition.</li>
+    <li>If a rider <strong>won the previous stage</strong>, apply <strong>−1</strong> to their roll (so a 1 becomes 0, etc.).</li>
+  </ul>
+
+  <div style="display: grid; gap: 1rem; grid-template-columns: 1fr; margin-top: .75rem;">
+    <!-- Rouleur table -->
+    <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: .75rem;">
+      <h3 style="margin: 0 0 .5rem 0;">Rouleur</h3>
+      <table style="width:100%; border-collapse: collapse; font-size: .95rem;">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:.4rem; border-bottom:1px solid #e5e7eb;">Roll</th>
+            <th style="text-align:left; padding:.4rem; border-bottom:1px solid #e5e7eb;">Effect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:.35rem;">6</td><td style="padding:.35rem;">Good day: remove a 3-card, insert a 6-card</td></tr>
+          <tr><td style="padding:.35rem;">5</td><td style="padding:.35rem;">Good day: remove a 3-card, insert a 5-card</td></tr>
+          <tr><td style="padding:.35rem;">4</td><td style="padding:.35rem;">Neutral: no change</td></tr>
+          <tr><td style="padding:.35rem;">3</td><td style="padding:.35rem;">Neutral: no change</td></tr>
+          <tr><td style="padding:.35rem;">2</td><td style="padding:.35rem;">Bad day: remove a 5-card, insert an exhaustion</td></tr>
+          <tr><td style="padding:.35rem;">1</td><td style="padding:.35rem;">Bad day: remove a 6-card, insert an exhaustion</td></tr>
+          <tr><td style="padding:.35rem;">0*</td><td style="padding:.35rem;">Bad day: remove a 6-card, insert <strong>2</strong> exhaustion cards (only possible if you had −1 from winning the previous stage)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Sprinteur table -->
+    <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: .75rem;">
+      <h3 style="margin: 0 0 .5rem 0;">Sprinteur</h3>
+      <table style="width:100%; border-collapse: collapse; font-size: .95rem;">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:.4rem; border-bottom:1px solid #e5e7eb;">Roll</th>
+            <th style="text-align:left; padding:.4rem; border-bottom:1px solid #e5e7eb;">Effect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:.35rem;">6</td><td style="padding:.35rem;">Good day: remove a 2-card, insert a 5-card</td></tr>
+          <tr><td style="padding:.35rem;">5</td><td style="padding:.35rem;">Good day: remove a 2-card, insert a 4-card</td></tr>
+          <tr><td style="padding:.35rem;">4</td><td style="padding:.35rem;">Neutral: no change</td></tr>
+          <tr><td style="padding:.35rem;">3</td><td style="padding:.35rem;">Neutral: no change</td></tr>
+          <tr><td style="padding:.35rem;">2</td><td style="padding:.35rem;">Bad day: remove a 4-card, insert an exhaustion</td></tr>
+          <tr><td style="padding:.35rem;">1</td><td style="padding:.35rem;">Bad day: remove a 5-card, insert an exhaustion</td></tr>
+          <tr><td style="padding:.35rem;">0*</td><td style="padding:.35rem;">Bad day: remove a 5-card, insert <strong>2</strong> exhaustion cards (only possible with −1 from previous-stage win)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Assistant table -->
+    <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: .75rem;">
+      <h3 style="margin: 0 0 .5rem 0;">Assistant</h3>
+      <table style="width:100%; border-collapse: collapse; font-size: .95rem;">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:.4rem; border-bottom:1px solid #e5e7eb;">Roll</th>
+            <th style="text-align:left; padding:.4rem; border-bottom:1px solid #e5e7eb;">Effect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:.35rem;">6 or 5</td><td style="padding:.35rem;">Good day: insert a 5-card</td></tr>
+          <tr><td style="padding:.35rem;">4–1</td><td style="padding:.35rem;">Neutral: no change</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <p style="font-size: .85rem; color:#6b7280; margin-top: .75rem;">
+    *A roll of 0 only occurs if you apply −1 for winning the previous stage.
+  </p>
+</div>
 {% endblock %}
