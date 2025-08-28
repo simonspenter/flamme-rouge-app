@@ -3,26 +3,24 @@
 {% block title %}Flamme Rouge Scoreboard{% endblock %}
 
 {% block content %}
-<div style="max-width: 820px; margin: 0; padding: 2rem 1rem; text-align: left;">
+<div style="max-width: 820px; margin: 0; padding: 2rem 1rem; text-align: left; position: relative;">
+
+    <!-- Image floated to the right -->
+    <img src="{{ url_for('static', filename='img/flamme_rouge_board.jpg') }}" 
+         alt="Flamme Rouge board game" 
+         style="max-width: 300px; height: auto; border-radius: 8px; float: right; margin: 0 0 1rem 1.5rem;">
 
     <h1 style="margin-bottom: .5rem;">Welcome to the Flamme Rouge Scoreboard</h1>
-    <p style="margin: 0 0 1.25rem 0; color:#444;">
-        This is a fan-built tool made by a couple of friends who love the game.
-    </p>
 
-    <img src="{{ url_for('static', filename='images/flamme_rouge_board.jpg') }}" 
-         alt="Flamme Rouge board game" 
-         style="max-width: 100%; height: auto; margin: 1rem 0; border-radius: 8px;">
-
-    <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Why this app?</h2>
+    <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Why use this app?</h2>
     <p style="margin: .5rem 0 1rem 0;">
         The main purpose is to let you <strong>play stages continuously</strong> and run a proper
         <strong>grand tour</strong> with clean tracking of GC, sprints, and mountain classifications.
     </p>
 
-    <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Optional house rules</h2>
+    <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Additional rules</h2>
     <p style="margin: .5rem 0 1rem 0;">
-        We’ve written a short set of <em>additional rules</em>—totally optional but recommended for multi-stage play:
+        We made a set of additional rules – totally optional but recommended for multi-stage play:
     </p>
     <ul style="list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1.25rem;">
         <li>Assistant rider</li>
@@ -62,7 +60,7 @@
     <hr style="margin: 2rem 0; border:none; border-top:1px solid #e5e7eb;">
 
     <p style="font-size:.9rem; color:#6b7280; margin:0;">
-        <em>Disclaimer:</em> This is an independent fan project and is <strong>not</strong> affiliated with, endorsed by,
+        This is an independent fan project and is not affiliated with, endorsed by,
         or commercially related to the official <em>Flamme Rouge</em> game or its publishers.
     </p>
 </div>
