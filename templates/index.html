@@ -3,11 +3,16 @@
 {% block title %}Flamme Rouge Scoreboard{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 820px; margin: 0 auto; padding: 2rem 1rem;">
+<div style="max-width: 820px; margin: 0; padding: 2rem 1rem; text-align: left;">
+
     <h1 style="margin-bottom: .5rem;">Welcome to the Flamme Rouge Scoreboard</h1>
     <p style="margin: 0 0 1.25rem 0; color:#444;">
         This is a fan-built tool made by a couple of friends who love the game.
     </p>
+
+    <img src="{{ url_for('static', filename='images/flamme_rouge_board.jpg') }}" 
+         alt="Flamme Rouge board game" 
+         style="max-width: 100%; height: auto; margin: 1rem 0; border-radius: 8px;">
 
     <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Why this app?</h2>
     <p style="margin: .5rem 0 1rem 0;">
@@ -17,16 +22,19 @@
 
     <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Optional house rules</h2>
     <p style="margin: .5rem 0 1rem 0;">
-        We’ve written a short set of <em>additional rules</em>—totally optional but recommended for multi-stage play.
-        You’ll find ideas like an <strong>assistant rider</strong>, <strong>time trials</strong> (solo & team),
-        <strong>good/bad day</strong> conditions, and our <strong>points systems</strong> for classement, sprints,
-        and mountain sprints. Read them on the
-        <a href="{{ url_for('rules') }}">Rules page</a>.
+        We’ve written a short set of <em>additional rules</em>—totally optional but recommended for multi-stage play:
     </p>
+    <ul style="list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1.25rem;">
+        <li>Assistant rider</li>
+        <li>Time trials (solo & team)</li>
+        <li>“Good day / Bad day” conditions</li>
+        <li>Points systems for classement, sprints, and mountain sprints</li>
+        <li>...and more on the <a href="{{ url_for('rules') }}">Rules page</a></li>
+    </ul>
 
-    <div style="display: grid; gap: 1rem; grid-template-columns: 1fr; margin-top: 1.5rem;">
-        <!-- Create a new race -->
-        <div style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem;">
+    <!-- Create and return actions -->
+    <div style="display: grid; gap: 1.5rem; margin-top: 1.5rem;">
+        <div>
             <h3 style="margin: 0 0 .5rem 0;">New here?</h3>
             <p style="margin: 0 0 .75rem 0;">Start a fresh multi-stage race.</p>
             <a href="{{ url_for('create_race') }}"
@@ -35,11 +43,10 @@
             </a>
         </div>
 
-        <!-- Return to an existing race -->
-        <div style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem;">
+        <div>
             <h3 style="margin: 0 0 .5rem 0;">Already have a race?</h3>
             <p style="margin: 0 0 .75rem 0;">Go to the scoreboard and enter your Race ID to pick up where you left off.</p>
-            <form action="{{ url_for('scoreboard') }}" method="get" style="display:flex; gap:.5rem; align-items:center; flex-wrap: wrap;">
+            <form action="{{ url_for('scoreboard') }}" method="get" style="display:flex; gap:.5rem; flex-wrap: wrap;">
                 <label for="race_id" class="sr-only">Race ID</label>
                 <input id="race_id" name="race_id" type="text" placeholder="Enter Race ID"
                        required
