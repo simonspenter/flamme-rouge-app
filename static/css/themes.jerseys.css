@@ -1,0 +1,19 @@
+/* SPRINT (Green jersey) */
+#sprint table {
+  background-color: #2ecc40; border-collapse: collapse; color: white; font-weight: 600;
+}
+#sprint th, #sprint td { border: 1px solid #27ae60; padding: 8px; text-align: center; }
+#sprint th { background-color: #27ae60; }
+#sprint td { background-color: #32cd32; }
+#sprint tbody tr:last-child td { font-weight: 700; background-color: #1e7c2a; }
+
+/* MOUNTAIN (Polka dots) */
+#mountain table { background-color: white; border-collapse: collapse; color: #000; font-weight: 600; }
+#mountain th, #mountain td {
+  border: 1px solid #d50000; padding: 8px; text-align: center;
+  background-image: radial-gradient(circle, #d50000 13%, transparent 13%);
+  background-size: 40px 40px; background-repeat: repeat; background-color: white;
+}
+#mountain th { background-color: white; color: #000; }
+#mountain td { background-color: white; }
+#mountain tbody tr:last-child td { font-weight: 700; background-color: #ffd6d6; }

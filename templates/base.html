@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Scoreboard{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <!-- --- CSS FILES --- -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tabs.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.stage-card.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.jerseys.css') }}">
+
+    {% block page_css %}{% endblock %}
 </head>
 
 <!-- Reference the functions in 'js/tabs.js' -->

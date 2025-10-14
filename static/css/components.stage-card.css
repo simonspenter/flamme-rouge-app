@@ -1,0 +1,73 @@
+/* STAGE CARD */
+.stage-card {
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-family: 'Arial', sans-serif;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  width: 100vw;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-height: 250px;
+}
+/* IMPORTANT: path from css/ to img/ uses ../ */
+.stage-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url('../img/stage_card_pic1.avif') center / cover no-repeat;
+  opacity: 0.5;
+  z-index: 0;
+}
+.stage-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+  z-index: 1;
+}
+.stage-card > * { position: relative; z-index: 2; }
+
+/* STAGE HEADER */
+.stage-header { text-align: left; margin-bottom: 1.5rem; }
+.stage-date {
+  display: inline-block;
+  background-color: #ffdc00;
+  color: #111;
+  font-weight: bold;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 5px;
+}
+.stage-title { font-size: 1.6rem; font-weight: bold; margin-top: 0.5rem; }
+.stage-location { font-size: 1.2rem; font-weight: 600; margin-top: 0.25rem; }
+.arrow { color: #ffdc00; font-weight: bold; font-size: 1.2rem; }
+
+/* DETAILS + IMAGE ROW */
+.stage-details-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1.5rem; margin-top: 1rem;
+}
+.stage-details { display: flex; gap: 2rem; font-size: 1rem; align-items: center; flex-wrap: wrap; }
+.stage-detail { display: flex; align-items: center; gap: 0.5rem; }
+.stage-detail img { width: 24px; height: 24px; filter: invert(100%); }
+
+.route-visual { position: absolute; top: 1rem; right: 1rem; z-index: 5; }
+.route-image {
+  width: 500px; max-width: 100%; height: auto;
+  border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* ROUTE DESCRIPTION & LINK */
+.stage-route { margin-top: 1rem; }
+.stage-route-description,
+.stage-link-description {
+  color: #FFD700; font-weight: 700; font-size: 14px;
+  margin-bottom: 12px; letter-spacing: 1.2px;
+}
+.stage-link { margin-top: 1rem; }

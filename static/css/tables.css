@@ -1,0 +1,17 @@
+/* TABLES */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+th, td {
+  border: 1px solid #E10600;
+  padding: 10px;
+  text-align: center;
+  font-weight: 600;
+}
+th { background-color: #FFDD00; color: #000; font-size: 14px; }
+tr:nth-child(even) { background-color: #fff7cc; }
+tr:nth-child(odd) { background-color: #fffbed; }

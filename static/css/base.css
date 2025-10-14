@@ -1,0 +1,14 @@
+/* BASE STYLES */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fff9e5;
+  color: #222;
+  margin: 20px;
+}
+
+/* BUTTONS (generic) */
+button.selected {
+  background-color: #E10600;
+  color: white;
+  border-radius: 4px;
+}
