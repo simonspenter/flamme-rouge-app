@@ -24,18 +24,18 @@
 
     <!-- Navigation Tabs -->
     <div class="tab">
-        <a href="{{ url_for('index') }}">
-            <button class="{% if request.path == '/' %}active{% endif %}">Home</button>
-        </a>
-        <a href="{{ url_for('create_race') }}">
-            <button class="{% if request.path == '/create-race' %}active{% endif %}">Create Race</button>
-        </a>
-        <a href="{{ url_for('scoreboard') }}">
-            <button class="{% if request.path == '/scoreboard' %}active{% endif %}">Scoreboard</button>
-        </a>
-        <a href="{{ url_for('rules') }}">
-            <button class="{% if request.path == '/rules' %}active{% endif %}">Rules</button>
-        </a>
+    <a href="{{ url_for('main_bp.index') }}">
+        <button class="{{ 'active' if request.endpoint == 'main_bp.index' else '' }}">Home</button>
+    </a>
+    <a href="{{ url_for('race_bp.create_race') }}">
+        <button class="{{ 'active' if request.endpoint == 'race_bp.create_race' else '' }}">Create Race</button>
+    </a>
+    <a href="{{ url_for('scoreboard_bp.scoreboard') }}">
+        <button class="{{ 'active' if request.endpoint == 'scoreboard_bp.scoreboard' else '' }}">Scoreboard</button>
+    </a>
+    <a href="{{ url_for('main_bp.rules') }}">
+        <button class="{{ 'active' if request.endpoint == 'main_bp.rules' else '' }}">Rules</button>
+    </a>
     </div>
 
     <!-- Page Content -->
