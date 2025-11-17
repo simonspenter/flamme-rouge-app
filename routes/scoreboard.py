@@ -59,6 +59,22 @@ def scoreboard():
             })
         stage_data.append(stage_dict)
 
+    # --- Load stage winners ---
+    cursor.execute("""
+        SELECT stage_id, team_id, rider_id
+        FROM stage_winner
+        WHERE race_id = ?
+    """, (race_id,))
+
+    stage_winner_map = {}
+
+    for stage_id, team_id, rider_id in cursor.fetchall():
+        stage_winner_map[stage_id] = {
+            "team_id": team_id,
+            "rider_id": rider_id
+        }
+
+
     conn.close()
 
     return render_template(
@@ -74,6 +90,7 @@ def scoreboard():
         stage_type_icons=stage_type_icons,
         assistant=3 if assistant == 3 else 2,
         enumerate=enumerate
+        stage_winner_map=stage_winner_map
     )
 
 @scoreboard_bp.route('/scoreboard_input', methods=['GET', 'POST'])

@@ -15,3 +15,9 @@ th, td {
 th { background-color: #FFDD00; color: #000; font-size: 14px; }
 tr:nth-child(even) { background-color: #fff7cc; }
 tr:nth-child(odd) { background-color: #fffbed; }
+
+.winner-cell {
+    background-color: #ff4d4d !important;
+    color: white;
+    font-weight: bold;
+}
