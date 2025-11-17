@@ -197,3 +197,35 @@ def get_segment_data():
         total_segment_data[team_id][rider_id] = total_segment_data[team_id].get(rider_id, 0) + points
     conn.close()
     return jsonify({"segment_data": segment_dict, "total_segment_data": total_segment_data})
+
+@scoreboard_bp.route('/update-stage-winner', methods=['POST'])
+def update_stage_winner():
+    data = request.get_json()
+
+    race_id = data.get('race_id')
+    stage_id = data.get('stage_id')
+    rider_id = data.get('rider_id')
+    team_id = data.get('team_id')
+
+    if not all([race_id, stage_id, rider_id, team_id]):
+        return jsonify({"status": "error", "message": "Missing data"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Remove any existing winner for this stage
+    cursor.execute("""
+        DELETE FROM stage_winner
+        WHERE race_id = ? AND stage_id = ?
+    """, (race_id, stage_id))
+
+    # Insert the new winner
+    cursor.execute("""
+        INSERT INTO stage_winner (race_id, stage_id, rider_id, team_id)
+        VALUES (?, ?, ?, ?)
+    """, (race_id, stage_id, rider_id, team_id))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"status": "success"})

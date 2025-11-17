@@ -268,4 +268,46 @@
         });
     }
 
+    function handleStageWinnerChange(stageNumber, selectEl) {
+        const raceId = document.getElementById('race-id').value;  // same as other handlers
+        const option = selectEl.options[selectEl.selectedIndex];
+
+        const riderId = option.dataset.riderId;
+        const teamId = option.dataset.teamId;
+
+        if (!riderId || !teamId) {
+            return;
+        }
+
+        console.log("Submitting stage winner:", {
+            race_id: raceId,
+            stage_id: stageNumber,
+            rider_id: riderId,
+            team_id: teamId
+        });
+
+        fetch('/update-stage-winner', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                race_id: raceId,
+                stage_id: stageNumber,
+                rider_id: riderId,
+                team_id: teamId
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                console.log("Stage winner saved");
+            } else {
+                console.error("Error saving stage winner:", data);
+            }
+        })
+        .catch(error => {
+            console.error("Request error:", error);
+        });
+    }
+
+
 </script>
