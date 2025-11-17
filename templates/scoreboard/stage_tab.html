@@ -47,13 +47,36 @@
                 </div>
             </div>
 
-                        <!-- Route description -->
+            <!-- Route description -->
             <div class="stage-link">
                 <div class="stage-detail">
                     <img src="{{ url_for('static', filename='icons/link.svg') }}" alt="Link icon" />
                     <span>{{ single_stage.link }}</span>
                 </div>
             </div>
+
+            <!-- Stage winner selection -->
+            <div class="stage-winner-row">
+                <div class="stage-detail">
+                    <img src="{{ url_for('static', filename='icons/trophy.svg') }}" alt="Winner icon" />
+                    <label for="stage-winner-{{ single_stage.number }}">Stage winner:</label>
+                    <select id="stage-winner-{{ single_stage.number }}"
+                            name="stage_winner_{{ single_stage.number }}"
+                            onchange="handleStageWinnerChange({{ single_stage.number }}, this)">
+                        <option value="">Select rider</option>
+                        {% for team_id, riders in rider_names.items() %}
+                            {% for rider_index, rider in enumerate(riders) %}
+                                <option value="{{ rider_ids[team_id][rider_index] }}"
+                                        data-team-id="{{ team_id }}"
+                                        data-rider-id="{{ rider_ids[team_id][rider_index] }}">
+                                    Team {{ team_id }} – {{ rider }}
+                                </option>
+                            {% endfor %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
 
             <!-- Optional: Recap video -->
             {% if single_stage.video_url %}
@@ -118,10 +141,6 @@
                                 </td>
                             {% endfor %}
                         {% endfor %}
-
-
-
-
                 </tr>
 
                 <!-- Segment Rows for Stage -->
