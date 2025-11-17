@@ -17,7 +17,7 @@
 
 /* Hover state: same as tab hover */
 .race-form .select-button:hover {
-  background-color: #FFDD00;
+  background-color: #ffdd0075;
   color: #000000;
 }
 
@@ -61,7 +61,7 @@
 
 /* Optional: make fieldsets look a bit more card-like */
 .race-form .form-section {
-  border: 2px solid #E10600;
+  border: 2px solid #000000;
   border-radius: 8px;
   padding: 15px 20px;
   margin: 15px 0;
@@ -70,6 +70,6 @@
 
 .race-form .form-section legend {
   font-weight: 700;
-  color: #E10600;
+  color: #000000;
   padding: 0 6px;
 }
