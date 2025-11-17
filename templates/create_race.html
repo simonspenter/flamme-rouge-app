@@ -11,7 +11,7 @@
 
     <fieldset class="form-section">
         <legend>Choose a race:</legend>
-        {% set races = {'tdf2023': 'Tour de France 2023', 'giro2024': 'Giro d\'Italia 2024'} %}
+        {% set races = {'tdf2023': 'Tour de France d2023', 'giro2024': 'Giro d\'Italia 2024'} %}
         {% for race_id, race_name in races.items() %}
         <button type="button" onclick="setInputValue('race', '{{ race_id }}')" id="race{{ race_id }}" class="select-button">{{ race_name }}</button>
         {% endfor %}
