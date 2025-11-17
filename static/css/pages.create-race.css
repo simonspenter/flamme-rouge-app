@@ -17,8 +17,8 @@
 
 /* Hover state: same as tab hover */
 .race-form .select-button:hover {
-  background-color: #E10600;
-  color: #fff;
+  background-color: #FFDD00;
+  color: #000000;
 }
 
 /* Selected state: same idea as .tab button.active */
