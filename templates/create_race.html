@@ -2,6 +2,10 @@
 
 {% block title %} Create race {% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/create_race.css') }}">
+{% endblock %}
+
 {% block content %}
 <form action="{{ url_for('race_bp.create_race_submit') }}" method="POST" id="inputForm" class="race-form">
 

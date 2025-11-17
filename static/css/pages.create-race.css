@@ -1,25 +1,75 @@
-/* CREATE RACE PAGE */
-.create-race-container {
-  background-color: #fff; border: 2px solid #E10600; border-radius: 10px;
-  padding: 30px; margin: 40px auto; max-width: 600px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); text-align: center;
+/* --- SELECT BUTTONS ON CREATE RACE PAGE --- */
+/* Base style, inspired by .tab button */
+.race-form .select-button {
+  background-color: #111;
+  color: #FFDD00;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 10px 16px;
+  margin: 6px 4px;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.2s, transform 0.05s;
+  display: inline-block;
 }
-.create-race-container h2 { color: #E10600; margin-bottom: 25px; font-size: 1.8rem; }
-.create-race-form .form-group { margin-bottom: 20px; text-align: left; }
-.create-race-form label { display: block; font-weight: 700; margin-bottom: 8px; color: #333; }
-.create-race-form input[type="text"],
-.create-race-form select {
-  width: 100%; padding: 10px 12px; border: 2px solid #FFDD00; border-radius: 6px;
-  font-size: 1rem; background-color: #fffbed; color: #111; box-sizing: border-box;
-  transition: border-color 0.3s;
+
+/* Hover state: same as tab hover */
+.race-form .select-button:hover {
+  background-color: #E10600;
+  color: #fff;
 }
-.create-race-form input[type="text"]:focus,
-.create-race-form select:focus { outline: none; border-color: #E10600; }
-.form-actions { margin-top: 30px; text-align: center; }
-.btn-create {
-  background-color: #E10600; color: white; padding: 12px 30px; border: none;
-  border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer;
-  transition: background-color 0.3s ease;
+
+/* Selected state: same idea as .tab button.active */
+.race-form .select-button.selected {
+  background-color: #FFDD00;
+  color: #000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
-.btn-create:hover { background-color: #c40000; }
-.team-input { margin: 5px 0; padding: 5px; width: 200px; }
+
+/* Optional: tiny "pressed" effect when clicking */
+.race-form .select-button:active {
+  transform: translateY(1px);
+}
+
+/* --- SUBMIT BUTTON --- */
+/* Make Submit look like a strong primary button in the same theme */
+.race-form .submit-button {
+  background-color: #E10600;
+  color: #fff;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s, box-shadow 0.2s, transform 0.05s;
+}
+
+/* Hover state for Submit */
+.race-form .submit-button:hover {
+  background-color: #c40000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Pressed effect */
+.race-form .submit-button:active {
+  transform: translateY(1px);
+}
+
+/* Optional: make fieldsets look a bit more card-like */
+.race-form .form-section {
+  border: 2px solid #E10600;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin: 15px 0;
+  background-color: #fffdf3;
+}
+
+.race-form .form-section legend {
+  font-weight: 700;
+  color: #E10600;
+  padding: 0 6px;
+}
