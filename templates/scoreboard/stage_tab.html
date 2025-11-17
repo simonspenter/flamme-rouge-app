@@ -59,17 +59,17 @@
             <div class="stage-winner-row">
                 <div class="stage-detail">
                     <img src="{{ url_for('static', filename='icons/trophy.svg') }}" alt="Winner icon" />
-                    <label for="stage-winner-{{ single_stage.number }}">Stage winner:</label>
+                    <label for="stage-winner-{{ single_stage.number }}">Stage winner</label>
                     <select id="stage-winner-{{ single_stage.number }}"
                             name="stage_winner_{{ single_stage.number }}"
                             onchange="handleStageWinnerChange({{ single_stage.number }}, this)">
-                        <option value="">Select rider</option>
+                        <option value="">Select stage winner</option>
                         {% for team_id, riders in rider_names.items() %}
                             {% for rider_index, rider in enumerate(riders) %}
                                 <option value="{{ rider_ids[team_id][rider_index] }}"
                                         data-team-id="{{ team_id }}"
                                         data-rider-id="{{ rider_ids[team_id][rider_index] }}">
-                                    {{ team }} – {{ rider }}
+                                    {{ team_names }} – {{ rider }}
                                 </option>
                             {% endfor %}
                         {% endfor %}
