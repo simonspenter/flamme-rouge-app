@@ -60,21 +60,19 @@
                 <div class="stage-detail">
                     <img src="{{ url_for('static', filename='icons/trophy.svg') }}" alt="Winner icon" />
                     <label for="stage-winner-{{ single_stage.number }}">Stage winner</label>
+                    
                     <select id="stage-winner-{{ single_stage.number }}"
                             name="stage_winner_{{ single_stage.number }}"
                             onchange="handleStageWinnerChange({{ single_stage.number }}, this)">
+
                         <option value="">Select stage winner</option>
 
-                        {# Outer loop: over teams #}
-                        {% for team_id in rider_names %}
-                            {% set riders = rider_names[team_id] %}
-                            
-                            {# Inner loop: over riders in this team #}
+                        {% for team_index, (team_id, riders) in enumerate(rider_names.items()) %}
                             {% for rider_index, rider in enumerate(riders) %}
                                 <option value="{{ rider_ids[team_id][rider_index] }}"
                                         data-team-id="{{ team_id }}"
                                         data-rider-id="{{ rider_ids[team_id][rider_index] }}">
-                                    {{ team_names[loop.parent.index0] }} – {{ rider }}
+                                    {{ team_names[team_index] }} – {{ rider }}
                                 </option>
                             {% endfor %}
                         {% endfor %}
