@@ -27,11 +27,12 @@
                             {% set rider_id = rider_ids[team_id][rider_index] %}
                             {% set stage_id = stage_data[stage].id %}
 
+                            {% set stage_key = stage + 1 %}
+
                             {# --- Determine if this rider is the stage winner --- #}
                             {% set is_winner =
-                                stage_id in stage_winner_map
-                                and stage_winner_map[stage_id]["team_id"] == team_id
-                                and stage_winner_map[stage_id]["rider_id"] == rider_id
+                                stage_key in stage_winner_map and
+                                stage_winner_map[stage_key] == rider_id
                             %}
 
                             <td id="classement-stage-{{ stage + 1 }}-team-{{ team_id }}-rider-{{ rider_id }}"

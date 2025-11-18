@@ -59,20 +59,15 @@ def scoreboard():
             })
         stage_data.append(stage_dict)
 
-    # --- Load stage winners ---
+    # --- Load stage winners (keyed by stage number) ---
     cursor.execute("""
-        SELECT stage_id, team_id, rider_id
-        FROM stage_winner
-        WHERE race_id = ?
+        SELECT s.number AS stage_number, w.rider_id
+        FROM stage_winner w
+        JOIN stages s ON w.stage_id = s.id
+        WHERE w.race_id = ?
     """, (race_id,))
 
-    stage_winner_map = {}
-
-    for stage_id, team_id, rider_id in cursor.fetchall():
-        stage_winner_map[stage_id] = {
-            "team_id": team_id,
-            "rider_id": rider_id
-        }
+    stage_winner_map = {row[0]: row[1] for row in cursor.fetchall()}
 
 
     conn.close()
