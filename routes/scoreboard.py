@@ -89,7 +89,7 @@ def scoreboard():
         total_classement_data=total_classement_data,
         stage_type_icons=stage_type_icons,
         assistant=3 if assistant == 3 else 2,
-        enumerate=enumerate
+        enumerate=enumerate,
         stage_winner_map=stage_winner_map
     )
 
