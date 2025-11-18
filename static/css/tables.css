@@ -20,5 +20,4 @@ tr:nth-child(odd) { background-color: #fffbed; }
     background-color: #ff4d4d !important;
     color: white;
     font-weight: bold;
-    border: 2px solid #b30000;
 }
