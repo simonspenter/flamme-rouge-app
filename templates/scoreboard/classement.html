@@ -30,8 +30,8 @@
                             {# Determine if this is the stage winner #}
                             {% set is_winner =
                                 stage_id in stage_winner_map and
-                                stage_winner_map[stage_id].team_id == team_id and
-                                stage_winner_map[stage_id].rider_id == rider_id
+                                stage_winner_map[stage_id]["team_id"] == team_id and
+                                stage_winner_map[stage_id]["rider_id"] == rider_id
                             %}
 
                             <td id="classement-stage-{{ stage + 1 }}-team-{{ team_id }}-rider-{{ rider_id }}"
